@@ -15,26 +15,15 @@ body {
 
 #root {
   max-width: 700px;
-  margin: 3rem auto;
+  margin: 1rem auto 3rem;
+
+  @media screen and (max-width: 720px) {
+    padding: 0 1rem;
+  }
 }
 
 input {
   font-size: 16px; // Needed to prevent zoom on iOS
-  width: 100%;
-  border-radius: 4px;
-  display: block;
-  line-height: 1.5;
-  padding: 0.6rem 1.2rem;
-  border: 1px solid $border-color;
-  box-sizing: border-box;
-  box-shadow: inset 0 1px 1px $input-shadow;
-
-  &:focus {
-    border-color: $realtime-color;
-    box-shadow: inset 0 1px 1px $input-shadow,
-      0 0 8px rgba($realtime-color, 0.6);
-    outline: 0;
-  }
 }
 
 h1,
@@ -53,12 +42,12 @@ h1 {
 }
 
 h2 {
-  font-size: 2.8rem;
+  font-size: 2.4rem;
   margin-bottom: 0.42rem;
 }
 
 h3 {
-  font-size: 2.4rem;
+  font-size: 2.1rem;
   margin-bottom: 0.5em;
 }
 
@@ -66,7 +55,8 @@ h4 {
   font-size: 1.8rem;
 }
 
-button {
+button,
+.button {
   cursor: pointer;
   padding: 0.5rem 1rem;
   border: 1px solid $border-color;
@@ -90,20 +80,18 @@ button {
 }
 
 .close-button {
-  opacity: 0.2;
+  opacity: 0.5;
   float: right;
   font-size: 2rem;
   line-height: 1;
-  background: none;
-  border: 0;
   padding: 1rem;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    background: none;
-    opacity: 0.4;
+    background: $extra-light;
     outline: 0;
+    border-radius: 3px;
   }
 }
 
@@ -126,6 +114,10 @@ a {
   color: $error-color;
 }
 
-.title {
-  padding: 0 1rem;
+.divider {
+  border-bottom: 2px solid $border-color;
+
+  @media screen and (max-width: 700px) {
+    margin: 0 -1rem;
+  }
 }

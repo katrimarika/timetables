@@ -106,7 +106,7 @@ class Timetable extends Component<Props, State> {
     if (stopId) {
       fetchTimetable(stopId, ROW_LIMIT)
         .then(json => {
-          const result = json.data.stop;
+          const result = json && json.data.stop;
           if (result) {
             this.setState({
               stop: { id: stopId, code: result.code, name: result.name },
@@ -196,7 +196,10 @@ class Timetable extends Component<Props, State> {
     );
   }
 
-  toggleLine(line: string) {
+  toggleLine(
+    line: string,
+    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+  ) {
     const selectedLines = this.state.selectedLines.slice();
     if (this.isSelected(line, selectedLines)) {
       remove(selectedLines, l => l === line);
@@ -204,38 +207,43 @@ class Timetable extends Component<Props, State> {
       selectedLines.push(line);
     }
     this.setVisibleRows(0, selectedLines);
+    event.currentTarget.blur();
   }
 
-  toggleLines() {
+  toggleLines(
+    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
+  ) {
     const selectedLines = this.allButtonSelected() ? [] : this.state.lines;
     this.setVisibleRows(0, selectedLines);
+    event.currentTarget.blur();
   }
 
   lineSelect() {
     const buttons = this.state.lines.map(line => {
       const selected = this.isSelected(line) ? ' selected' : '';
       return (
-        <button
+        <div
           key={line}
-          type="button"
-          className={selected}
+          tabIndex={0}
+          className={`button line-button ${selected}`}
           onClick={this.toggleLine.bind(this, line)}
-          data-line={line}
+          onKeyPress={this.toggleLine.bind(this, line)}
         >
           {line}
-        </button>
+        </div>
       );
     });
     const allSelected = this.allButtonSelected() ? ' selected' : '';
     const allButton = (
-      <button
-        type="button"
-        className={allSelected}
+      <div
+        key="all-lines"
+        tabIndex={0}
+        className={`button line-button ${allSelected}`}
         onClick={this.toggleLines}
-        data-line={'all'}
+        onKeyPress={this.toggleLines}
       >
         Kaikki linjat
-      </button>
+      </div>
     );
     return (
       <div className="line-buttons">
@@ -334,11 +342,12 @@ class Timetable extends Component<Props, State> {
     return (
       <div className="timetable">
         <div className="stop-details">
-          <h4>{(stop.name || '') + ' '}</h4>
+          <h2>{(stop.name || '') + ' '}</h2>
           <span className="small">{stop.code || stop.id}</span>
         </div>
         {this.lineSelect()}
         {this.timetable()}
+        <div className="divider" />
       </div>
     );
   }

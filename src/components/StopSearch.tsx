@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { debounce, isEmpty } from 'lodash';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
 import { fetchStops } from '../utils/fetch';
@@ -53,7 +53,10 @@ class StopSearch extends Component<Props, State> {
   queryStops(name: string) {
     this.setState({ loading: true });
     fetchStops(name).then(json =>
-      this.setState({ results: json.data.stops || [], loading: false })
+      this.setState({
+        results: (json && json.data.stops) || [],
+        loading: false,
+      })
     );
   }
 
@@ -67,7 +70,7 @@ class StopSearch extends Component<Props, State> {
     const resultsList = results
       .filter(res => res.gtfsId)
       .map(res => (
-        <NavLink
+        <Link
           key={res.gtfsId}
           className="search-result"
           to={routes.stop(res.gtfsId)}
@@ -77,35 +80,41 @@ class StopSearch extends Component<Props, State> {
             <span>{res.code + ' ' || ''}</span>
             <span className="small">{res.gtfsId}</span>
           </div>
-        </NavLink>
+        </Link>
       ));
 
     return (
       <div className="stop-search">
         <form onSubmit={this.handleSubmit}>
-          <label htmlFor="inputStop" aria-label="Pysäkkihaku">
-            Hae pysäkkiä
+          <label htmlFor="inputStop" aria-label="Pysäkkihaku" className="small">
+            Pysäkkihaku
           </label>
-          <input
-            id="inputStop"
-            type="text"
-            value={value}
-            onChange={this.handleChange}
-            autoComplete="off"
-            placeholder="Syötä pysäkin nimi tai tunnus"
-          />
+          <div className="search-input">
+            <button type="submit">
+              <FontAwesomeIcon icon="search" />
+            </button>
+            <input
+              id="inputStop"
+              type="text"
+              value={value}
+              onChange={this.handleChange}
+              autoComplete="off"
+              placeholder="Hae pysäkkiä nimellä tai tunnuksella"
+            />
+          </div>
         </form>
         {value && (
           <div className="stop-search-results">
-            <button
-              type="button"
+            <div
               className="close-button"
+              tabIndex={0}
               aria-label="Sulje pysäkkihaku"
               onClick={this.clearSearch}
+              onKeyPress={this.clearSearch}
             >
               <FontAwesomeIcon icon="times" />
-            </button>
-            <h3>Valitse pysäkki</h3>
+            </div>
+            <h3>Tulokset</h3>
             <div className="list-group">
               {!isEmpty(resultsList) ? resultsList : <div>Ei hakutuloksia</div>}
             </div>

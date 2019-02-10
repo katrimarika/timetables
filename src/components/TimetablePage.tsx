@@ -1,8 +1,9 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
 import Timetable from './Timetable';
+import 'styles/TimetablePage.scss';
 
 interface Props {
   stopId: string;
@@ -19,21 +20,23 @@ const TimetablePage = ({
   togglePin,
   toggleStar,
 }: Props) => {
-  const starLabel = isStarred ? 'Poista tähti' : 'Aseta tähti';
-  const pinLabel = isPinned ? 'Poista nostoista' : 'Lisää etusivulle';
+  const starLabel = isStarred ? 'Poista tähti' : 'Lisää tähti';
+  const pinLabel = isPinned ? 'Poista etusivulta' : 'Lisää etusivulle';
 
   const actionClass = (isActive: boolean) =>
     `action${isActive ? ' active' : ''}`;
 
   return (
     <div className="timetable-page timetable-container">
-      <NavLink
+      <Link
         to={routes.frontpage}
-        className="close-button"
+        className="back-button"
         aria-label="Sulje pysäkin aikataulu"
       >
-        <FontAwesomeIcon icon="times" />
-      </NavLink>
+        <FontAwesomeIcon icon="arrow-left" />
+        <span>Etusivulle</span>
+      </Link>
+      <div>Pysäkki {stopId}</div>
       <div className="actions">
         <div
           tabIndex={0}

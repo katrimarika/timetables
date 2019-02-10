@@ -1,40 +1,12 @@
 @import '_variables';
 
-.timetable-container {
-  .close-button {
-    margin: 0rem 0rem -0.4rem -0.4rem;
-  }
-
-  .actions {
-    padding-top: 0.5rem;
-
-    .action {
-      margin: 0.5rem 4rem 0.5rem 0.5rem;
-      padding: 0 0.5rem;
-      cursor: pointer;
-
-      i {
-        width: 1.5rem;
-        text-align: center;
-        margin-right: 0.5rem;
-        opacity: 0.3;
-      }
-
-      &.active i {
-        opacity: 1;
-      }
-    }
-  }
-}
-
 .timetable {
-  margin-bottom: 0.8rem;
-  border-bottom: 2px solid $border-color;
+  margin: 0.8rem 0;
 
   .stop-details {
-    padding: 1rem 1rem 0.5rem;
+    padding: 1rem 0;
 
-    h4 {
+    h2 {
       display: inline;
     }
 
@@ -44,11 +16,12 @@
   }
 
   .line-buttons {
-    padding: 0 0.7rem 0 1rem;
+    margin-right: -0.5rem;
 
-    button {
+    .line-button {
       margin: 0 0.5rem 0.5rem 0;
       font-size: 12px;
+      display: inline-block;
 
       &.selected {
         border-color: $realtime-color;
@@ -65,6 +38,10 @@
   table {
     margin-bottom: 0;
     border-collapse: collapse;
+
+    @media screen and (max-width: 700px) {
+      margin: 0 -1rem;
+    }
 
     .line {
       font-weight: bold;

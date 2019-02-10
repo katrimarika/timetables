@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
@@ -21,27 +21,37 @@ const Frontpage = ({
   removeStar,
 }: Props) => (
   <div className="frontpage">
-    <h1 className="title">Pysäkkiaikataulut HSL</h1>
+    <h1 className="title">
+      Pysäkkiaikataulut <span className="title-addition">HSL</span>
+    </h1>
     <StopSearch />
-    <h3 className="title">Suosikit</h3>
-    <div className="starred-stops">
-      {starredStops.map(stopId => (
-        <div className="starred-stop" key={stopId}>
-          <div
-            className="close-button"
-            aria-label={`Poista suosikki ${stopId}`}
-            tabIndex={0}
-            onClick={() => removeStar(stopId)}
-            onKeyPress={() => removeStar(stopId)}
-          >
-            <FontAwesomeIcon icon="times" />
+    <div className="divider" />
+    {!isEmpty(starredStops) && (
+      <div className="starred-stops">
+        {starredStops.map(stopId => (
+          <div className="starred-stop" key={stopId}>
+            <Link
+              className="name"
+              to={routes.stop(stopId)}
+              aria-label={`Suosikki ${stopId}`}
+            >
+              <FontAwesomeIcon icon="star" />
+              <span>{stopId}</span>
+            </Link>
+            <div
+              className="close-button"
+              aria-label={`Poista suosikki ${stopId}`}
+              tabIndex={0}
+              onClick={() => removeStar(stopId)}
+              onKeyPress={() => removeStar(stopId)}
+            >
+              <FontAwesomeIcon icon="trash-alt" />
+            </div>
           </div>
-          <NavLink className="name" to={routes.stop(stopId)}>
-            {stopId}
-          </NavLink>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    )}
+    {!isEmpty(starredStops) && <div className="divider" />}
     <div className="timetables">
       {pinnedStops.map(stopId => (
         <div key={stopId} className="timetable-container">

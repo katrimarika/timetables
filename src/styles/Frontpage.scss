@@ -1,10 +1,37 @@
 @import '_variables';
 
-.starred-stops {
-  margin-bottom: 1rem;
-  border-bottom: 2px solid $border-color;
+.frontpage {
+  .title-addition {
+    font-size: 50%;
+    color: $light-color;
+  }
 
-  .name {
-    padding: 1rem;
+  .starred-stops {
+    margin: 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+
+    .starred-stop {
+      display: flex;
+      align-items: center;
+    }
+
+    .name {
+      padding: 1rem;
+      color: $realtime-color;
+      display: flex;
+      align-items: center;
+
+      &:hover,
+      &:focus {
+        background: $border-color;
+        outline: 0;
+        border-radius: 3px;
+      }
+
+      span {
+        padding-left: 1rem;
+      }
+    }
   }
 }

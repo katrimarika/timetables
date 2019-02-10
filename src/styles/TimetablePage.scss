@@ -1,0 +1,48 @@
+@import '_variables';
+
+.timetable-page {
+  .back-button {
+    opacity: 0.5;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+
+    &:hover,
+    &:focus {
+      background: $extra-light;
+      outline: 0;
+      border-radius: 3px;
+    }
+
+    span {
+      padding-left: 1rem;
+    }
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+
+    .action {
+      padding: 1rem;
+      display: flex;
+      align-items: center;
+      color: $realtime-color;
+      cursor: pointer;
+
+      &.active {
+        color: $light-color;
+      }
+
+      &:hover,
+      &:focus {
+        background: $border-color;
+        outline: 0;
+        border-radius: 3px;
+      }
+
+      span {
+        padding-left: 1rem;
+      }
+    }
+  }
+}
