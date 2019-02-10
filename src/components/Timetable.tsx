@@ -1,22 +1,44 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { TimetableRow } from '../utils/fetch';
 import 'styles/Timetable.scss';
-
-export interface TimetableRow {
-  line: string;
-  min: number;
-  hasRealtime: boolean;
-  realTime: string;
-  time: string;
-  dest: string;
-}
 
 interface Props {
   rows: TimetableRow[];
   hideShowMore: boolean;
   showMore(): void;
 }
+
+const refSecsToSecs = (refSecs: number) => {
+  // The night buses use the start of the previous day as a reference
+  const oneDay = 60 * 60 * 24;
+  const secs = refSecs > oneDay ? refSecs - oneDay : refSecs;
+  return secs;
+};
+
+const parseTime = (refSecs: number) => {
+  if (!refSecs) {
+    return '';
+  }
+  const secs = refSecsToSecs(refSecs);
+  let hours = Math.floor(secs / (60 * 60));
+  let minutes = Math.floor((secs - hours * 60 * 60) / 60);
+  const twoDigit = (n: number) => `${n < 10 ? '0' : ''}${n}`;
+  return `${twoDigit(hours)}:${twoDigit(minutes)}`;
+};
+
+const timeDiff = (refSecs: number) => {
+  if (!refSecs) {
+    return 0;
+  }
+  const dt = new Date();
+  const nowSecs =
+    dt.getSeconds() + 60 * dt.getMinutes() + 60 * 60 * dt.getHours();
+  const secs = refSecsToSecs(refSecs);
+  const diff = Math.floor((secs - nowSecs) / 60);
+  return diff;
+};
 
 const Timetable = ({ rows, hideShowMore, showMore }: Props) => (
   <table className="timetable">
@@ -33,23 +55,26 @@ const Timetable = ({ rows, hideShowMore, showMore }: Props) => (
     <tbody>
       {!isEmpty(rows) ? (
         rows.map(row => {
-          const mins = row.min;
+          const mins = timeDiff(row.realtimeDeparture);
           const gone = mins < 0;
-          const realTime = row.hasRealtime ? ' (' + row.realTime + ')' : null;
-          const minSpan = <span className="small">{' min'}</span>;
-          const rowClass = 'data-row ' + (gone ? 'gone' : '');
           return (
-            <tr key={row.line + '-' + row.time} className={rowClass}>
+            <tr
+              key={row.line + '-' + row.scheduledDeparture}
+              className={`data-row${gone ? ' gone' : ''}`}
+            >
               <td className="time">
-                <span>{row.time}</span>
-                <span className="realtime small">{realTime}</span>
+                <span>{parseTime(row.scheduledDeparture)}</span>
+                <span className="realtime small">
+                  {row.realtime &&
+                    ' (' + parseTime(row.realtimeDeparture) + ')'}
+                </span>
               </td>
               <td className="min">
                 {gone ? '-' : mins}
-                {gone ? null : minSpan}
+                {!gone && <span className="small">{' min'}</span>}
               </td>
               <td className="line">{row.line}</td>
-              <td className="dest small">{row.dest || ''}</td>
+              <td className="dest small">{row.destination}</td>
             </tr>
           );
         })

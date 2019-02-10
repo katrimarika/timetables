@@ -3,20 +3,14 @@ import { debounce, isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
-import { fetchStops } from '../utils/fetch';
+import { searchStops, Stop } from '../utils/fetch';
 import 'styles/StopSearch.scss';
-
-interface StopResult {
-  gtfsId: string;
-  name?: string;
-  code?: string;
-}
 
 interface Props {}
 
 interface State {
   value: string;
-  results: StopResult[];
+  results: Stop[];
   loading: boolean;
 }
 
@@ -52,9 +46,9 @@ class StopSearch extends Component<Props, State> {
 
   queryStops(name: string) {
     this.setState({ loading: true });
-    fetchStops(name).then(json =>
+    searchStops(name).then(stops =>
       this.setState({
-        results: (json && json.data.stops) || [],
+        results: stops,
         loading: false,
       })
     );
@@ -68,17 +62,13 @@ class StopSearch extends Component<Props, State> {
     const { results, value } = this.state;
 
     const resultsList = results
-      .filter(res => res.gtfsId)
+      .filter(res => !!res.id)
       .map(res => (
-        <Link
-          key={res.gtfsId}
-          className="search-result"
-          to={routes.stop(res.gtfsId)}
-        >
-          <h4>{res.name || 'Pysäkki'}</h4>
+        <Link key={res.id} className="search-result" to={routes.stop(res.id)}>
+          <h4>{res.name}</h4>
           <div>
-            <span>{res.code + ' ' || ''}</span>
-            <span className="small">{res.gtfsId}</span>
+            <span>{res.code + ' '}</span>
+            <span className="small">{res.id}</span>
           </div>
         </Link>
       ));

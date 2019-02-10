@@ -1,57 +1,122 @@
 import fetch from 'node-fetch';
+import { get, sortBy, uniq } from 'lodash';
 
 const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
 
-interface Query {
-  query: string;
-}
-
-const HSLFetch = (query: Query) => {
+const HSLFetch = (query: string) => {
   return fetch(API_URL, {
     method: 'POST',
-    body: JSON.stringify(query),
+    body: JSON.stringify({ query }),
     headers: { 'Content-Type': 'application/json' },
   })
     .then(res => res.json())
+    .then(json => (json && json.data) || {})
     .catch(err => console.error(err));
 };
 
-export const fetchTimetable = (stopId: string, rowLimit: number) => {
+export interface Stop {
+  id: string;
+  code: string;
+  name: string;
+}
+
+export interface TimetableRow {
+  line: string;
+  realtime: boolean;
+  realtimeDeparture: number;
+  scheduledDeparture: number;
+  destination: string;
+}
+
+export interface StopData {
+  stop: Stop;
+  lines: string[];
+  timetable: TimetableRow[];
+}
+
+export const fetchStopView = (
+  stopId: string,
+  rowLimit: number
+): Promise<StopData | undefined> => {
   // Default: from one minute ago to one hour to the future
   const now = new Date();
   const start = Math.floor(now.getTime() / 1000) - 60;
-  const date = now
-    .toISOString()
-    .slice(0, 10)
-    .replace(/[-]/g, '');
   const timeRange = 3600;
-  const query = {
-    query:
-      'query StopPage($id_0:String!,$startTime_1:Long!) ' +
-      '{stop(id:$id_0) {id,...F2}} fragment F0 on Stoptime ' +
-      '{scheduledDeparture,realtime,realtimeDeparture,stopHeadsign,trip ' +
-      '{pattern {route {shortName}}}} fragment F1 on Stop ' +
-      '{url,_stoptimesForServiceDateyplyP:stoptimesForServiceDate(date:"' +
-      date +
-      '") {pattern {headsign,code,route ' +
-      '{id,shortName,longName,mode,agency {id,name}},id},stoptimes ' +
-      '{scheduledDeparture,serviceDay,headsign,pickupType}},id} ' +
-      'fragment F2 on Stop ' +
-      '{_stoptimesWithoutPatterns3xYh4D:stoptimesWithoutPatterns' +
-      '(startTime:$startTime_1,timeRange:' +
-      timeRange +
-      ',numberOfDepartures:' +
-      rowLimit +
-      ') {...F0},code,name,...F1}',
-    variables: { id_0: stopId, startTime_1: start },
-  };
-  return HSLFetch(query);
+  const query = `{
+    stop(id: "${stopId}") {
+      id:gtfsId
+      name
+      code
+      lines:patterns {
+        details:route {
+          number:shortName
+        }
+      }
+      timetable:stoptimesWithoutPatterns(startTime: ${start}, timeRange: ${timeRange}, numberOfDepartures: ${rowLimit}) {
+        scheduledDeparture
+        realtime
+        realtimeDeparture
+        destination:headsign
+        trip {
+          line:pattern {
+            details:route {
+              number:shortName
+            }
+          }
+        }
+      }
+    }
+  }`;
+  return HSLFetch(query).then(data => {
+    const res = get(data, 'stop');
+    if (!res) {
+      return;
+    }
+    const stop: Stop = {
+      id: get(res, 'id', stopId),
+      code: get(res, 'code', stopId),
+      name: get(res, 'name', 'Pysäkki'),
+    };
+    const allLines = get(res, 'lines', []).map((lineres: any) =>
+      get(lineres, 'details.number', '')
+    );
+    const lines: string[] = sortBy(uniq(allLines), [
+      (line: string) => parseInt(line),
+      (line: string) => line,
+    ]);
+
+    const timetable: TimetableRow[] = get(res, 'timetable', []).map(
+      (timetableres: any): TimetableRow => ({
+        realtime: get(timetableres, 'realtime', false),
+        scheduledDeparture: get(timetableres, 'scheduledDeparture'),
+        realtimeDeparture: get(timetableres, 'realtimeDeparture'),
+        destination: get(timetableres, 'destination', ''),
+        line: get(timetableres, 'trip.line.details.number', ''),
+      })
+    );
+
+    return {
+      stop,
+      lines,
+      timetable,
+    };
+  });
 };
 
-export const fetchStops = (name: string) => {
-  const query = {
-    query: '{stops(name: "' + name + '") {name gtfsId code}}',
-  };
-  return HSLFetch(query);
+export const searchStops = (name: string): Promise<Stop[]> => {
+  const query = `{
+    stops(name: "${name}") {
+      id:gtfsId
+      name
+      code
+    }
+  }`;
+  return HSLFetch(query).then(data =>
+    get(data, 'stops', []).map((stopres: any) => ({
+      id: get(stopres, 'id', ''),
+      code: get(stopres, 'code', get(stopres, 'id', '')),
+      name: get(stopres, 'name', 'Pysäkki'),
+    }))
+  );
 };
