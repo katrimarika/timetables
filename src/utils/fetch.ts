@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { get, sortBy, uniq } from 'lodash';
+import { get, sortBy, uniq, reduce } from 'lodash';
 
 const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
@@ -19,6 +19,10 @@ export interface Stop {
   id: string;
   code: string;
   name: string;
+}
+
+export interface Stops {
+  [id: string]: Stop;
 }
 
 export interface TimetableRow {
@@ -118,5 +122,35 @@ export const searchStops = (name: string): Promise<Stop[]> => {
       code: get(stopres, 'code', get(stopres, 'id', '')),
       name: get(stopres, 'name', 'Pysäkki'),
     }))
+  );
+};
+
+export const fetchStops = (ids: string[]): Promise<Stops> => {
+  const query = `{
+    ${ids.map(
+      (id, index) =>
+        `stop${index}: stop(id: "${id}") {
+        id:gtfsId
+        name
+        code
+      }`
+    )}
+  }`;
+  return HSLFetch(query).then(data =>
+    reduce(
+      data,
+      (obj: Stops, stopres: any, key: string) => {
+        const id = get(stopres, 'id');
+        if (id) {
+          obj[id] = {
+            id: id,
+            code: get(stopres, 'code', id),
+            name: get(stopres, 'name', 'Pysäkki'),
+          };
+        }
+        return obj;
+      },
+      {}
+    )
   );
 };

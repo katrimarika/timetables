@@ -1,0 +1,38 @@
+@import '_variables';
+@import '_mixins';
+
+.starred-stops {
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+
+  .starred-stop {
+    display: flex;
+    align-items: center;
+  }
+
+  .name {
+    padding: 1rem;
+    color: $realtime-color;
+    display: flex;
+    align-items: center;
+
+    @include focus-highlight();
+
+    span {
+      padding-left: 1rem;
+    }
+
+    .stop-details {
+      padding-left: 0;
+
+      .stop-name {
+        font-weight: bold;
+      }
+
+      > span {
+        display: inline-block;
+      }
+    }
+  }
+}

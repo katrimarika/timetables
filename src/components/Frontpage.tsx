@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { routes } from '../routes';
 import StopSearch from './StopSearch';
 import StopView from './StopView';
+import StarredStops from './StarredStops';
 import 'styles/Frontpage.scss';
 
 interface Props {
@@ -27,29 +26,7 @@ const Frontpage = ({
     <StopSearch />
     <div className="divider" />
     {!isEmpty(starredStops) && (
-      <div className="starred-stops">
-        {starredStops.map(stopId => (
-          <div className="starred-stop" key={stopId}>
-            <Link
-              className="name"
-              to={routes.stop(stopId)}
-              aria-label={`Suosikki ${stopId}`}
-            >
-              <FontAwesomeIcon icon="star" />
-              <span>{stopId}</span>
-            </Link>
-            <div
-              className="close-button"
-              aria-label={`Poista suosikki ${stopId}`}
-              tabIndex={0}
-              onClick={() => removeStar(stopId)}
-              onKeyPress={() => removeStar(stopId)}
-            >
-              <FontAwesomeIcon icon="trash-alt" />
-            </div>
-          </div>
-        ))}
-      </div>
+      <StarredStops starredStops={starredStops} removeStar={removeStar} />
     )}
     {!isEmpty(starredStops) && <div className="divider" />}
     <div className="timetables">
