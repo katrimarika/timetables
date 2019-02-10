@@ -65,11 +65,9 @@ class StopSearch extends Component<Props, State> {
       .filter(res => !!res.id)
       .map(res => (
         <Link key={res.id} className="search-result" to={routes.stop(res.id)}>
-          <h4>{res.name}</h4>
-          <div>
-            <span>{res.code + ' '}</span>
-            <span className="small">{res.id}</span>
-          </div>
+          <span className="name">{res.name}</span>
+          <span>{res.code}</span>
+          <span className="small">{res.id}</span>
         </Link>
       ));
 

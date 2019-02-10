@@ -65,6 +65,10 @@ table.timetable {
     white-space: nowrap;
   }
 
+  td.dest {
+    padding: 1rem 0.8rem;
+  }
+
   td .realtime {
     color: $realtime-color;
     vertical-align: text-top;
