@@ -172,25 +172,18 @@ class StopView extends Component<Props, State> {
     });
   }
 
-  toggleLine(
-    line: string,
-    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
-  ) {
+  toggleLine(line: string) {
     const { selectedLines } = this.state;
     const newSelection = includes(selectedLines, line)
       ? without(selectedLines, line)
       : [...selectedLines, line];
     this.setVisibleRows(0, newSelection);
-    event.currentTarget.blur();
   }
 
-  toggleAllLines(
-    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
-  ) {
+  toggleAllLines() {
     const { lines, selectedLines } = this.state;
     const newSelection = selectedLines.length === lines.length ? [] : lines;
     this.setVisibleRows(0, newSelection);
-    event.currentTarget.blur();
   }
 
   showMore() {

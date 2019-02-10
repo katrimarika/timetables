@@ -39,6 +39,7 @@ const StopPage = ({
       <div>Pysäkki {stopId}</div>
       <div className="actions">
         <div
+          key={`star-${isStarred}`}
           tabIndex={0}
           className={actionClass(isStarred)}
           onClick={toggleStar}
@@ -48,6 +49,7 @@ const StopPage = ({
           <span>{starLabel}</span>
         </div>
         <div
+          key={`pin-${isPinned}`}
           tabIndex={0}
           className={actionClass(isPinned)}
           onClick={togglePin}

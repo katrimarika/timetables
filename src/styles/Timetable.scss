@@ -1,4 +1,5 @@
 @import '_variables';
+@import '_mixins';
 
 table.timetable {
   margin-bottom: 0;
@@ -44,11 +45,7 @@ table.timetable {
     text-align: center;
     cursor: pointer;
 
-    &:hover,
-    &:focus {
-      outline: 0;
-      background: $border-color;
-    }
+    @include focus-highlight(false);
   }
 
   th,

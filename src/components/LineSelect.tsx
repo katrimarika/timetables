@@ -5,13 +5,8 @@ import 'styles/LineSelect.scss';
 interface Props {
   lines: string[];
   selectedLines: string[];
-  toggleLine(
-    line: string,
-    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
-  ): void;
-  toggleAllLines(
-    event: React.MouseEvent<HTMLElement> | React.KeyboardEvent<HTMLElement>
-  ): void;
+  toggleLine(line: string): void;
+  toggleAllLines(): void;
 }
 
 const LineSelect = ({
@@ -22,7 +17,7 @@ const LineSelect = ({
 }: Props) => (
   <div className="line-buttons">
     <div
-      key="all-lines"
+      key={`all-lines-${selectedLines.length === lines.length}`}
       tabIndex={0}
       className={`button line-button${
         selectedLines.length === lines.length ? ' selected' : ''
@@ -34,13 +29,13 @@ const LineSelect = ({
     </div>
     {lines.map(line => (
       <div
-        key={line}
+        key={`${line}-${includes(selectedLines, line)}`}
         tabIndex={0}
         className={`button line-button${
           includes(selectedLines, line) ? ' selected' : ''
         }`}
-        onClick={e => toggleLine(line, e)}
-        onKeyPress={e => toggleLine(line, e)}
+        onClick={() => toggleLine(line)}
+        onKeyPress={() => toggleLine(line)}
       >
         {line}
       </div>

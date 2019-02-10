@@ -1,4 +1,5 @@
 @import '_variables';
+@import '_mixins';
 
 .frontpage {
   .title-addition {
@@ -22,12 +23,7 @@
       display: flex;
       align-items: center;
 
-      &:hover,
-      &:focus {
-        background: $border-color;
-        outline: 0;
-        border-radius: 3px;
-      }
+      @include focus-highlight();
 
       span {
         padding-left: 1rem;

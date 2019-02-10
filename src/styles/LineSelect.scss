@@ -1,4 +1,5 @@
 @import '_variables';
+@import '_mixins';
 
 .line-buttons {
   margin-right: -0.5rem;
@@ -12,10 +13,6 @@
       border-color: $realtime-color;
       border-width: 2px;
       padding: 0.4rem 0.9rem;
-    }
-
-    &:hover {
-      background: $border-color;
     }
   }
 }

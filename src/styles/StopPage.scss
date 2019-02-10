@@ -1,4 +1,5 @@
 @import '_variables';
+@import '_mixins';
 
 .stop-page {
   .back-button {
@@ -6,12 +7,7 @@
     padding: 1rem 0;
     margin-bottom: 1rem;
 
-    &:hover,
-    &:focus {
-      background: $extra-light;
-      outline: 0;
-      border-radius: 3px;
-    }
+    @include focus-highlight();
 
     span {
       padding-left: 1rem;
@@ -33,12 +29,7 @@
         color: $light-color;
       }
 
-      &:hover,
-      &:focus {
-        background: $border-color;
-        outline: 0;
-        border-radius: 3px;
-      }
+      @include focus-highlight();
 
       span {
         padding-left: 1rem;
