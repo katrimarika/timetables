@@ -65,7 +65,7 @@ class App extends Component<Props, State> {
     const { pinnedStops, starredStops } = this.state;
 
     return (
-      <BrowserRouter>
+      <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Switch>
           <Route
             exact={true}
