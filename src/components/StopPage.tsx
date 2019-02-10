@@ -2,8 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
-import Timetable from './Timetable';
-import 'styles/TimetablePage.scss';
+import StopView from './StopView';
+import 'styles/StopPage.scss';
 
 interface Props {
   stopId: string;
@@ -13,7 +13,7 @@ interface Props {
   toggleStar(): void;
 }
 
-const TimetablePage = ({
+const StopPage = ({
   stopId,
   isPinned,
   isStarred,
@@ -27,7 +27,7 @@ const TimetablePage = ({
     `action${isActive ? ' active' : ''}`;
 
   return (
-    <div className="timetable-page timetable-container">
+    <div className="stop-page timetable-container">
       <Link
         to={routes.frontpage}
         className="back-button"
@@ -57,9 +57,9 @@ const TimetablePage = ({
           <span>{pinLabel}</span>
         </div>
       </div>
-      <Timetable stopId={stopId} />
+      <StopView stopId={stopId} />
     </div>
   );
 };
 
-export default TimetablePage;
+export default StopPage;

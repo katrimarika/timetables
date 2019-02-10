@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { isEmpty, uniq, without, includes } from 'lodash';
 import { routes } from '../routes';
 import Frontpage from './Frontpage';
-import TimetablePage from './TimetablePage';
+import StopPage from './StopPage';
 
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';
@@ -95,7 +95,7 @@ class App extends Component<Props, State> {
                   ? this.removeStop(STARRED_STOPS, stopId)
                   : this.addStop(STARRED_STOPS, stopId);
               return (
-                <TimetablePage
+                <StopPage
                   stopId={stopId}
                   isPinned={isPinned}
                   isStarred={isStarred}

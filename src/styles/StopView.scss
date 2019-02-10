@@ -1,0 +1,26 @@
+@import '_variables';
+
+.stop-view {
+  margin: 0.8rem 0;
+
+  .stop-details {
+    display: inline-block;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+
+    &:hover,
+    &:focus {
+      background: $border-color;
+      outline: 0;
+      border-radius: 3px;
+    }
+
+    h2 {
+      display: inline;
+    }
+
+    span {
+      color: $light-color;
+    }
+  }
+}

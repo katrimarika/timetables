@@ -1,0 +1,21 @@
+@import '_variables';
+
+.line-buttons {
+  margin-right: -0.5rem;
+
+  .line-button {
+    margin: 0 0.5rem 0.5rem 0;
+    font-size: 12px;
+    display: inline-block;
+
+    &.selected {
+      border-color: $realtime-color;
+      border-width: 2px;
+      padding: 0.4rem 0.9rem;
+    }
+
+    &:hover {
+      background: $border-color;
+    }
+  }
+}

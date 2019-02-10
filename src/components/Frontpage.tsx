@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
 import StopSearch from './StopSearch';
-import Timetable from './Timetable';
+import StopView from './StopView';
 import 'styles/Frontpage.scss';
 
 interface Props {
@@ -64,7 +64,7 @@ const Frontpage = ({
           >
             <FontAwesomeIcon icon="times" />
           </div>
-          <Timetable stopId={stopId} />
+          <StopView stopId={stopId} />
         </div>
       ))}
     </div>

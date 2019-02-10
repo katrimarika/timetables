@@ -1,111 +1,75 @@
 @import '_variables';
 
-.timetable {
-  margin: 0.8rem 0;
+table.timetable {
+  margin-bottom: 0;
+  border-collapse: collapse;
 
-  .stop-details {
-    padding: 1rem 0;
+  @media screen and (max-width: 700px) {
+    margin: 0 -1rem;
+  }
 
-    h2 {
-      display: inline;
-    }
+  .line {
+    font-weight: bold;
+  }
 
-    span {
-      color: $light-color;
+  th {
+    text-align: left;
+    border-bottom: 1px solid $border-color;
+    vertical-align: bottom;
+    color: black;
+
+    &.fit {
+      width: 1%;
     }
   }
 
-  .line-buttons {
-    margin-right: -0.5rem;
+  td {
+    vertical-align: top;
+  }
 
-    .line-button {
-      margin: 0 0.5rem 0.5rem 0;
-      font-size: 12px;
-      display: inline-block;
-
-      &.selected {
-        border-color: $realtime-color;
-        border-width: 2px;
-        padding: 0.4rem 0.9rem;
-      }
-
-      &:hover {
-        background: $border-color;
-      }
+  tbody {
+    tr:nth-of-type(odd) {
+      background: $table-row-color;
     }
   }
 
-  table {
-    margin-bottom: 0;
-    border-collapse: collapse;
+  tr.gone {
+    &,
+    .realtime {
+      color: $extra-light;
+    }
+  }
 
-    @media screen and (max-width: 700px) {
-      margin: 0 -1rem;
+  tr.show-more {
+    text-align: center;
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+      outline: 0;
+      background: $border-color;
+    }
+  }
+
+  th,
+  td {
+    padding: 0.8rem;
+
+    &:first-child {
+      padding-left: 1rem;
     }
 
-    .line {
-      font-weight: bold;
+    &:last-child {
+      padding-right: 1rem;
     }
+  }
 
-    th {
-      text-align: left;
-      border-bottom: 1px solid $border-color;
-      vertical-align: bottom;
-      color: black;
+  td.min {
+    white-space: nowrap;
+  }
 
-      &.fit {
-        width: 1%;
-      }
-    }
-
-    td {
-      vertical-align: top;
-    }
-
-    tbody {
-      tr:nth-of-type(odd) {
-        background: $table-row-color;
-      }
-    }
-
-    tr.gone {
-      &,
-      .realtime {
-        color: $extra-light;
-      }
-    }
-
-    tr.show-more {
-      text-align: center;
-      cursor: pointer;
-
-      &:hover,
-      &:focus {
-        outline: 0;
-        background: $border-color;
-      }
-    }
-
-    th,
-    td {
-      padding: 0.8rem;
-
-      &:first-child {
-        padding-left: 1rem;
-      }
-
-      &:last-child {
-        padding-right: 1rem;
-      }
-    }
-
-    td.min {
-      white-space: nowrap;
-    }
-
-    td .realtime {
-      color: $realtime-color;
-      vertical-align: text-top;
-    }
+  td .realtime {
+    color: $realtime-color;
+    vertical-align: text-top;
   }
 }
