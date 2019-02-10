@@ -1,0 +1,134 @@
+@import '_variables';
+
+.timetable-container {
+  .close-button {
+    margin: 0rem 0rem -0.4rem -0.4rem;
+  }
+
+  .actions {
+    padding-top: 0.5rem;
+
+    .action {
+      margin: 0.5rem 4rem 0.5rem 0.5rem;
+      padding: 0 0.5rem;
+      cursor: pointer;
+
+      i {
+        width: 1.5rem;
+        text-align: center;
+        margin-right: 0.5rem;
+        opacity: 0.3;
+      }
+
+      &.active i {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+.timetable {
+  margin-bottom: 0.8rem;
+  border-bottom: 2px solid $border-color;
+
+  .stop-details {
+    padding: 1rem 1rem 0.5rem;
+
+    h4 {
+      display: inline;
+    }
+
+    span {
+      color: $light-color;
+    }
+  }
+
+  .line-buttons {
+    padding: 0 0.7rem 0 1rem;
+
+    button {
+      margin: 0 0.5rem 0.5rem 0;
+      font-size: 12px;
+
+      &.selected {
+        border-color: $realtime-color;
+        border-width: 2px;
+        padding: 0.4rem 0.9rem;
+      }
+
+      &:hover {
+        background: $border-color;
+      }
+    }
+  }
+
+  table {
+    margin-bottom: 0;
+    border-collapse: collapse;
+
+    .line {
+      font-weight: bold;
+    }
+
+    th {
+      text-align: left;
+      border-bottom: 1px solid $border-color;
+      vertical-align: bottom;
+      color: black;
+
+      &.fit {
+        width: 1%;
+      }
+    }
+
+    td {
+      vertical-align: top;
+    }
+
+    tbody {
+      tr:nth-of-type(odd) {
+        background: $table-row-color;
+      }
+    }
+
+    tr.gone {
+      &,
+      .realtime {
+        color: $extra-light;
+      }
+    }
+
+    tr.show-more {
+      text-align: center;
+      cursor: pointer;
+
+      &:hover,
+      &:focus {
+        outline: 0;
+        background: $border-color;
+      }
+    }
+
+    th,
+    td {
+      padding: 0.8rem;
+
+      &:first-child {
+        padding-left: 1rem;
+      }
+
+      &:last-child {
+        padding-right: 1rem;
+      }
+    }
+
+    td.min {
+      white-space: nowrap;
+    }
+
+    td .realtime {
+      color: $realtime-color;
+      vertical-align: text-top;
+    }
+  }
+}
