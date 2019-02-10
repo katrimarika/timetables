@@ -10,6 +10,7 @@ import {
   faTrashAlt,
   faArrowLeft,
   faSearch,
+  faExternalLinkAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
@@ -23,7 +24,8 @@ library.add(
   faThumbtack,
   faTrashAlt,
   faArrowLeft,
-  faSearch
+  faSearch,
+  faExternalLinkAlt
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));

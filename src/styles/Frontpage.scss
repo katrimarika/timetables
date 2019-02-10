@@ -1,8 +1,20 @@
 @import '_variables';
+@import '_mixins';
 
 .frontpage {
   .title-addition {
     font-size: 50%;
     color: $light-color;
+  }
+
+  .share-link {
+    padding: 1rem;
+    display: inline-block;
+
+    @include focus-highlight();
+
+    span {
+      padding-left: 0.5rem;
+    }
   }
 }

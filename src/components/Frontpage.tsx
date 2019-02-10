@@ -1,6 +1,8 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { routes } from '../routes';
 import StopSearch from './StopSearch';
 import StopView from './StopView';
 import StarredStops from './StarredStops';
@@ -49,6 +51,15 @@ const Frontpage = ({
       <div className="loading">
         Ei pysäkkejä. Voit lisätä aikataulun aikataulusivulta.
       </div>
+    )}
+    {(!isEmpty(pinnedStops) || !isEmpty(starredStops)) && (
+      <Link
+        to={routes.shareUrl(starredStops, pinnedStops)}
+        className="small share-link"
+      >
+        <FontAwesomeIcon icon="external-link-alt" />
+        <span>Jaettava osoite</span>
+      </Link>
     )}
   </div>
 );

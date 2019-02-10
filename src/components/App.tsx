@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import { parse } from 'query-string';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { isEmpty, uniq, without, includes } from 'lodash';
+import { uniq, without, includes } from 'lodash';
 import { routes } from '../routes';
 import Frontpage from './Frontpage';
 import StopPage from './StopPage';
@@ -19,45 +20,41 @@ interface State {
 class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      pinnedStops: [],
-      starredStops: [],
+    this.state = this.getSavedStops();
+    this.toggleStop = this.toggleStop.bind(this);
+  }
+
+  getSavedStops() {
+    const { search } = window.location;
+    if (search) {
+      const { pin, star } = parse(search);
+      const pinnedStops = typeof pin === 'string' ? [pin] : pin || [];
+      const starredStops = typeof star === 'string' ? [star] : star || [];
+      Cookies.set(PINNED_STOPS, pinnedStops);
+      Cookies.set(STARRED_STOPS, starredStops);
+      window.history.replaceState({}, document.title, window.location.pathname);
+      return {
+        pinnedStops,
+        starredStops,
+      };
+    }
+    const pinnedStops = Cookies.getJSON(PINNED_STOPS) || [];
+    const starredStops = Cookies.getJSON(STARRED_STOPS) || [];
+    return {
+      pinnedStops,
+      starredStops,
     };
-    this.getStops = this.getStops.bind(this);
-    this.addStop = this.addStop.bind(this);
-    this.removeStop = this.removeStop.bind(this);
   }
 
-  componentDidMount() {
-    this.setState({
-      pinnedStops: this.getStops(PINNED_STOPS),
-      starredStops: this.getStops(STARRED_STOPS),
-    });
-  }
-
-  getStops(setKey: keyof State) {
-    const cookieStops = Cookies.getJSON(setKey);
-    if (!isEmpty(cookieStops)) {
-      return cookieStops;
-    }
-    const stateStops = this.state[setKey];
-    if (!isEmpty(stateStops)) {
-      return stateStops;
-    }
-    return [];
-  }
-
-  addStop(setKey: keyof State, stopId: string) {
-    const previousStops = this.getStops(setKey);
-    const newStops = uniq([...previousStops, stopId]);
+  toggleStop(setKey: keyof State, remove: boolean, stopId: string) {
+    const previousStops = this.state[setKey] || [];
+    const newStops = remove
+      ? without(previousStops, stopId)
+      : uniq([...previousStops, stopId]);
     Cookies.set(setKey, newStops);
-    this.setState({ [setKey]: newStops });
-  }
-
-  removeStop(setKey: keyof State, stopId: string) {
-    const previousStops = this.getStops(setKey);
-    const newStops = without(previousStops, stopId);
-    Cookies.set(setKey, newStops);
+    if (window.location.search) {
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
     this.setState({ [setKey]: newStops });
   }
 
@@ -74,8 +71,8 @@ class App extends Component<Props, State> {
               <Frontpage
                 pinnedStops={pinnedStops || []}
                 starredStops={starredStops || []}
-                removePin={this.removeStop.bind(this, PINNED_STOPS)}
-                removeStar={this.removeStop.bind(this, STARRED_STOPS)}
+                removePin={this.toggleStop.bind(this, PINNED_STOPS, true)}
+                removeStar={this.toggleStop.bind(this, STARRED_STOPS, true)}
               />
             )}
           />
@@ -86,21 +83,17 @@ class App extends Component<Props, State> {
               const { stopId } = match.params;
               const isPinned = includes(pinnedStops, stopId);
               const isStarred = includes(starredStops, stopId);
-              const togglePin = () =>
-                isPinned
-                  ? this.removeStop(PINNED_STOPS, stopId)
-                  : this.addStop(PINNED_STOPS, stopId);
-              const toggleStar = () =>
-                isStarred
-                  ? this.removeStop(STARRED_STOPS, stopId)
-                  : this.addStop(STARRED_STOPS, stopId);
               return (
                 <StopPage
                   stopId={stopId}
                   isPinned={isPinned}
                   isStarred={isStarred}
-                  togglePin={togglePin}
-                  toggleStar={toggleStar}
+                  togglePin={() =>
+                    this.toggleStop(PINNED_STOPS, isPinned, stopId)
+                  }
+                  toggleStar={() =>
+                    this.toggleStop(STARRED_STOPS, isStarred, stopId)
+                  }
                 />
               );
             }}
