@@ -1,7 +1,8 @@
 {
   "name": "timetables",
+  "homepage": "https://katrimarika.github.io/timetables/",
   "version": "0.1.0",
-  "private": true,
+  "license": "Apache-2.0",
   "dependencies": {
     "@types/jest": "24.0.0",
     "@types/node": "10.12.24",
