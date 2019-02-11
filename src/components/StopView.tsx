@@ -13,6 +13,8 @@ const ROW_COUNT = 7;
 
 interface Props {
   stopId: string;
+  buttons?: JSX.Element;
+  withLink?: boolean;
 }
 
 interface State {
@@ -128,7 +130,7 @@ class StopView extends Component<Props, State> {
   }
 
   render() {
-    const { stopId } = this.props;
+    const { stopId, withLink, buttons } = this.props;
     const {
       stop,
       timetable,
@@ -153,12 +155,23 @@ class StopView extends Component<Props, State> {
       );
     }
 
+    const stopDetails = (
+      <div className="stop-details">
+        <h2>{stop.name} </h2>
+        <span className="small">{stop.code || stop.id}</span>
+      </div>
+    );
+
     return (
       <div className="stop-view">
-        <Link to={routes.stop(stopId)} className="stop-details">
-          <h2>{(stop.name || '') + ' '}</h2>
-          <span className="small">{stop.code || stop.id}</span>
-        </Link>
+        <div className="stop-header">
+          {withLink ? (
+            <Link to={routes.stop(stopId)}>{stopDetails}</Link>
+          ) : (
+            stopDetails
+          )}
+          <div className="buttons">{buttons}</div>
+        </div>
         <LineSelect
           lines={lines}
           selectedLines={selectedLines}

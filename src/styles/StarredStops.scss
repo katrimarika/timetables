@@ -2,13 +2,14 @@
 @import '_mixins';
 
 .starred-stops {
-  margin: 1rem 0;
+  margin: 1rem -0.5rem;
   display: flex;
   flex-wrap: wrap;
 
   .starred-stop {
     display: flex;
     align-items: center;
+    margin: 0 0.5rem;
   }
 
   .name {
@@ -16,8 +17,6 @@
     color: $realtime-color;
     display: flex;
     align-items: center;
-
-    @include focus-highlight();
 
     span {
       padding-left: 1rem;

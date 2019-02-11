@@ -24,42 +24,41 @@ const StopPage = ({
   const pinLabel = isPinned ? 'Poista etusivulta' : 'Lisää etusivulle';
 
   const actionClass = (isActive: boolean) =>
-    `action${isActive ? ' active' : ''}`;
+    `icon-button action${isActive ? ' active' : ''}`;
 
   return (
-    <div className="stop-page timetable-container">
-      <Link
-        to={routes.frontpage}
-        className="back-button"
-        aria-label="Sulje pysäkin aikataulu"
-      >
+    <div className="stop-page">
+      <Link to={routes.frontpage} className="back-button">
         <FontAwesomeIcon icon="arrow-left" />
         <span>Etusivulle</span>
       </Link>
-      <div>Pysäkki {stopId}</div>
-      <div className="actions">
-        <div
-          key={`star-${isStarred}`}
-          tabIndex={0}
-          className={actionClass(isStarred)}
-          onClick={toggleStar}
-          aria-label={starLabel}
-        >
-          <FontAwesomeIcon icon="star" />
-          <span>{starLabel}</span>
-        </div>
-        <div
-          key={`pin-${isPinned}`}
-          tabIndex={0}
-          className={actionClass(isPinned)}
-          onClick={togglePin}
-          aria-label={pinLabel}
-        >
-          <FontAwesomeIcon icon="thumbtack" />
-          <span>{pinLabel}</span>
-        </div>
-      </div>
-      <StopView stopId={stopId} />
+      <StopView
+        stopId={stopId}
+        buttons={
+          <>
+            <div
+              key={`star-${isStarred}`}
+              tabIndex={0}
+              className={actionClass(isStarred)}
+              onClick={toggleStar}
+              aria-label={starLabel}
+              title={starLabel}
+            >
+              <FontAwesomeIcon icon="star" />
+            </div>
+            <div
+              key={`pin-${isPinned}`}
+              tabIndex={0}
+              className={`pin ${actionClass(isPinned)}`}
+              onClick={togglePin}
+              aria-label={pinLabel}
+              title={pinLabel}
+            >
+              <FontAwesomeIcon icon="thumbtack" />
+            </div>
+          </>
+        }
+      />
     </div>
   );
 };

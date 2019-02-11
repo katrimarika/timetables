@@ -4,19 +4,32 @@
 .stop-view {
   margin: 0.8rem 0;
 
-  .stop-details {
-    display: inline-block;
+  .stop-header {
     margin: 0.5rem 0;
-    padding: 0.5rem 0;
+    display: flex;
+    align-items: flex-start;
 
-    @include focus-highlight();
+    a,
+    > .stop-details {
+      flex: 0 1 auto;
+    }
+  }
+
+  .stop-details {
+    padding: 0.5rem 0;
 
     h2 {
       display: inline;
+      word-break: break-word;
     }
 
     span {
       color: $light-color;
     }
+  }
+
+  .buttons {
+    margin-left: auto;
+    display: flex;
   }
 }

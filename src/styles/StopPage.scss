@@ -5,7 +5,6 @@
   .back-button {
     opacity: 0.5;
     padding: 1rem 0;
-    margin-bottom: 1rem;
 
     @include focus-highlight();
 
@@ -14,26 +13,22 @@
     }
   }
 
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
+  .action {
+    color: $light-color;
 
-    .action {
-      padding: 1rem;
-      display: flex;
-      align-items: center;
+    &.pin {
+      font-size: 105%;
+      min-width: 1.6rem;
+      text-align: center;
+    }
+
+    &.active {
+      opacity: 1;
       color: $realtime-color;
-      cursor: pointer;
+    }
 
-      &.active {
-        color: $light-color;
-      }
-
-      @include focus-highlight();
-
-      span {
-        padding-left: 1rem;
-      }
+    span {
+      padding-left: 1rem;
     }
   }
 }

@@ -23,7 +23,7 @@ const Frontpage = ({
 }: Props) => (
   <div className="frontpage">
     <h1 className="title">
-      Pysäkkiaikataulut <span className="title-addition">HSL</span>
+      Aikataulut <span className="title-addition">HSL</span>
     </h1>
     <StopSearch />
     <div className="divider" />
@@ -33,23 +33,33 @@ const Frontpage = ({
     {!isEmpty(starredStops) && <div className="divider" />}
     <div className="timetables">
       {pinnedStops.map(stopId => (
-        <div key={stopId} className="timetable-container">
-          <div
-            className="close-button"
-            aria-label={`Poista pysäkki ${stopId}`}
-            tabIndex={0}
-            onClick={() => removePin(stopId)}
-            onKeyPress={() => removePin(stopId)}
-          >
-            <FontAwesomeIcon icon="times" />
-          </div>
-          <StopView stopId={stopId} />
-        </div>
+        <StopView
+          key={stopId}
+          stopId={stopId}
+          withLink={true}
+          buttons={
+            <div
+              className="icon-button close"
+              aria-label={`Poista pysäkki ${stopId}`}
+              title="Poista pysäkki"
+              tabIndex={0}
+              onClick={() => removePin(stopId)}
+              onKeyPress={() => removePin(stopId)}
+            >
+              <FontAwesomeIcon icon="times" />
+            </div>
+          }
+        />
       ))}
     </div>
     {isEmpty(pinnedStops) && isEmpty(starredStops) && (
       <div className="loading">
-        Ei pysäkkejä. Voit lisätä aikataulun aikataulusivulta.
+        Ei tallennettuja pysäkkejä.
+        <div className="loading small">
+          Voit tallentaa pysäkin aikataulusivulta. Tähti näkyy tällä sivulla
+          linkkinä aikataulusivulle. Voit myös kiinnittää koko aikataulun tälle
+          sivulle.
+        </div>
       </div>
     )}
     {(!isEmpty(pinnedStops) || !isEmpty(starredStops)) && (

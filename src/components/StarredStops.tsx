@@ -23,11 +23,7 @@ const StarredStops = ({ starredStops, removeStar }: Props) => {
         const stopDetails = stopsDetails[stopId];
         return (
           <div className="starred-stop" key={stopId}>
-            <Link
-              className="name"
-              to={routes.stop(stopId)}
-              aria-label={`Suosikki ${stopId}`}
-            >
+            <Link className="name" to={routes.stop(stopId)}>
               <FontAwesomeIcon icon="star" />
               {stopDetails ? (
                 <span className="stop-details">
@@ -40,8 +36,9 @@ const StarredStops = ({ starredStops, removeStar }: Props) => {
               )}
             </Link>
             <div
-              className="close-button"
-              aria-label={`Poista suosikki ${stopId}`}
+              className="icon-button"
+              aria-label={`Poista pysäkki ${stopId}`}
+              title="Poista pysäkki"
               tabIndex={0}
               onClick={() => removeStar(stopId)}
               onKeyPress={() => removeStar(stopId)}

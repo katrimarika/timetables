@@ -93,16 +93,19 @@ class StopSearch extends Component<Props, State> {
         </form>
         {value && (
           <div className="stop-search-results">
-            <div
-              className="close-button"
-              tabIndex={0}
-              aria-label="Sulje pysäkkihaku"
-              onClick={this.clearSearch}
-              onKeyPress={this.clearSearch}
-            >
-              <FontAwesomeIcon icon="times" />
+            <div className="results-header">
+              <h3>Tulokset</h3>
+              <div
+                className="icon-button close"
+                tabIndex={0}
+                aria-label="Sulje pysäkkihaku"
+                title="Sulje pysäkkihaku"
+                onClick={this.clearSearch}
+                onKeyPress={this.clearSearch}
+              >
+                <FontAwesomeIcon icon="times" />
+              </div>
             </div>
-            <h3>Tulokset</h3>
             <div className="list-group">
               {!isEmpty(resultsList) ? resultsList : <div>Ei hakutuloksia</div>}
             </div>
