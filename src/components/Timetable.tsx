@@ -6,6 +6,7 @@ import 'styles/Timetable.scss';
 
 interface Props {
   rows: TimetableRow[];
+  withPlatform: boolean;
   hideShowMore: boolean;
   showMore(): void;
 }
@@ -40,15 +41,20 @@ const timeDiff = (refSecs: number) => {
   return diff;
 };
 
-const Timetable = ({ rows, hideShowMore, showMore }: Props) => (
+const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
   <table className="timetable">
     <thead className="small">
       <tr>
         <th className="fit">Lähtee</th>
         <th className="fit">Min</th>
-        <th className="fit">
+        <th className="fit" aria-label="Linja" title="Linja">
           <FontAwesomeIcon icon="bus" />
         </th>
+        {withPlatform && (
+          <th className="fit" aria-label="Laituri" title="Laituri">
+            <FontAwesomeIcon icon="sign" />
+          </th>
+        )}
         <th>Määränpää</th>
       </tr>
     </thead>
@@ -74,6 +80,9 @@ const Timetable = ({ rows, hideShowMore, showMore }: Props) => (
                 {!gone && <span className="small">{' min'}</span>}
               </td>
               <td className="line">{row.line}</td>
+              {withPlatform && (
+                <td className="platform">{row.stop && row.stop.platform}</td>
+              )}
               <td className="dest small">{row.destination}</td>
             </tr>
           );

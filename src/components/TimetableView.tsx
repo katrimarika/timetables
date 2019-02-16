@@ -1,24 +1,31 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { without, includes, isEmpty } from 'lodash';
-import { fetchStopView, Stop, TimetableRow } from '../utils/fetch';
+import {
+  fetchTimetableView,
+  Stop,
+  Station,
+  TimetableRow,
+} from '../utils/fetch';
 import { routes } from '../routes';
 import LineSelect from './LineSelect';
 import Timetable from './Timetable';
-import 'styles/StopView.scss';
+import 'styles/TimetableView.scss';
 
 const REFRESH_INTERVAL = 20000;
 const ROW_LIMIT = 35;
 const ROW_COUNT = 7;
 
 interface Props {
-  stopId: string;
+  id: string;
+  isStation?: boolean;
   buttons?: JSX.Element;
   withLink?: boolean;
 }
 
 interface State {
-  stop: Stop;
+  stop?: Stop;
+  station?: Station;
   timetable: TimetableRow[];
   limit: number;
   visibleRows: TimetableRow[];
@@ -28,12 +35,10 @@ interface State {
   loading: boolean;
 }
 
-class StopView extends Component<Props, State> {
+class TimetableView extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    const { stopId } = props;
     this.state = {
-      stop: { id: stopId, name: '', code: '' },
       timetable: [],
       limit: ROW_COUNT,
       visibleRows: [],
@@ -50,9 +55,9 @@ class StopView extends Component<Props, State> {
   refresher?: NodeJS.Timeout;
 
   componentDidMount() {
-    const { stopId } = this.props;
-    this.queryStop(stopId);
-    this.startRefresher(stopId);
+    const { id } = this.props;
+    this.queryStop(id);
+    this.startRefresher(id);
   }
 
   componentWillUnmount() {
@@ -79,9 +84,9 @@ class StopView extends Component<Props, State> {
     });
   }
 
-  startRefresher(stopId: string) {
+  startRefresher(id: string) {
     this.refresher = setInterval(
-      this.queryStop.bind(this, stopId),
+      this.queryStop.bind(this, id),
       REFRESH_INTERVAL
     );
   }
@@ -93,9 +98,10 @@ class StopView extends Component<Props, State> {
     }
   }
 
-  queryStop(stopId: string) {
-    if (stopId) {
-      fetchStopView(stopId, ROW_LIMIT)
+  queryStop(id: string) {
+    const { isStation } = this.props;
+    if (id) {
+      fetchTimetableView(id, ROW_LIMIT, isStation)
         .then(result => {
           if (result) {
             this.setState({
@@ -130,9 +136,10 @@ class StopView extends Component<Props, State> {
   }
 
   render() {
-    const { stopId, withLink, buttons } = this.props;
+    const { id, withLink, buttons, isStation } = this.props;
     const {
       stop,
+      station,
       timetable,
       visibleRows,
       hideShowMore,
@@ -143,32 +150,44 @@ class StopView extends Component<Props, State> {
 
     if (loading) {
       return (
-        <div className="stop-view loading">
-          Ladataan pysäkin {stopId} tietoja...
+        <div className="timetable-view loading">
+          Ladataan tietoja, id: {id}...
         </div>
       );
     } else if (!timetable) {
       return (
-        <div className="stop-view error-message">
-          Virheellinen pysäkki-id: {stopId}
+        <div className="timetable-view error-message">
+          Virheellinen id: {id}
         </div>
       );
     }
 
-    const stopDetails = (
-      <div className="stop-details">
-        <h2>{stop.name} </h2>
-        <span className="small">{stop.code || stop.id}</span>
-      </div>
-    );
+    let headerDetails, linkTo;
+    if (stop) {
+      headerDetails = (
+        <div className="timetable-details">
+          <h2>{stop.name} </h2>
+          <span className="small">{stop.code || stop.id}</span>
+        </div>
+      );
+      linkTo = routes.stop(id);
+    } else if (station) {
+      headerDetails = (
+        <div className="timetable-details">
+          <h2>{station.name} </h2>
+          <span className="small">{station.stops.length} laituria</span>
+        </div>
+      );
+      linkTo = routes.station(id);
+    }
 
     return (
-      <div className="stop-view">
-        <div className="stop-header">
-          {withLink ? (
-            <Link to={routes.stop(stopId)}>{stopDetails}</Link>
+      <div className="timetable-view">
+        <div className="timetable-header">
+          {withLink && linkTo ? (
+            <Link to={linkTo}>{headerDetails}</Link>
           ) : (
-            stopDetails
+            headerDetails
           )}
           <div className="buttons">{buttons}</div>
         </div>
@@ -180,6 +199,7 @@ class StopView extends Component<Props, State> {
         />
         <Timetable
           rows={visibleRows}
+          withPlatform={isStation || !!station}
           hideShowMore={hideShowMore}
           showMore={this.showMore}
         />
@@ -189,4 +209,4 @@ class StopView extends Component<Props, State> {
   }
 }
 
-export default StopView;
+export default TimetableView;

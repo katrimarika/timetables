@@ -5,7 +5,7 @@ import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { uniq, without, includes } from 'lodash';
 import { routes } from '../routes';
 import Frontpage from './Frontpage';
-import StopPage from './StopPage';
+import TimetablePage from './TimetablePage';
 
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';
@@ -20,11 +20,11 @@ interface State {
 class App extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = this.getSavedStops();
-    this.toggleStop = this.toggleStop.bind(this);
+    this.state = this.getSaved();
+    this.toggleSave = this.toggleSave.bind(this);
   }
 
-  getSavedStops() {
+  getSaved() {
     const { search } = window.location;
     if (search) {
       const { pin, star } = parse(search);
@@ -46,7 +46,7 @@ class App extends Component<Props, State> {
     };
   }
 
-  toggleStop(setKey: keyof State, remove: boolean, stopId: string) {
+  toggleSave(setKey: keyof State, remove: boolean, stopId: string) {
     const previousStops = this.state[setKey] || [];
     const newStops = remove
       ? without(previousStops, stopId)
@@ -69,10 +69,10 @@ class App extends Component<Props, State> {
             path={routes.frontpage}
             render={() => (
               <Frontpage
-                pinnedStops={pinnedStops || []}
-                starredStops={starredStops || []}
-                removePin={this.toggleStop.bind(this, PINNED_STOPS, true)}
-                removeStar={this.toggleStop.bind(this, STARRED_STOPS, true)}
+                pinned={pinnedStops || []}
+                starred={starredStops || []}
+                removePin={this.toggleSave.bind(this, PINNED_STOPS, true)}
+                removeStar={this.toggleSave.bind(this, STARRED_STOPS, true)}
               />
             )}
           />
@@ -84,15 +84,38 @@ class App extends Component<Props, State> {
               const isPinned = includes(pinnedStops, stopId);
               const isStarred = includes(starredStops, stopId);
               return (
-                <StopPage
-                  stopId={stopId}
+                <TimetablePage
+                  id={stopId}
                   isPinned={isPinned}
                   isStarred={isStarred}
                   togglePin={() =>
-                    this.toggleStop(PINNED_STOPS, isPinned, stopId)
+                    this.toggleSave(PINNED_STOPS, isPinned, stopId)
                   }
                   toggleStar={() =>
-                    this.toggleStop(STARRED_STOPS, isStarred, stopId)
+                    this.toggleSave(STARRED_STOPS, isStarred, stopId)
+                  }
+                />
+              );
+            }}
+          />
+          <Route
+            exact={true}
+            path={routes.station(':stationId')}
+            render={({ match }) => {
+              const { stationId } = match.params;
+              const isPinned = includes(pinnedStops, stationId);
+              const isStarred = includes(starredStops, stationId);
+              return (
+                <TimetablePage
+                  id={stationId}
+                  isStation={true}
+                  isPinned={isPinned}
+                  isStarred={isStarred}
+                  togglePin={() =>
+                    this.toggleSave(PINNED_STOPS, isPinned, stationId)
+                  }
+                  toggleStar={() =>
+                    this.toggleSave(STARRED_STOPS, isStarred, stationId)
                   }
                 />
               );

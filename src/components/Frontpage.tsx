@@ -3,48 +3,41 @@ import { isEmpty } from 'lodash';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
-import StopSearch from './StopSearch';
-import StopView from './StopView';
-import StarredStops from './StarredStops';
+import Search from './Search';
+import TimetableView from './TimetableView';
+import Starred from './Starred';
 import 'styles/Frontpage.scss';
 
 interface Props {
-  pinnedStops: string[];
-  starredStops: string[];
-  removePin(stopId: string): void;
-  removeStar(stopId: string): void;
+  pinned: string[];
+  starred: string[];
+  removePin(id: string): void;
+  removeStar(id: string): void;
 }
 
-const Frontpage = ({
-  pinnedStops,
-  starredStops,
-  removePin,
-  removeStar,
-}: Props) => (
+const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
   <div className="frontpage">
     <h1 className="title">
       Aikataulut <span className="title-addition">HSL</span>
     </h1>
-    <StopSearch />
+    <Search />
     <div className="divider" />
-    {!isEmpty(starredStops) && (
-      <StarredStops starredStops={starredStops} removeStar={removeStar} />
-    )}
-    {!isEmpty(starredStops) && <div className="divider" />}
+    {!isEmpty(starred) && <Starred starred={starred} removeStar={removeStar} />}
+    {!isEmpty(starred) && <div className="divider" />}
     <div className="timetables">
-      {pinnedStops.map(stopId => (
-        <StopView
-          key={stopId}
-          stopId={stopId}
+      {pinned.map(id => (
+        <TimetableView
+          key={id}
+          id={id}
           withLink={true}
           buttons={
             <div
               className="icon-button close"
-              aria-label={`Poista pysäkki ${stopId}`}
-              title="Poista pysäkki"
+              aria-label={`Poista kiinnitys ${id}`}
+              title="Poista kiinnitys"
               tabIndex={0}
-              onClick={() => removePin(stopId)}
-              onKeyPress={() => removePin(stopId)}
+              onClick={() => removePin(id)}
+              onKeyPress={() => removePin(id)}
             >
               <FontAwesomeIcon icon="times" />
             </div>
@@ -52,21 +45,18 @@ const Frontpage = ({
         />
       ))}
     </div>
-    {isEmpty(pinnedStops) && isEmpty(starredStops) && (
+    {isEmpty(pinned) && isEmpty(starred) && (
       <div className="loading">
-        Ei tallennettuja pysäkkejä.
+        Ei tallennettuja pysäkkejä tai asemia.
         <div className="loading small">
-          Voit tallentaa pysäkin aikataulusivulta. Tähti näkyy tällä sivulla
-          linkkinä aikataulusivulle. Voit myös kiinnittää koko aikataulun tälle
-          sivulle.
+          Voit tallentaa pysäkin tai aseman aikataulusivulta. Tähti näkyy tällä
+          sivulla linkkinä aikataulusivulle. Voit myös kiinnittää koko
+          aikataulun tälle sivulle.
         </div>
       </div>
     )}
-    {(!isEmpty(pinnedStops) || !isEmpty(starredStops)) && (
-      <Link
-        to={routes.shareUrl(starredStops, pinnedStops)}
-        className="small share-link"
-      >
+    {(!isEmpty(pinned) || !isEmpty(starred)) && (
+      <Link to={routes.shareUrl(starred, pinned)} className="small share-link">
         <FontAwesomeIcon icon="external-link-alt" />
         <span>Jaettava osoite</span>
       </Link>

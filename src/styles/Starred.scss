@@ -1,12 +1,12 @@
 @import '_variables';
 @import '_mixins';
 
-.starred-stops {
+.starred {
   margin: 1rem -0.5rem;
   display: flex;
   flex-wrap: wrap;
 
-  .starred-stop {
+  .starred-item {
     display: flex;
     align-items: center;
     margin: 0 0.5rem;
@@ -22,10 +22,10 @@
       padding-left: 1rem;
     }
 
-    .stop-details {
+    .star-details {
       padding-left: 0;
 
-      .stop-name {
+      .star-name {
         font-weight: bold;
       }
 

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
 import { search, Stop, Station } from '../utils/fetch';
-import 'styles/StopSearch.scss';
+import 'styles/Search.scss';
 
 interface Props {}
 
@@ -15,7 +15,7 @@ interface State {
   loading: boolean;
 }
 
-class StopSearch extends Component<Props, State> {
+class Search extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -82,12 +82,13 @@ class StopSearch extends Component<Props, State> {
           to={routes.station(station.id)}
         >
           <span className="name">{station.name}</span>
+          <span>{station.stops.length} laituria</span>
           <span className="small">{station.id}</span>
         </Link>
       ));
 
     return (
-      <div className="stop-search">
+      <div className="search">
         <form onSubmit={this.handleSubmit}>
           <label htmlFor="inputStop">Asema- ja pysäkkihaku</label>
           <div className="search-input">
@@ -105,7 +106,7 @@ class StopSearch extends Component<Props, State> {
           </div>
         </form>
         {value && (
-          <div className="stop-search-results">
+          <div className="search-results">
             <div className="results-header">
               <h3>Tulokset</h3>
               <div
@@ -142,4 +143,4 @@ class StopSearch extends Component<Props, State> {
   }
 }
 
-export default StopSearch;
+export default Search;

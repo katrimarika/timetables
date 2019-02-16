@@ -1,7 +1,7 @@
 @import '_variables';
 @import '_mixins';
 
-.stop-search {
+.search {
   margin: 1.5rem 0 2rem;
   box-sizing: border-box;
 
@@ -51,7 +51,7 @@
   }
 }
 
-.stop-search-results {
+.search-results {
   .results-header {
     display: flex;
     align-items: center;
@@ -83,13 +83,13 @@
     cursor: pointer;
 
     &:first-child {
-      border-top-left-radius: $stop-result-border-radius;
-      border-top-right-radius: $stop-result-border-radius;
+      border-top-left-radius: $result-border-radius;
+      border-top-right-radius: $result-border-radius;
     }
 
     &:last-child {
-      border-bottom-left-radius: $stop-result-border-radius;
-      border-bottom-right-radius: $stop-result-border-radius;
+      border-bottom-left-radius: $result-border-radius;
+      border-bottom-right-radius: $result-border-radius;
       margin-bottom: 0;
     }
 

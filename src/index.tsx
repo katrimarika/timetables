@@ -11,6 +11,7 @@ import {
   faArrowLeft,
   faSearch,
   faExternalLinkAlt,
+  faSign,
 } from '@fortawesome/free-solid-svg-icons';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';
@@ -25,7 +26,8 @@ library.add(
   faTrashAlt,
   faArrowLeft,
   faSearch,
-  faExternalLinkAlt
+  faExternalLinkAlt,
+  faSign
 );
 
 ReactDOM.render(<App />, document.getElementById('root'));

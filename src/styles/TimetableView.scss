@@ -1,21 +1,21 @@
 @import '_variables';
 @import '_mixins';
 
-.stop-view {
+.timetable-view {
   margin: 0.8rem 0;
 
-  .stop-header {
+  .timetable-header {
     margin: 0.5rem 0;
     display: flex;
     align-items: flex-start;
 
     a,
-    > .stop-details {
+    > .timetable-details {
       flex: 0 1 auto;
     }
   }
 
-  .stop-details {
+  .timetable-details {
     padding: 0.5rem 0;
 
     h2 {
