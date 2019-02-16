@@ -19,6 +19,18 @@ export interface Stop {
   id: string;
   code: string;
   name: string;
+  platform?: string;
+}
+
+export interface Station {
+  id: string;
+  name: string;
+  stops: Stop[];
+}
+
+interface SearchResult {
+  stops: Stop[];
+  stations: Station[];
 }
 
 export interface Stops {
@@ -39,6 +51,25 @@ export interface StopData {
   timetable: TimetableRow[];
 }
 
+const parseStop = (stop: any, stopId?: string) => {
+  const id = get(stop, 'id', stopId || '');
+  return {
+    id,
+    code: get(stop, 'code', id),
+    name: get(stop, 'name', 'Pysäkki'),
+    platform: get(stop, 'platform'),
+  };
+};
+
+const parseStation = (station: any, stationId?: string) => {
+  const id = get(station, 'id', stationId || '');
+  return {
+    id,
+    name: get(station, 'name', 'Asema'),
+    stops: get(station, 'stops', []).map((stop: any) => parseStop(stop)),
+  };
+};
+
 export const fetchStopView = (
   stopId: string,
   rowLimit: number
@@ -52,6 +83,7 @@ export const fetchStopView = (
       id:gtfsId
       name
       code
+      platform:platformCode
       lines:patterns {
         details:route {
           number:shortName
@@ -77,11 +109,7 @@ export const fetchStopView = (
     if (!res) {
       return;
     }
-    const stop: Stop = {
-      id: get(res, 'id', stopId),
-      code: get(res, 'code', stopId),
-      name: get(res, 'name', 'Pysäkki'),
-    };
+    const stop: Stop = parseStop(res, stopId);
     const allLines = get(res, 'lines', []).map((lineres: any) =>
       get(lineres, 'details.number', '')
     );
@@ -108,21 +136,31 @@ export const fetchStopView = (
   });
 };
 
-export const searchStops = (name: string): Promise<Stop[]> => {
+export const search = (name: string): Promise<SearchResult> => {
   const query = `{
     stops(name: "${name}") {
       id:gtfsId
       name
       code
+      platform:platformCode
+    }
+    stations(name: "${name}") {
+      id:gtfsId
+      name
+      stops {
+        id:gtfsId
+        name
+        code
+        platformCode
+      }
     }
   }`;
-  return HSLFetch(query).then(data =>
-    get(data, 'stops', []).map((stopres: any) => ({
-      id: get(stopres, 'id', ''),
-      code: get(stopres, 'code', get(stopres, 'id', '')),
-      name: get(stopres, 'name', 'Pysäkki'),
-    }))
-  );
+  return HSLFetch(query).then(data => ({
+    stops: get(data, 'stops', []).map((stop: any) => parseStop(stop)),
+    stations: get(data, 'stations', []).map((station: any) =>
+      parseStation(station)
+    ),
+  }));
 };
 
 export const fetchStops = (ids: string[]): Promise<Stops> => {
@@ -133,20 +171,17 @@ export const fetchStops = (ids: string[]): Promise<Stops> => {
         id:gtfsId
         name
         code
+        platform:platformCode
       }`
     )}
   }`;
   return HSLFetch(query).then(data =>
     reduce(
       data,
-      (obj: Stops, stopres: any, key: string) => {
-        const id = get(stopres, 'id');
+      (obj: Stops, stop: any, key: string) => {
+        const id = get(stop, 'id');
         if (id) {
-          obj[id] = {
-            id: id,
-            code: get(stopres, 'code', id),
-            name: get(stopres, 'name', 'Pysäkki'),
-          };
+          obj[id] = parseStop(stop, id);
         }
         return obj;
       },
