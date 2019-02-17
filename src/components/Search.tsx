@@ -43,8 +43,6 @@ class Search extends Component<Props, State> {
       el.blur();
     }
     event.preventDefault();
-    this.setState({ loading: true });
-    this.querySearch(this.state.value);
   }
 
   querySearch(name: string) {
@@ -121,13 +119,13 @@ class Search extends Component<Props, State> {
               </div>
             </div>
             {loading && <div>Ladataan...</div>}
-            {!isEmpty(stationResults) && (
+            {!loading && !isEmpty(stationResults) && (
               <>
                 <h4 className="result-title">Asemat</h4>
                 <div className="list-group">{stationResults}</div>
               </>
             )}
-            {!isEmpty(stopResults) && (
+            {!loading && !isEmpty(stopResults) && (
               <>
                 <h4 className="result-title">Pysäkit</h4>
                 <div className="list-group">{stopResults}</div>
