@@ -9,10 +9,6 @@ table.timetable {
     margin: 0 -1rem;
   }
 
-  .line {
-    font-weight: bold;
-  }
-
   th {
     text-align: left;
     border-bottom: 1px solid $border-color;
@@ -22,10 +18,6 @@ table.timetable {
     &.fit {
       width: 1%;
     }
-  }
-
-  td {
-    vertical-align: top;
   }
 
   tbody {
@@ -61,16 +53,33 @@ table.timetable {
     }
   }
 
-  td.min {
-    white-space: nowrap;
-  }
+  td {
+    vertical-align: top;
 
-  td.dest {
-    padding: 1rem 0.8rem;
-  }
+    &.min {
+      white-space: nowrap;
+    }
 
-  td .realtime {
-    color: $realtime-color;
-    vertical-align: text-top;
+    &.line {
+      font-weight: bold;
+    }
+
+    &.dest {
+      padding: 1rem 0.8rem;
+    }
+
+    &.platform {
+      padding: 0.5rem 0;
+
+      a {
+        padding: 0.3rem 0.8rem;
+        display: inline-block;
+      }
+    }
+
+    .realtime {
+      color: $realtime-color;
+      vertical-align: text-top;
+    }
   }
 }

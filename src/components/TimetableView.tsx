@@ -56,7 +56,7 @@ class TimetableView extends Component<Props, State> {
 
   componentDidMount() {
     const { id } = this.props;
-    this.queryStop(id);
+    this.queryTimetable(id);
     this.startRefresher(id);
   }
 
@@ -86,7 +86,7 @@ class TimetableView extends Component<Props, State> {
 
   startRefresher(id: string) {
     this.refresher = setInterval(
-      this.queryStop.bind(this, id),
+      this.queryTimetable.bind(this, id),
       REFRESH_INTERVAL
     );
   }
@@ -98,7 +98,7 @@ class TimetableView extends Component<Props, State> {
     }
   }
 
-  queryStop(id: string) {
+  queryTimetable(id: string) {
     const { isStation } = this.props;
     if (id) {
       fetchTimetableView(id, ROW_LIMIT, isStation)
@@ -151,13 +151,13 @@ class TimetableView extends Component<Props, State> {
     if (loading) {
       return (
         <div className="timetable-view loading">
-          Ladataan tietoja, id: {id}...
+          Ladataan tietoja (id: {id})...
         </div>
       );
     } else if (!timetable) {
       return (
         <div className="timetable-view error-message">
-          Virheellinen id: {id}
+          Tietoja ei saatu (id: {id}).
         </div>
       );
     }

@@ -85,6 +85,7 @@ class App extends Component<Props, State> {
               const isStarred = includes(starredStops, stopId);
               return (
                 <TimetablePage
+                  key={stopId}
                   id={stopId}
                   isPinned={isPinned}
                   isStarred={isStarred}
@@ -107,6 +108,7 @@ class App extends Component<Props, State> {
               const isStarred = includes(starredStops, stationId);
               return (
                 <TimetablePage
+                  key={stationId}
                   id={stationId}
                   isStation={true}
                   isPinned={isPinned}

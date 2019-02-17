@@ -1,8 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { TimetableRow } from '../utils/fetch';
 import 'styles/Timetable.scss';
+import { routes } from '../routes';
 
 interface Props {
   rows: TimetableRow[];
@@ -81,7 +83,13 @@ const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
               </td>
               <td className="line">{row.line}</td>
               {withPlatform && (
-                <td className="platform">{row.stop && row.stop.platform}</td>
+                <td className="platform">
+                  {row.stop && (
+                    <Link to={routes.stop(row.stop.id)}>
+                      {row.stop.platform}
+                    </Link>
+                  )}
+                </td>
               )}
               <td className="dest small">{row.destination}</td>
             </tr>
@@ -102,7 +110,7 @@ const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
           onKeyPress={showMore}
           tabIndex={0}
         >
-          <td colSpan={4}>
+          <td colSpan={5}>
             <FontAwesomeIcon icon="chevron-down" />
           </td>
         </tr>
