@@ -34,7 +34,7 @@ const Starred = ({ starred, removeStar }: Props) => {
                 {stationDetails ? (
                   <span className="star-details">
                     <span className="star-name">{stationDetails.name}</span>
-                    <span>{stationDetails.stops.length} laituria</span>
+                    <span>{stationDetails.stops.length}&nbsp;laituria</span>
                     <span className="small">{stationDetails.id || id}</span>
                   </span>
                 ) : (

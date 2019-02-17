@@ -5,6 +5,7 @@ import 'styles/LineSelect.scss';
 interface Props {
   lines: string[];
   selectedLines: string[];
+  allText?: string;
   toggleLine(line: string): void;
   toggleAllLines(): void;
 }
@@ -12,20 +13,21 @@ interface Props {
 const LineSelect = ({
   lines,
   selectedLines,
+  allText,
   toggleLine,
   toggleAllLines,
 }: Props) => (
   <div className="line-buttons">
     <div
-      key={`all-lines-${selectedLines.length === lines.length}`}
+      key={`all-lines-${selectedLines.length}`}
       tabIndex={0}
       className={`button line-button${
-        selectedLines.length === lines.length ? ' selected' : ''
+        selectedLines.length === 0 ? ' selected' : ''
       }`}
       onClick={toggleAllLines}
       onKeyPress={toggleAllLines}
     >
-      Kaikki linjat
+      {allText || 'Kaikki linjat'}
     </div>
     {lines.map(line => (
       <div

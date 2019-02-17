@@ -32,6 +32,8 @@ interface State {
   hideShowMore: boolean;
   lines: string[];
   selectedLines: string[];
+  directions?: string[];
+  selectedDirections: string[];
   loading: boolean;
 }
 
@@ -45,10 +47,13 @@ class TimetableView extends Component<Props, State> {
       hideShowMore: true,
       lines: [],
       selectedLines: [],
+      selectedDirections: [],
       loading: true,
     };
     this.toggleLine = this.toggleLine.bind(this);
     this.toggleAllLines = this.toggleAllLines.bind(this);
+    this.toggleDirection = this.toggleDirection.bind(this);
+    this.toggleAllDirections = this.toggleAllDirections.bind(this);
     this.showMore = this.showMore.bind(this);
   }
 
@@ -64,15 +69,20 @@ class TimetableView extends Component<Props, State> {
     this.stopRefresher();
   }
 
-  setVisibleRows(addCount = 0, newSelectedLines?: string[]) {
-    const { timetable, selectedLines: oldSelected, lines } = this.state;
-    const selectedLines = newSelectedLines || oldSelected;
-    const filteredRows = timetable.filter(
-      item => isEmpty(selectedLines) || includes(selectedLines, item.line)
+  setVisibleRows(addCount = 0, newLines?: string[], newDirections?: string[]) {
+    const {
+      timetable,
+      selectedLines: oldLines,
+      selectedDirections: oldDirections,
+    } = this.state;
+    const selectedLines = newLines || oldLines;
+    const selectedDirections = newDirections || oldDirections;
+    const rows = timetable.filter(
+      item =>
+        (isEmpty(selectedLines) || includes(selectedLines, item.line)) &&
+        (isEmpty(selectedDirections) ||
+          includes(selectedDirections, item.direction))
     );
-    const showAll =
-      isEmpty(selectedLines) || selectedLines.length === lines.length;
-    const rows = showAll ? timetable : filteredRows;
     const limit = Math.min(this.state.limit + addCount, ROW_LIMIT, rows.length);
     const visibleRows = rows.slice(0, limit);
     const hideShowMore = limit >= rows.length;
@@ -81,6 +91,7 @@ class TimetableView extends Component<Props, State> {
       limit: Math.max(limit, ROW_COUNT),
       hideShowMore,
       selectedLines,
+      selectedDirections,
     });
   }
 
@@ -127,8 +138,25 @@ class TimetableView extends Component<Props, State> {
 
   toggleAllLines() {
     const { lines, selectedLines } = this.state;
-    const newSelection = selectedLines.length === lines.length ? [] : lines;
+    const newSelection = selectedLines.length === 0 ? lines : [];
     this.setVisibleRows(0, newSelection);
+  }
+
+  toggleDirection(direction: string) {
+    const { selectedDirections } = this.state;
+    const newSelection = includes(selectedDirections, direction)
+      ? without(selectedDirections, direction)
+      : [...selectedDirections, direction];
+    this.setVisibleRows(0, undefined, newSelection);
+  }
+
+  toggleAllDirections() {
+    const { directions, selectedDirections } = this.state;
+    if (!directions) {
+      return;
+    }
+    const newSelection = selectedDirections.length === 0 ? directions : [];
+    this.setVisibleRows(0, undefined, newSelection);
   }
 
   showMore() {
@@ -145,6 +173,8 @@ class TimetableView extends Component<Props, State> {
       hideShowMore,
       lines,
       selectedLines,
+      directions,
+      selectedDirections,
       loading,
     } = this.state;
 
@@ -175,7 +205,7 @@ class TimetableView extends Component<Props, State> {
       headerDetails = (
         <div className="timetable-details">
           <h2>{station.name} </h2>
-          <span className="small">{station.stops.length} laituria</span>
+          <span className="small">{station.stops.length}&nbsp;laituria</span>
         </div>
       );
       linkTo = routes.station(id);
@@ -197,6 +227,15 @@ class TimetableView extends Component<Props, State> {
           toggleLine={this.toggleLine}
           toggleAllLines={this.toggleAllLines}
         />
+        {directions && (
+          <LineSelect
+            lines={directions}
+            selectedLines={selectedDirections}
+            allText="Kaikki suunnat"
+            toggleLine={this.toggleDirection}
+            toggleAllLines={this.toggleAllDirections}
+          />
+        )}
         <Timetable
           rows={visibleRows}
           withPlatform={isStation || !!station}

@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { get, sortBy, uniq, reduce, startsWith } from 'lodash';
+import { map, get, sortBy, uniq, reduce, startsWith } from 'lodash';
 
 const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
@@ -49,6 +49,7 @@ export interface TimetableRow {
   scheduledDeparture: number;
   destination: string;
   stop?: Stop;
+  direction?: string;
 }
 
 export interface StopData {
@@ -60,25 +61,26 @@ export interface StopData {
 export interface StationData {
   station: Station;
   lines: string[];
+  directions: string[];
   timetable: TimetableRow[];
 }
 
 const parseStop = (stop: any, stopId?: string): Stop => {
-  const id = get(stop, 'id', stopId || '');
+  const id = get(stop, 'id') || stopId || '';
   return {
     id,
-    code: get(stop, 'code', id),
-    name: get(stop, 'name', 'Pysäkki'),
+    code: get(stop, 'code') || id,
+    name: get(stop, 'name') || 'Pysäkki',
     platform: get(stop, 'platform'),
   };
 };
 
 const parseStation = (station: any, stationId?: string): Station => {
-  const id = get(station, 'id', stationId || '');
+  const id = get(station, 'id') || stationId || '';
   return {
     id,
-    name: get(station, 'name', 'Asema'),
-    stops: get(station, 'stops', []).map((stop: any) => parseStop(stop)),
+    name: get(station, 'name') || 'Asema',
+    stops: map(get(station, 'stops'), (stop: any) => parseStop(stop)),
   };
 };
 
@@ -112,6 +114,7 @@ export const fetchTimetableView = (
             details:route {
               number:shortName
             }
+            destination:headsign
           }
         }
       }
@@ -130,6 +133,7 @@ export const fetchTimetableView = (
           details:route {
             number:shortName
           }
+          direction:directionId
         }
       }
       timetable:stoptimesWithoutPatterns(startTime: ${start}, timeRange: ${timeRange}, numberOfDepartures: ${rowLimit}) {
@@ -148,6 +152,8 @@ export const fetchTimetableView = (
             details:route {
               number:shortName
             }
+            direction:directionId
+            destination:headsign
           }
         }
       }
@@ -163,20 +169,24 @@ export const fetchTimetableView = (
     const stationData = get(data, 'station');
     if (stopData) {
       const stop = parseStop(stopData, id);
-      const allLines = get(stopData, 'lines', []).map((lineres: any) =>
-        get(lineres, 'details.number', '')
+      const allLines = (get(stopData, 'lines') || []).map(
+        (lineres: any) => get(lineres, 'details.number') || ''
       );
       const lines: string[] = sortBy(uniq(allLines), [
         (line: string) => parseInt(line),
         (line: string) => line,
       ]);
-      const timetable: TimetableRow[] = get(stopData, 'timetable', []).map(
+      const timetable: TimetableRow[] = map(
+        get(stopData, 'timetable'),
         (timetableres: any): TimetableRow => ({
-          realtime: get(timetableres, 'realtime', false),
+          realtime: get(timetableres, 'realtime') || false,
           scheduledDeparture: get(timetableres, 'scheduledDeparture'),
           realtimeDeparture: get(timetableres, 'realtimeDeparture'),
-          destination: get(timetableres, 'destination', ''),
-          line: get(timetableres, 'trip.line.details.number', ''),
+          destination:
+            get(timetableres, 'destination') ||
+            get(timetableres, 'trip.line.destination') ||
+            '',
+          line: get(timetableres, 'trip.line.details.number') || '',
         })
       );
       return {
@@ -186,27 +196,38 @@ export const fetchTimetableView = (
       };
     } else if (stationData) {
       const station = parseStation(stationData, id);
-      const allLines = get(stationData, 'stops', []).flatMap((stop: any) =>
-        get(stop, 'lines', []).map((lineres: any) =>
-          get(lineres, 'details.number', '')
-        )
+      const allDirections: string[] = [];
+      const allLines = (get(stationData, 'stops') || []).flatMap((stop: any) =>
+        map(get(stop, 'lines'), (lineres: any) => {
+          allDirections.push(`${get(lineres, 'direction')}`);
+          return get(lineres, 'details.number') || '';
+        })
       );
       const lines: string[] = sortBy(uniq(allLines), [
         (line: string) => parseInt(line),
         (line: string) => line,
       ]);
-      const timetable: TimetableRow[] = get(stationData, 'timetable', []).map(
+      const directions = uniq(allDirections)
+        .filter(d => d !== 'null')
+        .sort();
+      const timetable: TimetableRow[] = map(
+        get(stationData, 'timetable'),
         (timetableres: any): TimetableRow => ({
           stop: parseStop(get(timetableres, 'stop')),
-          realtime: get(timetableres, 'realtime', false),
+          realtime: get(timetableres, 'realtime') || false,
           scheduledDeparture: get(timetableres, 'scheduledDeparture'),
           realtimeDeparture: get(timetableres, 'realtimeDeparture'),
-          destination: get(timetableres, 'destination', ''),
-          line: get(timetableres, 'trip.line.details.number', ''),
+          destination:
+            get(timetableres, 'destination') ||
+            get(timetableres, 'trip.line.destination') ||
+            '',
+          line: get(timetableres, 'trip.line.details.number') || '',
+          direction: `${get(timetableres, 'trip.line.direction')}`,
         })
       );
       return {
         station,
+        directions,
         lines,
         timetable,
       };
@@ -234,8 +255,8 @@ export const search = (name: string): Promise<SearchResult> => {
     }
   }`;
   return HSLFetch(query).then(data => ({
-    stops: get(data, 'stops', []).map((stop: any) => parseStop(stop)),
-    stations: get(data, 'stations', []).map((station: any) =>
+    stops: map(get(data, 'stops'), (stop: any) => parseStop(stop)),
+    stations: map(get(data, 'stations'), (station: any) =>
       parseStation(station)
     ),
   }));

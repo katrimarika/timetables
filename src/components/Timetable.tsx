@@ -67,7 +67,8 @@ const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
           const gone = mins < 0;
           return (
             <tr
-              key={row.line + '-' + row.scheduledDeparture}
+              key={`${row.line}-${row.scheduledDeparture}-${row.direction ||
+                ''}`}
               className={`data-row${gone ? ' gone' : ''}`}
             >
               <td className="time">
@@ -97,7 +98,7 @@ const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
         })
       ) : (
         <tr className="no-rows small">
-          <td colSpan={4}>
+          <td colSpan={5}>
             Ei näytettäviä aikoja seuraavaan tuntiin. Valitse jokin toinen linja
             tai pysäkki.
           </td>

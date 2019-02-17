@@ -80,7 +80,7 @@ class Search extends Component<Props, State> {
           to={routes.station(station.id)}
         >
           <span className="name">{station.name}</span>
-          <span>{station.stops.length} laituria</span>
+          <span>{station.stops.length}&nbsp;laituria</span>
           <span className="small">{station.id}</span>
         </Link>
       ));
