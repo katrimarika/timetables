@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Cookies from 'js-cookie';
+import ls from 'local-storage';
 import { parse } from 'query-string';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { uniq, without, includes } from 'lodash';
@@ -30,19 +31,28 @@ class App extends Component<Props, State> {
       const { pin, star } = parse(search);
       const pinnedStops = typeof pin === 'string' ? [pin] : pin || [];
       const starredStops = typeof star === 'string' ? [star] : star || [];
-      Cookies.set(PINNED_STOPS, pinnedStops);
-      Cookies.set(STARRED_STOPS, starredStops);
+      ls.set(PINNED_STOPS, pinnedStops);
+      ls.set(STARRED_STOPS, starredStops);
       window.history.replaceState({}, document.title, window.location.pathname);
       return {
         pinnedStops,
         starredStops,
       };
     }
-    const pinnedStops = Cookies.getJSON(PINNED_STOPS) || [];
-    const starredStops = Cookies.getJSON(STARRED_STOPS) || [];
+    let pinnedStops = ls.get(PINNED_STOPS);
+    let starredStops = ls.get(STARRED_STOPS);
+    // Backward compatibility: read cookies and then delete them
+    if (!pinnedStops && !starredStops) {
+      pinnedStops = Cookies.getJSON(PINNED_STOPS) || [];
+      starredStops = Cookies.getJSON(STARRED_STOPS) || [];
+      ls.set(PINNED_STOPS, pinnedStops);
+      ls.set(STARRED_STOPS, starredStops);
+      Cookies.remove(PINNED_STOPS);
+      Cookies.remove(STARRED_STOPS);
+    }
     return {
-      pinnedStops,
-      starredStops,
+      pinnedStops: pinnedStops || [],
+      starredStops: starredStops || [],
     };
   }
 
@@ -51,7 +61,7 @@ class App extends Component<Props, State> {
     const newStops = remove
       ? without(previousStops, stopId)
       : uniq([...previousStops, stopId]);
-    Cookies.set(setKey, newStops);
+    ls.set(setKey, newStops);
     if (window.location.search) {
       window.history.replaceState({}, document.title, window.location.pathname);
     }

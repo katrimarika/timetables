@@ -864,6 +864,10 @@
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-2.2.0.tgz#ae2eabaa4bc892ba553c664cca21e6ee5224e5b5"
 
+"@types/local-storage@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@types/local-storage/-/local-storage-1.4.0.tgz#2838b4c2556b79edf87af75d13a10b25de7a8041"
+
 "@types/lodash@^4.14.120":
   version "4.14.120"
   resolved "https://registry.yarnpkg.com/@types/lodash/-/lodash-4.14.120.tgz#cf265d06f6c7a710db087ed07523ab8c1a24047b"
@@ -5472,6 +5476,10 @@ loader-utils@^1.0.1, loader-utils@^1.0.2, loader-utils@^1.1.0:
     big.js "^5.2.2"
     emojis-list "^2.0.0"
     json5 "^1.0.1"
+
+local-storage@^1.4.2:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/local-storage/-/local-storage-1.4.2.tgz#7ec2d3fb7f1ea91a85b160d3a785058f87bfbfa5"
 
 locate-path@^2.0.0:
   version "2.0.0"

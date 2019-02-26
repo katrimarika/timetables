@@ -49,9 +49,10 @@ const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
       <div className="loading">
         Ei tallennettuja pysäkkejä tai asemia.
         <div className="loading small">
-          Voit tallentaa pysäkin tai aseman aikataulusivulta. Tähti näkyy tällä
-          sivulla linkkinä aikataulusivulle. Voit myös kiinnittää koko
-          aikataulun tälle sivulle.
+          Suosikit <FontAwesomeIcon icon="star" /> näkyvät etusivulla linkkeinä
+          aikataulusivuille. Kiinnitys <FontAwesomeIcon icon="thumbtack" /> tuo
+          koko aikataulunäkymän etusivulle. Tiedot tallentuvat selaimeen (local
+          storage).
         </div>
       </div>
     )}
