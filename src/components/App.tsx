@@ -25,6 +25,20 @@ class App extends Component<Props, State> {
     this.toggleSave = this.toggleSave.bind(this);
   }
 
+  lsListener(setKey: keyof State, value?: string[]) {
+    this.setState({ [setKey]: value || [] });
+  }
+
+  componentDidMount() {
+    ls.on(PINNED_STOPS, this.lsListener.bind(this, PINNED_STOPS));
+    ls.on(STARRED_STOPS, this.lsListener.bind(this, STARRED_STOPS));
+  }
+
+  componentWillUnmount() {
+    ls.off(PINNED_STOPS, this.lsListener.bind(this, PINNED_STOPS));
+    ls.off(STARRED_STOPS, this.lsListener.bind(this, STARRED_STOPS));
+  }
+
   getSaved() {
     const { search } = window.location;
     if (search) {
