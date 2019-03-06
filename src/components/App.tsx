@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import Cookies from 'js-cookie';
 import ls from 'local-storage';
 import { parse } from 'query-string';
 import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
-import { uniq, without, includes } from 'lodash';
+import { uniqBy, find } from 'lodash';
 import { routes } from '../routes';
 import Frontpage from './Frontpage';
 import TimetablePage from './TimetablePage';
@@ -11,11 +10,21 @@ import TimetablePage from './TimetablePage';
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';
 
+export interface RawDetail {
+  id: string;
+  code?: string;
+  name?: string;
+  isStation?: boolean;
+  platformCount?: number;
+  lines?: string[];
+  directions?: string[];
+}
+
 interface Props {}
 
 interface State {
-  pinnedStops?: string[];
-  starredStops?: string[];
+  pinnedStops?: RawDetail[];
+  starredStops?: RawDetail[];
 }
 
 class App extends Component<Props, State> {
@@ -43,8 +52,10 @@ class App extends Component<Props, State> {
     const { search } = window.location;
     if (search) {
       const { pin, star } = parse(search);
-      const pinnedStops = typeof pin === 'string' ? [pin] : pin || [];
-      const starredStops = typeof star === 'string' ? [star] : star || [];
+      const pinned = typeof pin === 'string' ? [pin] : pin || [];
+      const starred = typeof star === 'string' ? [star] : star || [];
+      const pinnedStops = pinned.map(id => ({ id }));
+      const starredStops = starred.map(id => ({ id }));
       ls.set(PINNED_STOPS, pinnedStops);
       ls.set(STARRED_STOPS, starredStops);
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -53,28 +64,25 @@ class App extends Component<Props, State> {
         starredStops,
       };
     }
-    let pinnedStops = ls.get(PINNED_STOPS);
-    let starredStops = ls.get(STARRED_STOPS);
-    // Backward compatibility: read cookies and then delete them
-    if (!pinnedStops && !starredStops) {
-      pinnedStops = Cookies.getJSON(PINNED_STOPS) || [];
-      starredStops = Cookies.getJSON(STARRED_STOPS) || [];
-      ls.set(PINNED_STOPS, pinnedStops);
-      ls.set(STARRED_STOPS, starredStops);
-      Cookies.remove(PINNED_STOPS);
-      Cookies.remove(STARRED_STOPS);
-    }
+    const pinnedStops = (ls.get(PINNED_STOPS) || []).map(
+      (s: string | RawDetail): RawDetail =>
+        typeof s === 'string' ? { id: s } : s
+    );
+    const starredStops = (ls.get(STARRED_STOPS) || []).map(
+      (s: string | RawDetail): RawDetail =>
+        typeof s === 'string' ? { id: s } : s
+    );
     return {
-      pinnedStops: pinnedStops || [],
-      starredStops: starredStops || [],
+      pinnedStops,
+      starredStops,
     };
   }
 
-  toggleSave(setKey: keyof State, remove: boolean, stopId: string) {
+  toggleSave(setKey: keyof State, remove: boolean, detail: RawDetail) {
     const previousStops = this.state[setKey] || [];
     const newStops = remove
-      ? without(previousStops, stopId)
-      : uniq([...previousStops, stopId]);
+      ? previousStops.filter(s => s.id !== detail.id)
+      : uniqBy([...previousStops, detail], 'id');
     ls.set(setKey, newStops);
     if (window.location.search) {
       window.history.replaceState({}, document.title, window.location.pathname);
@@ -103,22 +111,38 @@ class App extends Component<Props, State> {
           <Route
             exact={true}
             path={routes.stop(':stopId')}
-            render={({ match }) => {
+            render={({ match, location }) => {
               const { stopId } = match.params;
-              const isPinned = includes(pinnedStops, stopId);
-              const isStarred = includes(starredStops, stopId);
+              const pinnedDetail = find(pinnedStops, s => s.id === stopId);
+              const starredDetail = find(starredStops, s => s.id === stopId);
+              const fromType = location.state && location.state.fromType;
+              const fromDetail =
+                fromType === 'star'
+                  ? starredDetail
+                  : fromType === 'pin'
+                  ? pinnedDetail
+                  : {
+                      ...(starredDetail || pinnedDetail || {}),
+                      lines: [],
+                      directions: [],
+                    };
+              const detail = { ...fromDetail, id: stopId, isStation: false };
               return (
                 <TimetablePage
                   key={stopId}
-                  id={stopId}
-                  isPinned={isPinned}
-                  isStarred={isStarred}
-                  togglePin={() =>
-                    this.toggleSave(PINNED_STOPS, isPinned, stopId)
-                  }
-                  toggleStar={() =>
-                    this.toggleSave(STARRED_STOPS, isStarred, stopId)
-                  }
+                  detail={detail}
+                  isPinned={!!pinnedDetail}
+                  isStarred={!!starredDetail}
+                  togglePin={this.toggleSave.bind(
+                    this,
+                    PINNED_STOPS,
+                    !!pinnedDetail
+                  )}
+                  toggleStar={this.toggleSave.bind(
+                    this,
+                    STARRED_STOPS,
+                    !!starredDetail
+                  )}
                 />
               );
             }}
@@ -126,23 +150,38 @@ class App extends Component<Props, State> {
           <Route
             exact={true}
             path={routes.station(':stationId')}
-            render={({ match }) => {
+            render={({ match, location }) => {
               const { stationId } = match.params;
-              const isPinned = includes(pinnedStops, stationId);
-              const isStarred = includes(starredStops, stationId);
+              const pinnedDetail = find(pinnedStops, s => s.id === stationId);
+              const starredDetail = find(starredStops, s => s.id === stationId);
+              const fromType = location.state && location.state.fromType;
+              const fromDetail =
+                fromType === 'star'
+                  ? starredDetail
+                  : fromType === 'pin'
+                  ? pinnedDetail
+                  : {
+                      ...(starredDetail || pinnedDetail || {}),
+                      lines: [],
+                      directions: [],
+                    };
+              const detail = { ...fromDetail, id: stationId, isStation: true };
               return (
                 <TimetablePage
                   key={stationId}
-                  id={stationId}
-                  isStation={true}
-                  isPinned={isPinned}
-                  isStarred={isStarred}
-                  togglePin={() =>
-                    this.toggleSave(PINNED_STOPS, isPinned, stationId)
-                  }
-                  toggleStar={() =>
-                    this.toggleSave(STARRED_STOPS, isStarred, stationId)
-                  }
+                  detail={detail}
+                  isPinned={!!pinnedDetail}
+                  isStarred={!!starredDetail}
+                  togglePin={this.toggleSave.bind(
+                    this,
+                    PINNED_STOPS,
+                    !!pinnedDetail
+                  )}
+                  toggleStar={this.toggleSave.bind(
+                    this,
+                    STARRED_STOPS,
+                    !!starredDetail
+                  )}
                 />
               );
             }}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
 import { without, includes, isEmpty } from 'lodash';
 import {
   fetchTimetableView,
@@ -10,18 +10,20 @@ import {
 import { routes } from '../routes';
 import LineSelect from './LineSelect';
 import Timetable from './Timetable';
+import { RawDetail } from './App';
 import 'styles/TimetableView.scss';
 
 const REFRESH_INTERVAL = 20000;
 const ROW_LIMIT = 35;
 const ROW_COUNT = 7;
 
-interface Props {
-  id: string;
-  isStation?: boolean;
-  buttons?: JSX.Element;
+interface IncomingProps {
+  detail: RawDetail;
+  buttons(detail: RawDetail): JSX.Element;
   withLink?: boolean;
 }
+
+type Props = IncomingProps & RouteComponentProps<void>;
 
 interface State {
   stop?: Stop;
@@ -46,8 +48,8 @@ class TimetableView extends Component<Props, State> {
       visibleRows: [],
       hideShowMore: true,
       lines: [],
-      selectedLines: [],
-      selectedDirections: [],
+      selectedLines: props.detail.lines || [],
+      selectedDirections: props.detail.directions || [],
       loading: true,
     };
     this.toggleLine = this.toggleLine.bind(this);
@@ -60,9 +62,9 @@ class TimetableView extends Component<Props, State> {
   refresher?: NodeJS.Timeout;
 
   componentDidMount() {
-    const { id } = this.props;
-    this.queryTimetable(id);
-    this.startRefresher(id);
+    const { detail } = this.props;
+    this.queryTimetable(detail.id);
+    this.startRefresher(detail.id);
   }
 
   componentWillUnmount() {
@@ -110,7 +112,9 @@ class TimetableView extends Component<Props, State> {
   }
 
   queryTimetable(id: string) {
-    const { isStation } = this.props;
+    const {
+      detail: { isStation },
+    } = this.props;
     if (id) {
       fetchTimetableView(id, ROW_LIMIT, isStation)
         .then(result => {
@@ -164,7 +168,7 @@ class TimetableView extends Component<Props, State> {
   }
 
   render() {
-    const { id, withLink, buttons, isStation } = this.props;
+    const { detail, withLink, buttons, location } = this.props;
     const {
       stop,
       station,
@@ -177,75 +181,101 @@ class TimetableView extends Component<Props, State> {
       selectedDirections,
       loading,
     } = this.state;
+    const { id, name, code, isStation, platformCount } = detail;
 
+    let linkTo, enhancedDetail;
+    if (stop) {
+      linkTo = routes.stop(id);
+      enhancedDetail = {
+        id: stop.id || id,
+        code: stop.code || code,
+        name: stop.name || name,
+        isStation: false,
+        lines: selectedLines,
+      };
+    } else if (station) {
+      linkTo = routes.station(id);
+      enhancedDetail = {
+        id: station.id || id,
+        name: station.name || name,
+        isStation: true,
+        lines: selectedLines,
+        platformCount: station.stops.length || platformCount,
+        directions: selectedDirections,
+      };
+    } else {
+      enhancedDetail = (location.state && location.state.detail) || detail;
+    }
+
+    const headerDetails = enhancedDetail.name && (
+      <div className="timetable-details">
+        <h2>{enhancedDetail.name} </h2>
+        <span className="small">
+          {enhancedDetail.isStation
+            ? `${enhancedDetail.platformCount}\u00a0laituria`
+            : enhancedDetail.code}
+        </span>
+      </div>
+    );
+
+    let content;
     if (loading) {
-      return (
+      content = (
         <div className="timetable-view loading">
-          Ladataan tietoja (id: {id})...
+          Ladataan tietoja (id: {id}) ...
         </div>
       );
     } else if (!timetable) {
-      return (
+      content = (
         <div className="timetable-view error-message">
           Tietoja ei saatu (id: {id}).
         </div>
       );
-    }
-
-    let headerDetails, linkTo;
-    if (stop) {
-      headerDetails = (
-        <div className="timetable-details">
-          <h2>{stop.name} </h2>
-          <span className="small">{stop.code || stop.id}</span>
-        </div>
+    } else {
+      content = (
+        <>
+          <LineSelect
+            lines={lines}
+            selectedLines={selectedLines}
+            toggleLine={this.toggleLine}
+            toggleAllLines={this.toggleAllLines}
+          />
+          {directions && (
+            <LineSelect
+              lines={directions}
+              selectedLines={selectedDirections}
+              allText="Kaikki suunnat"
+              toggleLine={this.toggleDirection}
+              toggleAllLines={this.toggleAllDirections}
+            />
+          )}
+          <Timetable
+            rows={visibleRows}
+            withPlatform={isStation || !!station}
+            hideShowMore={hideShowMore}
+            showMore={this.showMore}
+          />
+        </>
       );
-      linkTo = routes.stop(id);
-    } else if (station) {
-      headerDetails = (
-        <div className="timetable-details">
-          <h2>{station.name} </h2>
-          <span className="small">{station.stops.length}&nbsp;laituria</span>
-        </div>
-      );
-      linkTo = routes.station(id);
     }
 
     return (
       <div className="timetable-view">
         <div className="timetable-header">
           {withLink && linkTo ? (
-            <Link to={linkTo}>{headerDetails}</Link>
+            <Link to={{ pathname: linkTo, state: { fromType: 'pin' } }}>
+              {headerDetails}
+            </Link>
           ) : (
             headerDetails
           )}
-          <div className="buttons">{buttons}</div>
+          <div className="buttons">{buttons(enhancedDetail)}</div>
         </div>
-        <LineSelect
-          lines={lines}
-          selectedLines={selectedLines}
-          toggleLine={this.toggleLine}
-          toggleAllLines={this.toggleAllLines}
-        />
-        {directions && (
-          <LineSelect
-            lines={directions}
-            selectedLines={selectedDirections}
-            allText="Kaikki suunnat"
-            toggleLine={this.toggleDirection}
-            toggleAllLines={this.toggleAllDirections}
-          />
-        )}
-        <Timetable
-          rows={visibleRows}
-          withPlatform={isStation || !!station}
-          hideShowMore={hideShowMore}
-          showMore={this.showMore}
-        />
+        {content}
         <div className="divider" />
       </div>
     );
   }
 }
 
-export default TimetableView;
+export default withRouter(TimetableView);

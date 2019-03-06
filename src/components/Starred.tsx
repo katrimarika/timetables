@@ -3,61 +3,68 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
 import { fetchDetails, StopsStations } from '../utils/fetch';
+import { RawDetail } from './App';
 import 'styles/Starred.scss';
 
 interface Props {
-  starred: string[];
-  removeStar(id: string): void;
+  starred: RawDetail[];
+  removeStar(detail: RawDetail): void;
 }
 
 const Starred = ({ starred, removeStar }: Props) => {
+  const starredIds = starred.filter(s => !s.name).map(s => s.id);
   const [details, setDetails] = useState({
     stops: {},
     stations: {},
   } as StopsStations);
 
   useEffect(() => {
-    fetchDetails(starred).then(result => setDetails(result));
-  }, [starred]); // Only re-run the effect if starred changes
+    fetchDetails(starredIds).then(result => setDetails(result));
+  }, [starredIds]); // Only re-run the effect if starred changes
 
   return (
     <div className="starred">
-      {starred.map(id => {
+      {starred.map(detail => {
+        const {
+          id,
+          isStation: stationGuess,
+          name,
+          code,
+          platformCount,
+        } = detail;
         const stopDetails = details.stops[id];
         const stationDetails = details.stations[id];
-        const linkTo = stationDetails ? routes.station(id) : routes.stop(id);
+        let title, middleText, linkTo;
+        if (stationGuess || stationDetails) {
+          title = (stationDetails && stationDetails.name) || name;
+          middleText = `${(stationDetails && stationDetails.stops.length) ||
+            platformCount}\u00a0laituria`;
+          linkTo = routes.station(id);
+        } else {
+          title = (stopDetails && stopDetails.name) || name;
+          middleText = (stopDetails && stopDetails.code) || code;
+          linkTo = routes.stop(id);
+        }
         return (
           <div className="starred-item" key={id}>
-            {stopDetails || stationDetails ? (
-              <Link className="name" to={linkTo}>
-                <FontAwesomeIcon icon="star" />
-                {stationDetails ? (
-                  <span className="star-details">
-                    <span className="star-name">{stationDetails.name}</span>
-                    <span>{stationDetails.stops.length}&nbsp;laituria</span>
-                    <span className="small">{stationDetails.id || id}</span>
-                  </span>
-                ) : (
-                  <span className="star-details">
-                    <span className="star-name">{stopDetails.name}</span>
-                    <span>{stopDetails.code}</span>
-                    <span className="small">{stopDetails.id || id}</span>
-                  </span>
-                )}
-              </Link>
-            ) : (
-              <div className="name">
-                <FontAwesomeIcon icon="star" />
-                <span>{id}</span>
-              </div>
-            )}
+            <Link
+              className="name"
+              to={{ pathname: linkTo, state: { fromType: 'star' } }}
+            >
+              <FontAwesomeIcon icon="star" />
+              <span className="star-details">
+                <span className="star-name">{title}</span>
+                <span>{middleText}</span>
+                <span className="small">{id}</span>
+              </span>
+            </Link>
             <div
               className="icon-button"
               aria-label={`Poista tähti ${id}`}
               title="Poista tähti"
               tabIndex={0}
-              onClick={() => removeStar(id)}
-              onKeyPress={() => removeStar(id)}
+              onClick={() => removeStar(detail)}
+              onKeyPress={() => removeStar(detail)}
             >
               <FontAwesomeIcon icon="trash-alt" />
             </div>

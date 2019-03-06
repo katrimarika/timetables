@@ -64,7 +64,21 @@ class Search extends Component<Props, State> {
     const stopResults = stops
       .filter(stop => !!stop.id)
       .map(stop => (
-        <Link key={stop.id} className="search-result" to={routes.stop(stop.id)}>
+        <Link
+          key={stop.id}
+          className="search-result"
+          to={{
+            pathname: routes.stop(stop.id),
+            state: {
+              detail: {
+                id: stop.id,
+                name: stop.name,
+                isStation: false,
+                code: stop.code,
+              },
+            },
+          }}
+        >
           <span className="name">{stop.name}</span>
           <span>{stop.code}</span>
           <span className="small">{stop.id}</span>
@@ -77,7 +91,17 @@ class Search extends Component<Props, State> {
         <Link
           key={station.id}
           className="search-result"
-          to={routes.station(station.id)}
+          to={{
+            pathname: routes.station(station.id),
+            state: {
+              detail: {
+                id: station.id,
+                name: station.name,
+                isStation: true,
+                platformCount: station.stops.length,
+              },
+            },
+          }}
         >
           <span className="name">{station.name}</span>
           <span>{station.stops.length}&nbsp;laituria</span>

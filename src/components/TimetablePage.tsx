@@ -3,20 +3,19 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { routes } from '../routes';
 import TimetableView from './TimetableView';
+import { RawDetail } from './App';
 import 'styles/TimetablePage.scss';
 
 interface Props {
-  id: string;
-  isStation?: boolean;
+  detail: RawDetail;
   isPinned: boolean;
   isStarred: boolean;
-  togglePin(): void;
-  toggleStar(): void;
+  togglePin(detail: RawDetail): void;
+  toggleStar(detail: RawDetail): void;
 }
 
 const TimetablePage = ({
-  id,
-  isStation,
+  detail,
   isPinned,
   isStarred,
   togglePin,
@@ -28,13 +27,13 @@ const TimetablePage = ({
   const actionClass = (isActive: boolean) =>
     `icon-button action${isActive ? ' active' : ''}`;
 
-  const buttons = (
+  const buttons = (detail: RawDetail) => (
     <>
       <div
         key={`star-${isStarred}`}
         tabIndex={0}
         className={actionClass(isStarred)}
-        onClick={toggleStar}
+        onClick={() => toggleStar(detail)}
         aria-label={starLabel}
         title={starLabel}
       >
@@ -44,7 +43,7 @@ const TimetablePage = ({
         key={`pin-${isPinned}`}
         tabIndex={0}
         className={`pin ${actionClass(isPinned)}`}
-        onClick={togglePin}
+        onClick={() => togglePin(detail)}
         aria-label={pinLabel}
         title={pinLabel}
       >
@@ -59,7 +58,7 @@ const TimetablePage = ({
         <FontAwesomeIcon icon="arrow-left" />
         <span>Etusivulle</span>
       </Link>
-      <TimetableView id={id} isStation={isStation} buttons={buttons} />
+      <TimetableView detail={detail} buttons={buttons} />
     </div>
   );
 };

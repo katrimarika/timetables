@@ -1,5 +1,5 @@
 import fetch from 'node-fetch';
-import { map, get, sortBy, uniq, reduce, startsWith } from 'lodash';
+import { map, get, sortBy, uniq, reduce, startsWith, isEmpty } from 'lodash';
 
 const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
@@ -263,6 +263,9 @@ export const search = (name: string): Promise<SearchResult> => {
 };
 
 export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
+  if (isEmpty(ids)) {
+    return new Promise(() => ({ stops: {}, stations: {} }));
+  }
   const query = `{
     ${ids.map(
       (id, index) =>

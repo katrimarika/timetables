@@ -6,13 +6,14 @@ import { routes } from '../routes';
 import Search from './Search';
 import TimetableView from './TimetableView';
 import Starred from './Starred';
+import { RawDetail } from './App';
 import 'styles/Frontpage.scss';
 
 interface Props {
-  pinned: string[];
-  starred: string[];
-  removePin(id: string): void;
-  removeStar(id: string): void;
+  pinned: RawDetail[];
+  starred: RawDetail[];
+  removePin(detail: RawDetail): void;
+  removeStar(detail: RawDetail): void;
 }
 
 const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
@@ -25,23 +26,23 @@ const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
     {!isEmpty(starred) && <Starred starred={starred} removeStar={removeStar} />}
     {!isEmpty(starred) && <div className="divider" />}
     <div className="timetables">
-      {pinned.map(id => (
+      {pinned.map(stop => (
         <TimetableView
-          key={id}
-          id={id}
+          key={stop.id}
+          detail={stop}
           withLink={true}
-          buttons={
+          buttons={(detail: RawDetail) => (
             <div
               className="icon-button close"
-              aria-label={`Poista kiinnitys ${id}`}
+              aria-label={`Poista kiinnitys ${stop.id}`}
               title="Poista kiinnitys"
               tabIndex={0}
-              onClick={() => removePin(id)}
-              onKeyPress={() => removePin(id)}
+              onClick={() => removePin(stop)}
+              onKeyPress={() => removePin(stop)}
             >
               <FontAwesomeIcon icon="times" />
             </div>
-          }
+          )}
         />
       ))}
     </div>
@@ -57,7 +58,10 @@ const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
       </div>
     )}
     {(!isEmpty(pinned) || !isEmpty(starred)) && (
-      <Link to={routes.shareUrl(starred, pinned)} className="small share-link">
+      <Link
+        to={routes.shareUrl(starred.map(s => s.id), pinned.map(p => p.id))}
+        className="small share-link"
+      >
         <FontAwesomeIcon icon="external-link-alt" />
         <span>Jaettava osoite</span>
       </Link>
