@@ -10,7 +10,6 @@ import {
   faTrashAlt,
   faArrowLeft,
   faSearch,
-  faExternalLinkAlt,
   faSign,
 } from '@fortawesome/free-solid-svg-icons';
 import App from './components/App';
@@ -26,7 +25,6 @@ library.add(
   faTrashAlt,
   faArrowLeft,
   faSearch,
-  faExternalLinkAlt,
   faSign
 );
 

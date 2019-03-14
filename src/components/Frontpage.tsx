@@ -57,15 +57,6 @@ const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
         </div>
       </div>
     )}
-    {(!isEmpty(pinned) || !isEmpty(starred)) && (
-      <Link
-        to={routes.shareUrl(starred.map(s => s.id), pinned.map(p => p.id))}
-        className="small share-link"
-      >
-        <FontAwesomeIcon icon="external-link-alt" />
-        <span>Jaettava osoite</span>
-      </Link>
-    )}
   </div>
 );
 

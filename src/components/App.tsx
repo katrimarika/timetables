@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ls from 'local-storage';
-import { parse } from 'query-string';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { uniqBy, find } from 'lodash';
 import { routes } from '../routes';
@@ -49,21 +48,6 @@ class App extends Component<Props, State> {
   }
 
   getSaved() {
-    const { search } = window.location;
-    if (search) {
-      const { pin, star } = parse(search);
-      const pinned = typeof pin === 'string' ? [pin] : pin || [];
-      const starred = typeof star === 'string' ? [star] : star || [];
-      const pinnedStops = pinned.map(id => ({ id }));
-      const starredStops = starred.map(id => ({ id }));
-      ls.set(PINNED_STOPS, pinnedStops);
-      ls.set(STARRED_STOPS, starredStops);
-      window.history.replaceState({}, document.title, window.location.pathname);
-      return {
-        pinnedStops,
-        starredStops,
-      };
-    }
     const pinnedStops = (ls.get(PINNED_STOPS) || []).map(
       (s: string | RawDetail): RawDetail =>
         typeof s === 'string' ? { id: s } : s
