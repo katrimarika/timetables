@@ -1,32 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faTimes,
-  faBus,
-  faStar,
-  faChevronDown,
-  faThumbtack,
-  faTrashAlt,
-  faArrowLeft,
-  faSearch,
-  faSign,
-} from '@fortawesome/free-solid-svg-icons';
 import App from './components/App';
+import { iconSetup } from './utils/iconSetup';
 import * as serviceWorker from './serviceWorker';
 import 'styles/index.scss';
 
-library.add(
-  faTimes,
-  faBus,
-  faStar,
-  faChevronDown,
-  faThumbtack,
-  faTrashAlt,
-  faArrowLeft,
-  faSearch,
-  faSign
-);
+iconSetup();
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
