@@ -185,7 +185,7 @@ class TimetableView extends Component<Props, State> {
 
     let linkTo, enhancedDetail;
     if (stop) {
-      linkTo = routes.stop(id);
+      linkTo = routes.stop(id, 'pin');
       enhancedDetail = {
         id: stop.id || id,
         code: stop.code || code,
@@ -194,7 +194,7 @@ class TimetableView extends Component<Props, State> {
         lines: selectedLines,
       };
     } else if (station) {
-      linkTo = routes.station(id);
+      linkTo = routes.station(id, 'pin');
       enhancedDetail = {
         id: station.id || id,
         name: station.name || name,
@@ -204,7 +204,7 @@ class TimetableView extends Component<Props, State> {
         directions: selectedDirections,
       };
     } else {
-      enhancedDetail = (location.state && location.state.detail) || detail;
+      enhancedDetail = detail;
     }
 
     const headerDetails = enhancedDetail.name && (
@@ -263,9 +263,7 @@ class TimetableView extends Component<Props, State> {
       <div className="timetable-view">
         <div className="timetable-header">
           {withLink && linkTo ? (
-            <Link to={{ pathname: linkTo, state: { fromType: 'pin' } }}>
-              {headerDetails}
-            </Link>
+            <Link to={linkTo}>{headerDetails}</Link>
           ) : (
             headerDetails
           )}

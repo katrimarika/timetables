@@ -39,18 +39,15 @@ const Starred = ({ starred, removeStar }: Props) => {
           title = (stationDetails && stationDetails.name) || name;
           middleText = `${(stationDetails && stationDetails.stops.length) ||
             platformCount}\u00a0laituria`;
-          linkTo = routes.station(id);
+          linkTo = routes.station(id, 'star');
         } else {
           title = (stopDetails && stopDetails.name) || name;
           middleText = (stopDetails && stopDetails.code) || code;
-          linkTo = routes.stop(id);
+          linkTo = routes.stop(id, 'star');
         }
         return (
           <div className="starred-item" key={id}>
-            <Link
-              className="name"
-              to={{ pathname: linkTo, state: { fromType: 'star' } }}
-            >
+            <Link className="name" to={linkTo}>
               <FontAwesomeIcon icon="star" />
               <span className="star-details">
                 <span className="star-name">{title}</span>

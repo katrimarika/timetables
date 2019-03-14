@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ls from 'local-storage';
 import { parse } from 'query-string';
-import { BrowserRouter, Route, Switch, Redirect } from 'react-router-dom';
+import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { uniqBy, find } from 'lodash';
 import { routes } from '../routes';
 import Frontpage from './Frontpage';
@@ -94,7 +94,7 @@ class App extends Component<Props, State> {
     const { pinnedStops, starredStops } = this.state;
 
     return (
-      <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <HashRouter>
         <Switch>
           <Route
             exact={true}
@@ -110,22 +110,17 @@ class App extends Component<Props, State> {
           />
           <Route
             exact={true}
-            path={routes.stop(':stopId')}
-            render={({ match, location }) => {
-              const { stopId } = match.params;
+            path={routes.stop(':stopId', ':type?')}
+            render={({ match }) => {
+              const { stopId, type } = match.params;
               const pinnedDetail = find(pinnedStops, s => s.id === stopId);
               const starredDetail = find(starredStops, s => s.id === stopId);
-              const fromType = location.state && location.state.fromType;
               const fromDetail =
-                fromType === 'star'
+                type === 'star'
                   ? starredDetail
-                  : fromType === 'pin'
+                  : type === 'pin'
                   ? pinnedDetail
-                  : {
-                      ...(starredDetail || pinnedDetail || {}),
-                      lines: [],
-                      directions: [],
-                    };
+                  : {};
               const detail = { ...fromDetail, id: stopId, isStation: false };
               return (
                 <TimetablePage
@@ -149,22 +144,17 @@ class App extends Component<Props, State> {
           />
           <Route
             exact={true}
-            path={routes.station(':stationId')}
-            render={({ match, location }) => {
-              const { stationId } = match.params;
+            path={routes.station(':stationId', ':type?')}
+            render={({ match }) => {
+              const { stationId, type } = match.params;
               const pinnedDetail = find(pinnedStops, s => s.id === stationId);
               const starredDetail = find(starredStops, s => s.id === stationId);
-              const fromType = location.state && location.state.fromType;
               const fromDetail =
-                fromType === 'star'
+                type === 'star'
                   ? starredDetail
-                  : fromType === 'pin'
+                  : type === 'pin'
                   ? pinnedDetail
-                  : {
-                      ...(starredDetail || pinnedDetail || {}),
-                      lines: [],
-                      directions: [],
-                    };
+                  : {};
               const detail = { ...fromDetail, id: stationId, isStation: true };
               return (
                 <TimetablePage
@@ -188,7 +178,7 @@ class App extends Component<Props, State> {
           />
           <Redirect to={routes.frontpage} />
         </Switch>
-      </BrowserRouter>
+      </HashRouter>
     );
   }
 }
