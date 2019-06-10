@@ -8,7 +8,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Getting started
 
-This project uses Node 8 and yarn.
+This project uses Node 10 and yarn.
 
 1. Install dependencies
    ```

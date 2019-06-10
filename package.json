@@ -3,6 +3,9 @@
   "homepage": "https://katrimarika.github.io/timetables/",
   "version": "1.3.0",
   "license": "Apache-2.0",
+  "engines": {
+    "node": ">=10.15.0"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.14",
     "@fortawesome/free-solid-svg-icons": "^5.7.1",
@@ -13,7 +16,6 @@
     "@types/lodash": "^4.14.120",
     "@types/node": "10.12.24",
     "@types/node-fetch": "^2.1.6",
-    "@types/query-string": "^6.2.0",
     "@types/react": "16.8.2",
     "@types/react-dom": "16.8.0",
     "@types/react-router-dom": "^4.3.1",
@@ -24,7 +26,7 @@
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "2.1.3",
+    "react-scripts": "3.0.1",
     "typescript": "3.3.3"
   },
   "devDependencies": {
@@ -33,10 +35,10 @@
     "prettier": "1.16.4"
   },
   "scripts": {
-    "start": "BROWSER=none NODE_PATH=src react-scripts start",
+    "start": "BROWSER=none react-scripts start",
     "prettier": "prettier --write \"{src/**/*.{ts,tsx,scss},*.md}\"",
-    "build": "NODE_PATH=src react-scripts build",
-    "test": "NODE_PATH=src react-scripts test"
+    "build": "react-scripts build",
+    "test": "react-scripts test"
   },
   "eslintConfig": {
     "extends": "react-app"

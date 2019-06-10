@@ -1,8 +1,6 @@
 import React from 'react';
 import { isEmpty } from 'lodash';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { routes } from '../routes';
 import Search from './Search';
 import TimetableView from './TimetableView';
 import Starred from './Starred';
@@ -31,7 +29,7 @@ const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
           key={stop.id}
           detail={stop}
           withLink={true}
-          buttons={(detail: RawDetail) => (
+          buttons={() => (
             <div
               className="icon-button close"
               aria-label={`Poista kiinnitys ${stop.id}`}

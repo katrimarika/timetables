@@ -168,7 +168,7 @@ class TimetableView extends Component<Props, State> {
   }
 
   render() {
-    const { detail, withLink, buttons, location } = this.props;
+    const { detail, withLink, buttons } = this.props;
     const {
       stop,
       station,
