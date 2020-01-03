@@ -8,11 +8,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Getting started
 
-This project uses Node 10 and yarn.
+This project uses Node 10 and npm.
 
 1. Install dependencies
    ```
-   yarn install
+   npm install
    ```
 2. Fix sass environment bindings
    ```
@@ -20,19 +20,19 @@ This project uses Node 10 and yarn.
    ```
 3. Start the development server
    ```
-   yarn start
+   npm start
    ```
 4. Open [http://localhost:3000](http://localhost:3000)
 
-There is a pre-commit hook that runs [**prettier** code formatting](https://prettier.io/). Prettier can also be run manually using `yarn prettier`.
+There is a pre-commit hook that runs [**prettier** code formatting](https://prettier.io/). Prettier can also be run manually using `npm run prettier`.
 
 ## Tests
 
 ```
-yarn test
+npm run test
 ```
 
-By default, only tests that have changed since the previous commit are run. Running `yarn test` will run in a watch mode and give options to e.g. run all tests.
+By default, only tests that have changed since the previous commit are run. Running `npm test` will run in a watch mode and give options to e.g. run all tests.
 
 ## Deployment
 
@@ -41,7 +41,7 @@ This project has setup for using travis-ci for building and deploying to github 
 You can make a production build manually with
 
 ```
-yarn build
+npm run build
 ```
 
 It will print out instructions on how to serve your builded files.
