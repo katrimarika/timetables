@@ -5,7 +5,6 @@ import Search from './Search';
 import TimetableView from './TimetableView';
 import Starred from './Starred';
 import { RawDetail } from './App';
-import 'styles/Frontpage.scss';
 
 interface Props {
   pinned: RawDetail[];
@@ -16,9 +15,7 @@ interface Props {
 
 const Frontpage = ({ pinned, starred, removePin, removeStar }: Props) => (
   <div className="frontpage">
-    <h1 className="title">
-      Aikataulut <span className="title-addition">HSL</span>
-    </h1>
+    <h1 className="title">Aikataulut</h1>
     <Search />
     <div className="divider" />
     {!isEmpty(starred) && <Starred starred={starred} removeStar={removeStar} />}

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ls from 'local-storage';
 import { HashRouter, Route, Switch, Redirect } from 'react-router-dom';
 import { uniqBy, find } from 'lodash';
@@ -79,89 +79,111 @@ class App extends Component<Props, State> {
 
     return (
       <HashRouter>
-        <Switch>
-          <Route
-            exact={true}
-            path={routes.frontpage}
-            render={() => (
-              <Frontpage
-                pinned={pinnedStops || []}
-                starred={starredStops || []}
-                removePin={this.toggleSave.bind(this, PINNED_STOPS, true)}
-                removeStar={this.toggleSave.bind(this, STARRED_STOPS, true)}
+        <Fragment>
+          <main>
+            <Switch>
+              <Route
+                exact={true}
+                path={routes.frontpage}
+                render={() => (
+                  <Frontpage
+                    pinned={pinnedStops || []}
+                    starred={starredStops || []}
+                    removePin={this.toggleSave.bind(this, PINNED_STOPS, true)}
+                    removeStar={this.toggleSave.bind(this, STARRED_STOPS, true)}
+                  />
+                )}
               />
-            )}
-          />
-          <Route
-            exact={true}
-            path={routes.stop(':stopId', ':type?')}
-            render={({ match }) => {
-              const { stopId, type } = match.params;
-              const pinnedDetail = find(pinnedStops, s => s.id === stopId);
-              const starredDetail = find(starredStops, s => s.id === stopId);
-              const fromDetail =
-                type === 'star'
-                  ? starredDetail
-                  : type === 'pin'
-                  ? pinnedDetail
-                  : {};
-              const detail = { ...fromDetail, id: stopId, isStation: false };
-              return (
-                <TimetablePage
-                  key={stopId}
-                  detail={detail}
-                  isPinned={!!pinnedDetail}
-                  isStarred={!!starredDetail}
-                  togglePin={this.toggleSave.bind(
-                    this,
-                    PINNED_STOPS,
-                    !!pinnedDetail
-                  )}
-                  toggleStar={this.toggleSave.bind(
-                    this,
-                    STARRED_STOPS,
-                    !!starredDetail
-                  )}
-                />
-              );
-            }}
-          />
-          <Route
-            exact={true}
-            path={routes.station(':stationId', ':type?')}
-            render={({ match }) => {
-              const { stationId, type } = match.params;
-              const pinnedDetail = find(pinnedStops, s => s.id === stationId);
-              const starredDetail = find(starredStops, s => s.id === stationId);
-              const fromDetail =
-                type === 'star'
-                  ? starredDetail
-                  : type === 'pin'
-                  ? pinnedDetail
-                  : {};
-              const detail = { ...fromDetail, id: stationId, isStation: true };
-              return (
-                <TimetablePage
-                  key={stationId}
-                  detail={detail}
-                  isPinned={!!pinnedDetail}
-                  isStarred={!!starredDetail}
-                  togglePin={this.toggleSave.bind(
-                    this,
-                    PINNED_STOPS,
-                    !!pinnedDetail
-                  )}
-                  toggleStar={this.toggleSave.bind(
-                    this,
-                    STARRED_STOPS,
-                    !!starredDetail
-                  )}
-                />
-              );
-            }}
-          />
-          <Redirect to={routes.frontpage} />
-        </Switch>
+              <Route
+                exact={true}
+                path={routes.stop(':stopId', ':type?')}
+                render={({ match }) => {
+                  const { stopId, type } = match.params;
+                  const pinnedDetail = find(pinnedStops, s => s.id === stopId);
+                  const starredDetail = find(
+                    starredStops,
+                    s => s.id === stopId
+                  );
+                  const fromDetail =
+                    type === 'star'
+                      ? starredDetail
+                      : type === 'pin'
+                      ? pinnedDetail
+                      : {};
+                  const detail = {
+                    ...fromDetail,
+                    id: stopId,
+                    isStation: false,
+                  };
+                  return (
+                    <TimetablePage
+                      key={stopId}
+                      detail={detail}
+                      isPinned={!!pinnedDetail}
+                      isStarred={!!starredDetail}
+                      togglePin={this.toggleSave.bind(
+                        this,
+                        PINNED_STOPS,
+                        !!pinnedDetail
+                      )}
+                      toggleStar={this.toggleSave.bind(
+                        this,
+                        STARRED_STOPS,
+                        !!starredDetail
+                      )}
+                    />
+                  );
+                }}
+              />
+              <Route
+                exact={true}
+                path={routes.station(':stationId', ':type?')}
+                render={({ match }) => {
+                  const { stationId, type } = match.params;
+                  const pinnedDetail = find(
+                    pinnedStops,
+                    s => s.id === stationId
+                  );
+                  const starredDetail = find(
+                    starredStops,
+                    s => s.id === stationId
+                  );
+                  const fromDetail =
+                    type === 'star'
+                      ? starredDetail
+                      : type === 'pin'
+                      ? pinnedDetail
+                      : {};
+                  const detail = {
+                    ...fromDetail,
+                    id: stationId,
+                    isStation: true,
+                  };
+                  return (
+                    <TimetablePage
+                      key={stationId}
+                      detail={detail}
+                      isPinned={!!pinnedDetail}
+                      isStarred={!!starredDetail}
+                      togglePin={this.toggleSave.bind(
+                        this,
+                        PINNED_STOPS,
+                        !!pinnedDetail
+                      )}
+                      toggleStar={this.toggleSave.bind(
+                        this,
+                        STARRED_STOPS,
+                        !!starredDetail
+                      )}
+                    />
+                  );
+                }}
+              />
+              <Redirect to={routes.frontpage} />
+            </Switch>
+          </main>
+          <footer className="small">Data © HSL</footer>
+        </Fragment>
       </HashRouter>
     );
   }

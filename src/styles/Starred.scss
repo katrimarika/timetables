@@ -16,9 +16,12 @@
 
   .name {
     padding: 1rem;
-    color: $realtime-color;
     display: flex;
     align-items: center;
+
+    svg {
+      color: $realtime-color;
+    }
 
     span {
       padding-left: 1rem;
