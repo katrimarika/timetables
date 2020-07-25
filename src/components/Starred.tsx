@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import 'styles/Starred.scss';
 import { routes } from '../routes';
 import { fetchDetails, StopsStations } from '../utils/fetch';
-import { RawDetail } from './App';
-import 'styles/Starred.scss';
+import { RawDetail } from '../utils/uiContext';
 
 interface Props {
   starred: RawDetail[];
-  removeStar(detail: RawDetail): void;
+  removeStar(id: string): void;
 }
 
 const Starred = ({ starred, removeStar }: Props) => {
@@ -60,8 +60,8 @@ const Starred = ({ starred, removeStar }: Props) => {
               aria-label={`Poista tähti ${id}`}
               title="Poista tähti"
               tabIndex={0}
-              onClick={() => removeStar(detail)}
-              onKeyPress={() => removeStar(detail)}
+              onClick={() => removeStar(detail.id)}
+              onKeyPress={() => removeStar(detail.id)}
             >
               <FontAwesomeIcon icon="trash-alt" />
             </div>

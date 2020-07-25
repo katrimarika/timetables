@@ -1,17 +1,17 @@
+import { includes, isEmpty, without } from 'lodash';
 import React, { Component } from 'react';
-import { Link, withRouter, RouteComponentProps } from 'react-router-dom';
-import { without, includes, isEmpty } from 'lodash';
+import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
+import 'styles/TimetableView.scss';
+import { routes } from '../routes';
 import {
   fetchTimetableView,
-  Stop,
   Station,
+  Stop,
   TimetableRow,
 } from '../utils/fetch';
-import { routes } from '../routes';
+import { RawDetail } from '../utils/uiContext';
 import LineSelect from './LineSelect';
 import Timetable from './Timetable';
-import { RawDetail } from './App';
-import 'styles/TimetableView.scss';
 
 const REFRESH_INTERVAL = 20000;
 const ROW_LIMIT = 35;
