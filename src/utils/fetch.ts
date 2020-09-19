@@ -10,9 +10,9 @@ const HSLFetch = (query: string) => {
     body: JSON.stringify({ query }),
     headers: { 'Content-Type': 'application/json' },
   })
-    .then(res => res.json())
-    .then(json => (json && json.data) || {})
-    .catch(err => console.error(err));
+    .then((res) => res.json())
+    .then((json) => (json && json.data) || {})
+    .catch((err) => console.error(err));
 };
 
 export interface Stop {
@@ -164,7 +164,7 @@ export const fetchTimetableView = (
     ${isStation !== true ? stopQuery : ''}
     ${isStation !== false ? stationQuery : ''}
   }`;
-  return HSLFetch(query).then(data => {
+  return HSLFetch(query).then((data) => {
     const stopData = get(data, 'stop');
     const stationData = get(data, 'station');
     if (stopData) {
@@ -208,7 +208,7 @@ export const fetchTimetableView = (
         (line: string) => line,
       ]);
       const directions = uniq(allDirections)
-        .filter(d => d !== 'null')
+        .filter((d) => d !== 'null')
         .sort();
       const timetable: TimetableRow[] = map(
         get(stationData, 'timetable'),
@@ -254,7 +254,7 @@ export const search = (name: string): Promise<SearchResult> => {
       }
     }
   }`;
-  return HSLFetch(query).then(data => ({
+  return HSLFetch(query).then((data) => ({
     stops: map(get(data, 'stops'), (stop: any) => parseStop(stop)),
     stations: map(get(data, 'stations'), (station: any) =>
       parseStation(station)
@@ -285,7 +285,7 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
       }`
     )}
   }`;
-  return HSLFetch(query).then(data =>
+  return HSLFetch(query).then((data) =>
     reduce(
       data,
       (obj: StopsStations, item: any, key: string) => {

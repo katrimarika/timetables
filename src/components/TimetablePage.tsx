@@ -16,8 +16,8 @@ interface Props {
 const TimetablePage = ({ stopId, isStation, saveType }: Props) => {
   const { starred, pinned, dispatch } = useUiContext();
 
-  const starDetail = find(starred, s => s.id === stopId);
-  const pinDetail = find(pinned, s => s.id === stopId);
+  const starDetail = find(starred, (s) => s.id === stopId);
+  const pinDetail = find(pinned, (s) => s.id === stopId);
 
   const savedDetail =
     saveType === 'star'

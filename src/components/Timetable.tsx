@@ -62,13 +62,14 @@ const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
     </thead>
     <tbody>
       {!isEmpty(rows) ? (
-        rows.map(row => {
+        rows.map((row) => {
           const mins = timeDiff(row.realtimeDeparture);
           const gone = mins < 0;
           return (
             <tr
-              key={`${row.line}-${row.scheduledDeparture}-${row.direction ||
-                ''}`}
+              key={`${row.line}-${row.scheduledDeparture}-${
+                row.direction || ''
+              }`}
               className={`data-row${gone ? ' gone' : ''}`}
             >
               <td className="time">

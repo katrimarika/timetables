@@ -80,7 +80,7 @@ class TimetableView extends Component<Props, State> {
     const selectedLines = newLines || oldLines;
     const selectedDirections = newDirections || oldDirections;
     const rows = timetable.filter(
-      item =>
+      (item) =>
         (isEmpty(selectedLines) || includes(selectedLines, item.line)) &&
         (isEmpty(selectedDirections) ||
           includes(selectedDirections, item.direction))
@@ -117,7 +117,7 @@ class TimetableView extends Component<Props, State> {
     } = this.props;
     if (id) {
       fetchTimetableView(id, ROW_LIMIT, isStation)
-        .then(result => {
+        .then((result) => {
           if (result) {
             this.setState({
               ...result,
@@ -128,7 +128,7 @@ class TimetableView extends Component<Props, State> {
             this.setState({ loading: false });
           }
         })
-        .catch(err => this.setState({ loading: false }));
+        .catch((err) => this.setState({ loading: false }));
     }
   }
 

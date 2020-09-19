@@ -12,19 +12,19 @@ interface Props {
 }
 
 const Starred = ({ starred, removeStar }: Props) => {
-  const starredIds = starred.filter(s => !s.name).map(s => s.id);
+  const starredIds = starred.filter((s) => !s.name).map((s) => s.id);
   const [details, setDetails] = useState({
     stops: {},
     stations: {},
   } as StopsStations);
 
   useEffect(() => {
-    fetchDetails(starredIds).then(result => setDetails(result));
+    fetchDetails(starredIds).then((result) => setDetails(result));
   }, [starredIds]); // Only re-run the effect if starred changes
 
   return (
     <div className="starred">
-      {starred.map(detail => {
+      {starred.map((detail) => {
         const {
           id,
           isStation: stationGuess,
@@ -37,8 +37,9 @@ const Starred = ({ starred, removeStar }: Props) => {
         let title, middleText, linkTo;
         if (stationGuess || stationDetails) {
           title = (stationDetails && stationDetails.name) || name;
-          middleText = `${(stationDetails && stationDetails.stops.length) ||
-            platformCount}\u00a0laituria`;
+          middleText = `${
+            (stationDetails && stationDetails.stops.length) || platformCount
+          }\u00a0laituria`;
           linkTo = routes.station(id, 'star');
         } else {
           title = (stopDetails && stopDetails.name) || name;

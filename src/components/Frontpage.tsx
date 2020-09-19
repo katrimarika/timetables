@@ -23,7 +23,7 @@ const Frontpage: FC = () => {
       )}
       {!isEmpty(starred) && <div className="divider" />}
       <div className="timetables">
-        {pinned.map(stop => (
+        {pinned.map((stop) => (
           <TimetableView
             key={stop.id}
             detail={stop}

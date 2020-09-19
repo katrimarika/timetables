@@ -54,12 +54,12 @@ const initialState: UiContext = {
 const UiContext = createContext(initialState);
 
 function getInitialSaves() {
-  const pinned: RawDetail[] = (ls.get(PINNED_STOPS) || []).map(
-    (s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s)
-  );
-  const starred: RawDetail[] = (ls.get(STARRED_STOPS) || []).map(
-    (s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s)
-  );
+  const pinned: RawDetail[] = (
+    ls.get(PINNED_STOPS) || []
+  ).map((s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s));
+  const starred: RawDetail[] = (
+    ls.get(STARRED_STOPS) || []
+  ).map((s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s));
   return { starred, pinned };
 }
 
@@ -86,7 +86,7 @@ export const UiContextProvider: FC = ({ children }) => {
           return { ...state, starred: newStarred };
         case 'removeStar':
           const remainingStarred = state.starred.filter(
-            s => s.id !== action.stopId
+            (s) => s.id !== action.stopId
           );
           ls.set(STARRED_STOPS, remainingStarred);
           return { ...state, starred: remainingStarred };
@@ -96,7 +96,7 @@ export const UiContextProvider: FC = ({ children }) => {
           return { ...state, pinned: newPinned };
         case 'removePin':
           const remainingPinned = state.pinned.filter(
-            s => s.id !== action.stopId
+            (s) => s.id !== action.stopId
           );
           ls.set(PINNED_STOPS, remainingPinned);
           return { ...state, pinned: remainingPinned };

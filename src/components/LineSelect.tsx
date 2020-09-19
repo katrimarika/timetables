@@ -29,7 +29,7 @@ const LineSelect = ({
     >
       {allText || 'Kaikki linjat'}
     </div>
-    {lines.map(line => (
+    {lines.map((line) => (
       <div
         key={`${line}-${includes(selectedLines, line)}`}
         tabIndex={0}

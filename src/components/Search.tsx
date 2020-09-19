@@ -15,7 +15,7 @@ const Search: FC = () => {
     debounce((v: string) => {
       dispatch({ type: 'startSearch', value: v });
       if (!!v) {
-        search(v).then(results => {
+        search(v).then((results) => {
           dispatch({ type: 'setSearchResults', results });
           setLoading(false);
         });
@@ -47,8 +47,8 @@ const Search: FC = () => {
   const { stops, stations } = searchResults;
 
   const stopResults = stops
-    .filter(stop => !!stop.id)
-    .map(stop => (
+    .filter((stop) => !!stop.id)
+    .map((stop) => (
       <Link key={stop.id} className="search-result" to={routes.stop(stop.id)}>
         <span className="name">{stop.name}</span>
         <span>{stop.code}</span>
@@ -57,8 +57,8 @@ const Search: FC = () => {
     ));
 
   const stationResults = stations
-    .filter(station => !!station.id)
-    .map(station => (
+    .filter((station) => !!station.id)
+    .map((station) => (
       <Link
         key={station.id}
         className="search-result"
@@ -82,7 +82,7 @@ const Search: FC = () => {
             id="inputStop"
             type="text"
             value={value}
-            onChange={e => handleChange(e.target.value)}
+            onChange={(e) => handleChange(e.target.value)}
             autoComplete="off"
             placeholder="Hae nimellä tai koodilla"
           />
