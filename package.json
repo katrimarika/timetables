@@ -20,6 +20,7 @@
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
+    "@types/jest": "^27.4.1",
     "@types/local-storage": "^1.4.0",
     "@types/lodash": "^4.14.182",
     "@types/react": "^18.0.7",
