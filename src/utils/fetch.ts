@@ -1,17 +1,18 @@
-import fetch from 'node-fetch';
+import axios from 'axios';
 import { map, get, sortBy, uniq, reduce, startsWith, isEmpty } from 'lodash';
 
 const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
 
 const HSLFetch = (query: string) => {
-  return fetch(API_URL, {
-    method: 'POST',
-    body: JSON.stringify({ query }),
-    headers: { 'Content-Type': 'application/json' },
-  })
-    .then((res) => res.json())
-    .then((json) => (json && json.data) || {})
+  return axios
+    .request({
+      url: API_URL,
+      method: 'POST',
+      data: { query },
+      headers: { 'Content-Type': 'application/json' },
+    })
+    .then((res) => res.data.data || {})
     .catch((err) => console.error(err));
 };
 

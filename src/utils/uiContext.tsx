@@ -6,6 +6,7 @@ import React, {
   FC,
   useContext,
   useReducer,
+  ReactNode,
 } from 'react';
 import 'styles/Search.scss';
 import { Station, Stop } from '../utils/fetch';
@@ -35,7 +36,7 @@ type Action =
   | { type: 'setStarsState'; values: RawDetail[] }
   | { type: 'setPinsState'; values: RawDetail[] };
 
-type UiContext = {
+type UiContextType = {
   searchString: string;
   searchResults: SearchResults;
   pinned: RawDetail[];
@@ -43,7 +44,7 @@ type UiContext = {
   dispatch: Dispatch<Action>;
 };
 
-const initialState: UiContext = {
+const initialState: UiContextType = {
   searchString: '',
   searchResults: emptySearchResults,
   pinned: [],
@@ -54,18 +55,20 @@ const initialState: UiContext = {
 const UiContext = createContext(initialState);
 
 function getInitialSaves() {
-  const pinned: RawDetail[] = (
-    ls.get(PINNED_STOPS) || []
-  ).map((s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s));
-  const starred: RawDetail[] = (
-    ls.get(STARRED_STOPS) || []
-  ).map((s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s));
+  const pinned: RawDetail[] = (ls.get(PINNED_STOPS) || []).map(
+    (s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s)
+  );
+  const starred: RawDetail[] = (ls.get(STARRED_STOPS) || []).map(
+    (s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s)
+  );
   return { starred, pinned };
 }
 
-export const UiContextProvider: FC = ({ children }) => {
+export const UiContextProvider: FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [state, dispatch] = useReducer(
-    (state: UiContext, action: Action) => {
+    (state: UiContextType, action: Action) => {
       switch (action.type) {
         case 'startSearch':
           return { ...state, searchString: action.value };
