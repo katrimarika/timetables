@@ -9,7 +9,7 @@ import React, {
   ReactNode,
 } from 'react';
 import 'styles/Search.scss';
-import { Station, Stop } from '../utils/fetch';
+import { BikeStation, Station, Stop } from '../utils/fetch';
 
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';
@@ -22,12 +22,14 @@ export interface RawDetail {
   platformCount?: number;
   lines?: string[];
   directions?: string[];
+  isBike?: boolean;
 }
 type SearchResults = { stops: Stop[]; stations: Station[] };
 const emptySearchResults: SearchResults = { stops: [], stations: [] };
 type Action =
   | { type: 'startSearch'; value: string }
   | { type: 'setSearchResults'; results: SearchResults }
+  | { type: 'setBikeStations'; bikeStations: BikeStation[] }
   | { type: 'closeSearch' }
   | { type: 'saveStar'; detail: RawDetail }
   | { type: 'removeStar'; stopId: string }
@@ -39,6 +41,7 @@ type Action =
 type UiContextType = {
   searchString: string;
   searchResults: SearchResults;
+  bikeStations: BikeStation[];
   pinned: RawDetail[];
   starred: RawDetail[];
   dispatch: Dispatch<Action>;
@@ -47,6 +50,7 @@ type UiContextType = {
 const initialState: UiContextType = {
   searchString: '',
   searchResults: emptySearchResults,
+  bikeStations: [],
   pinned: [],
   starred: [],
   dispatch: () => null,
@@ -77,6 +81,8 @@ export const UiContextProvider: FC<{ children: ReactNode }> = ({
             ...state,
             searchResults: action.results,
           };
+        case 'setBikeStations':
+          return { ...state, bikeStations: action.bikeStations };
         case 'closeSearch':
           return {
             ...state,

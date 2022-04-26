@@ -2,9 +2,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isEmpty } from 'lodash';
 import React, { FC } from 'react';
 import { useUiContext } from '../utils/uiContext';
+import BikeStationView from './BikeStationView';
 import Search from './Search';
 import Starred from './Starred';
 import TimetableView from './TimetableView';
+
+const closeButton = (id: string, removePin: (id: string) => void) => (
+  <div
+    className="icon-button close"
+    aria-label={`Poista kiinnitys ${id}`}
+    title="Poista kiinnitys"
+    tabIndex={0}
+    onClick={() => removePin(id)}
+    onKeyPress={() => removePin(id)}
+  >
+    <FontAwesomeIcon icon="times" />
+  </div>
+);
 
 const Frontpage: FC = () => {
   const { pinned, starred, dispatch } = useUiContext();
@@ -23,25 +37,23 @@ const Frontpage: FC = () => {
       )}
       {!isEmpty(starred) && <div className="divider" />}
       <div className="timetables">
-        {pinned.map((stop) => (
-          <TimetableView
-            key={stop.id}
-            detail={stop}
-            withLink={true}
-            buttons={() => (
-              <div
-                className="icon-button close"
-                aria-label={`Poista kiinnitys ${stop.id}`}
-                title="Poista kiinnitys"
-                tabIndex={0}
-                onClick={() => removePin(stop.id)}
-                onKeyPress={() => removePin(stop.id)}
-              >
-                <FontAwesomeIcon icon="times" />
-              </div>
-            )}
-          />
-        ))}
+        {pinned.map((stop) =>
+          stop.isBike ? (
+            <BikeStationView
+              key={stop.id}
+              detail={stop}
+              withLink
+              buttons={() => closeButton(stop.id, removePin)}
+            />
+          ) : (
+            <TimetableView
+              key={stop.id}
+              detail={stop}
+              withLink={true}
+              buttons={() => closeButton(stop.id, removePin)}
+            />
+          )
+        )}
       </div>
       {isEmpty(pinned) && isEmpty(starred) && (
         <div className="loading">

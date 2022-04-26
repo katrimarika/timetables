@@ -3,22 +3,28 @@ import { debounce, isEmpty } from 'lodash';
 import React, { FC, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'styles/Search.scss';
+import { fetchBikeStationList, search } from 'utils/fetch';
 import { useUiContext } from 'utils/uiContext';
 import { routes } from '../routes';
-import { search } from '../utils/fetch';
 
 const Search: FC = () => {
-  const { searchString, searchResults, dispatch } = useUiContext();
+  const { searchString, searchResults, bikeStations, dispatch } =
+    useUiContext();
   const [value, setValue] = useState(searchString);
   const [loading, setLoading] = useState(false);
+
   const debouncedSearch = useRef(
-    debounce((v: string) => {
+    debounce(async (v: string) => {
       dispatch({ type: 'startSearch', value: v });
       if (!!v) {
-        search(v).then((results) => {
-          dispatch({ type: 'setSearchResults', results });
-          setLoading(false);
-        });
+        const results = await search(v);
+        dispatch({ type: 'setSearchResults', results });
+
+        if (!bikeStations.length) {
+          const bikeStationList = await fetchBikeStationList();
+          dispatch({ type: 'setBikeStations', bikeStations: bikeStationList });
+        }
+        setLoading(false);
       }
     }, 1000)
   );
@@ -70,6 +76,26 @@ const Search: FC = () => {
       </Link>
     ));
 
+  const matchingBikeStations = !!searchString
+    ? bikeStations.filter(
+        (b) =>
+          !!b.id &&
+          (!searchString ||
+            b.id.includes(searchString) ||
+            b.name.toLowerCase().includes(searchString))
+      )
+    : bikeStations;
+  const bikeStationResults = matchingBikeStations.map((bikeStation) => (
+    <Link
+      key={bikeStation.id}
+      className="search-result"
+      to={routes.bikeStation(bikeStation.id)}
+    >
+      <span className="name">{bikeStation.name}</span>
+      <span>{bikeStation.id}</span>
+    </Link>
+  ));
+
   return (
     <div className="search">
       <form onSubmit={handleSubmit}>
@@ -116,9 +142,16 @@ const Search: FC = () => {
               <div className="list-group">{stopResults}</div>
             </>
           )}
-          {!loading && isEmpty(stopResults) && isEmpty(stationResults) && (
-            <div>Ei hakutuloksia</div>
+          {!loading && !isEmpty(bikeStationResults) && (
+            <>
+              <h4 className="result-title">Pyöräasemat</h4>
+              <div className="list-group">{bikeStationResults}</div>
+            </>
           )}
+          {!loading &&
+            isEmpty(stopResults) &&
+            isEmpty(stationResults) &&
+            isEmpty(bikeStationResults) && <div>Ei hakutuloksia</div>}
         </div>
       )}
     </div>

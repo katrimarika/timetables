@@ -4,4 +4,6 @@ export const routes = {
     `/stop/${stopId}${type ? `/${type}` : ''}`,
   station: (stationId: string, type?: string) =>
     `/station/${stationId}${type ? `/${type}` : ''}`,
+  bikeStation: (bikeStationId: string, type?: string) =>
+    `/bike/${bikeStationId}${type ? `/${type}` : ''}`,
 };

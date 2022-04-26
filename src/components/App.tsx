@@ -15,15 +15,11 @@ const App: FC = () => (
             path={routes.stop(':stopId', ':type?')}
             render={({ match }) => {
               const { stopId, type } = match.params;
-              if (!stopId || (!!type && !['pin', 'star'].includes(type))) {
+              if (!stopId) {
                 return null;
               }
               return (
-                <TimetablePage
-                  key={stopId}
-                  stopId={stopId}
-                  saveType={type as any}
-                />
+                <TimetablePage key={stopId} stopId={stopId} saveType={type} />
               );
             }}
           />
@@ -32,7 +28,7 @@ const App: FC = () => (
             path={routes.station(':stationId', ':type?')}
             render={({ match }) => {
               const { stationId, type } = match.params;
-              if (!stationId || (!!type && !['pin', 'star'].includes(type))) {
+              if (!stationId) {
                 return null;
               }
               return (
@@ -40,7 +36,25 @@ const App: FC = () => (
                   key={stationId}
                   stopId={stationId}
                   isStation={true}
-                  saveType={type as any}
+                  saveType={type}
+                />
+              );
+            }}
+          />
+          <Route
+            exact={true}
+            path={routes.bikeStation(':bikeStationId', ':type?')}
+            render={({ match }) => {
+              const { bikeStationId, type } = match.params;
+              if (!bikeStationId) {
+                return null;
+              }
+              return (
+                <TimetablePage
+                  key={bikeStationId}
+                  stopId={bikeStationId}
+                  isBike={true}
+                  saveType={type}
                 />
               );
             }}

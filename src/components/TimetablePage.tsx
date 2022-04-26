@@ -5,15 +5,17 @@ import { Link } from 'react-router-dom';
 import 'styles/TimetablePage.scss';
 import { RawDetail, useUiContext } from 'utils/uiContext';
 import { routes } from '../routes';
+import BikeStationView from './BikeStationView';
 import TimetableView from './TimetableView';
 
 interface Props {
   stopId: string;
   isStation?: boolean;
-  saveType?: 'star' | 'pin';
+  isBike?: boolean;
+  saveType?: string;
 }
 
-const TimetablePage = ({ stopId, isStation, saveType }: Props) => {
+const TimetablePage = ({ stopId, isStation, isBike, saveType }: Props) => {
   const { starred, pinned, dispatch } = useUiContext();
 
   const starDetail = find(starred, (s) => s.id === stopId);
@@ -69,10 +71,17 @@ const TimetablePage = ({ stopId, isStation, saveType }: Props) => {
         <FontAwesomeIcon icon="arrow-left" />
         <span>Etusivulle</span>
       </Link>
-      <TimetableView
-        detail={{ ...(savedDetail || { id: stopId }), isStation }}
-        buttons={buttons}
-      />
+      {isBike ? (
+        <BikeStationView
+          detail={{ ...(savedDetail || { id: stopId }), isBike: true }}
+          buttons={buttons}
+        />
+      ) : (
+        <TimetableView
+          detail={{ ...(savedDetail || { id: stopId }), isStation }}
+          buttons={buttons}
+        />
+      )}
     </div>
   );
 };

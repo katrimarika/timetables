@@ -1,0 +1,27 @@
+@import '_variables';
+@import '_mixins';
+
+.bike-details {
+  display: grid;
+  grid-template-columns: 2rem max-content 2rem;
+  justify-items: center;
+  align-items: center;
+  margin-bottom: 1rem;
+  grid-gap: 0.5rem 1rem;
+
+  .bike-detail-label {
+    justify-self: flex-start;
+  }
+
+  .bike-detail-count {
+    font-weight: bold;
+
+    &.count-few {
+      color: $warning-color;
+    }
+
+    &.count-zero {
+      color: $error-color;
+    }
+  }
+}

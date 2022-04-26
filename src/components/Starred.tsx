@@ -13,10 +13,11 @@ interface Props {
 
 const Starred = ({ starred, removeStar }: Props) => {
   const starredIds = starred.filter((s) => !s.name).map((s) => s.id);
-  const [details, setDetails] = useState({
+  const [details, setDetails] = useState<StopsStations>({
     stops: {},
     stations: {},
-  } as StopsStations);
+    bikeStations: {},
+  });
 
   useEffect(() => {
     fetchDetails(starredIds).then((result) => setDetails(result));
@@ -27,6 +28,7 @@ const Starred = ({ starred, removeStar }: Props) => {
       {starred.map((detail) => {
         const {
           id,
+          isBike: bikeGuess,
           isStation: stationGuess,
           name,
           code,
@@ -34,8 +36,13 @@ const Starred = ({ starred, removeStar }: Props) => {
         } = detail;
         const stopDetails = details.stops[id];
         const stationDetails = details.stations[id];
+        const bikeDetails = details.bikeStations[id];
         let title, middleText, linkTo;
-        if (stationGuess || stationDetails) {
+        if (bikeGuess || bikeDetails) {
+          title = bikeDetails?.name || name;
+          middleText = bikeDetails?.id || id;
+          linkTo = routes.bikeStation(id, 'star');
+        } else if (stationGuess || stationDetails) {
           title = (stationDetails && stationDetails.name) || name;
           middleText = `${
             (stationDetails && stationDetails.stops.length) || platformCount
@@ -53,7 +60,7 @@ const Starred = ({ starred, removeStar }: Props) => {
               <span className="star-details">
                 <span className="star-name">{title}</span>
                 <span>{middleText}</span>
-                <span className="small">{id}</span>
+                {!bikeGuess && <span className="small">{id}</span>}
               </span>
             </Link>
             <div

@@ -9,6 +9,8 @@ import {
   faArrowLeft,
   faSearch,
   faSign,
+  faBicycle,
+  faParking,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const iconSetup = () =>
@@ -21,5 +23,7 @@ export const iconSetup = () =>
     faTrashAlt,
     faArrowLeft,
     faSearch,
-    faSign
+    faSign,
+    faBicycle,
+    faParking
   );

@@ -29,6 +29,11 @@ export interface Station {
   stops: Stop[];
 }
 
+export interface BikeStation {
+  id: string;
+  name: string;
+}
+
 interface SearchResult {
   stops: Stop[];
   stations: Station[];
@@ -40,6 +45,9 @@ export interface StopsStations {
   };
   stations: {
     [id: string]: Station;
+  };
+  bikeStations: {
+    [id: string]: BikeStation;
   };
 }
 
@@ -66,6 +74,12 @@ export interface StationData {
   timetable: TimetableRow[];
 }
 
+export interface BikeStationData {
+  bikeStation: BikeStation;
+  bikesAvailable?: number;
+  spacesAvailable?: number;
+}
+
 const parseStop = (stop: any, stopId?: string): Stop => {
   const id = get(stop, 'id') || stopId || '';
   return {
@@ -82,6 +96,17 @@ const parseStation = (station: any, stationId?: string): Station => {
     id,
     name: get(station, 'name') || 'Asema',
     stops: map(get(station, 'stops'), (stop: any) => parseStop(stop)),
+  };
+};
+
+const parseBikeStation = (
+  bikeStation: unknown,
+  bikeStationId?: string
+): BikeStation => {
+  const id = get(bikeStation, 'stationId') || bikeStationId || '';
+  return {
+    id,
+    name: get(bikeStation, 'name') || 'Pyöräasema',
   };
 };
 
@@ -263,9 +288,42 @@ export const search = (name: string): Promise<SearchResult> => {
   }));
 };
 
+export const fetchBikeStationList = (): Promise<BikeStation[]> => {
+  const query = `{
+    bikeRentalStations {
+      name
+      stationId
+    }
+  }`;
+  return HSLFetch(query).then((data) =>
+    map(get(data, 'bikeRentalStations'), parseBikeStation)
+  );
+};
+
+export const fetchBikeStationData = (id: string): Promise<BikeStationData> => {
+  const query = `{
+    bikeRentalStation(id: "${id}") {
+      name
+      stationId
+      bikesAvailable
+      spacesAvailable
+    }
+  }`;
+  return HSLFetch(query).then((data) => {
+    const details = get(data, 'bikeRentalStation');
+    const bikeStation = parseBikeStation(details);
+
+    return {
+      bikeStation,
+      bikesAvailable: get(details, 'bikesAvailable'),
+      spacesAvailable: get(details, 'spacesAvailable'),
+    };
+  });
+};
+
 export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
   if (isEmpty(ids)) {
-    return new Promise(() => ({ stops: {}, stations: {} }));
+    return new Promise(() => ({ stops: {}, stations: {}, bikeStations: {} }));
   }
   const query = `{
     ${ids.map(
@@ -283,6 +341,10 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
         stops {
           id:gtfsId
         }
+      }
+      bikeRentalStation${index}: bikeRentalStation(id: "${id}") {
+        name
+        stationId
       }`
     )}
   }`;
@@ -291,17 +353,20 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
       data,
       (obj: StopsStations, item: any, key: string) => {
         const id = get(item, 'id');
+        const isBike = startsWith(key, 'bike');
         const isStation = startsWith(key, 'station');
         if (id) {
-          if (isStation) {
-            obj.stations[id] = parseStation(item);
+          if (isBike) {
+            obj.bikeStations[id] = parseBikeStation(item, id);
+          } else if (isStation) {
+            obj.stations[id] = parseStation(item, id);
           } else {
             obj.stops[id] = parseStop(item, id);
           }
         }
         return obj;
       },
-      { stops: {}, stations: {} }
+      { stops: {}, stations: {}, bikeStations: {} }
     )
   );
 };

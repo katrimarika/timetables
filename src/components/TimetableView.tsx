@@ -1,7 +1,6 @@
 import { includes, isEmpty, without } from 'lodash';
 import React, { Component } from 'react';
-import { Link, RouteComponentProps, withRouter } from 'react-router-dom';
-import 'styles/TimetableView.scss';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { routes } from '../routes';
 import {
   fetchTimetableView,
@@ -10,6 +9,7 @@ import {
   TimetableRow,
 } from '../utils/fetch';
 import { RawDetail } from '../utils/uiContext';
+import DetailsView from './DetailsView';
 import LineSelect from './LineSelect';
 import Timetable from './Timetable';
 
@@ -207,71 +207,41 @@ class TimetableView extends Component<Props, State> {
       enhancedDetail = detail;
     }
 
-    const headerDetails = enhancedDetail.name && (
-      <div className="timetable-details">
-        <h2>{enhancedDetail.name} </h2>
-        <span className="small">
-          {enhancedDetail.isStation
-            ? `${enhancedDetail.platformCount}\u00a0laituria`
-            : enhancedDetail.code}
-        </span>
-      </div>
-    );
-
-    let content;
-    if (loading) {
-      content = (
-        <div className="timetable-view loading">
-          Ladataan tietoja (id: {id}) ...
-        </div>
-      );
-    } else if (!timetable) {
-      content = (
-        <div className="timetable-view error-message">
-          Tietoja ei saatu (id: {id}).
-        </div>
-      );
-    } else {
-      content = (
-        <>
-          <LineSelect
-            lines={lines}
-            selectedLines={selectedLines}
-            toggleLine={this.toggleLine}
-            toggleAllLines={this.toggleAllLines}
-          />
-          {directions && (
-            <LineSelect
-              lines={directions}
-              selectedLines={selectedDirections}
-              allText="Kaikki suunnat"
-              toggleLine={this.toggleDirection}
-              toggleAllLines={this.toggleAllDirections}
-            />
-          )}
-          <Timetable
-            rows={visibleRows}
-            withPlatform={isStation || !!station}
-            hideShowMore={hideShowMore}
-            showMore={this.showMore}
-          />
-        </>
-      );
-    }
-
     return (
-      <div className="timetable-view">
-        <div className="timetable-header">
-          {withLink && linkTo ? (
-            <Link to={linkTo}>{headerDetails}</Link>
-          ) : (
-            headerDetails
-          )}
-          <div className="buttons">{buttons(enhancedDetail)}</div>
-        </div>
-        {content}
-        <div className="divider" />
-      </div>
+      <DetailsView
+        id={id}
+        title={enhancedDetail.name}
+        titleAddition={
+          enhancedDetail.isStation
+            ? `${enhancedDetail.platformCount}\u00a0laituria`
+            : enhancedDetail.code
+        }
+        state={loading ? 'loading' : !timetable ? 'error' : 'success'}
+        buttons={buttons(enhancedDetail)}
+        linkTo={withLink ? linkTo : undefined}
+      >
+        <LineSelect
+          lines={lines}
+          selectedLines={selectedLines}
+          toggleLine={this.toggleLine}
+          toggleAllLines={this.toggleAllLines}
+        />
+        {directions && (
+          <LineSelect
+            lines={directions}
+            selectedLines={selectedDirections}
+            allText="Kaikki suunnat"
+            toggleLine={this.toggleDirection}
+            toggleAllLines={this.toggleAllDirections}
+          />
+        )}
+        <Timetable
+          rows={visibleRows}
+          withPlatform={isStation || !!station}
+          hideShowMore={hideShowMore}
+          showMore={this.showMore}
+        />
+      </DetailsView>
     );
   }
 }
