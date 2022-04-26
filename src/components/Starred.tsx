@@ -40,7 +40,7 @@ const Starred = ({ starred, removeStar }: Props) => {
         let title, middleText, linkTo;
         if (bikeGuess || bikeDetails) {
           title = bikeDetails?.name || name;
-          middleText = bikeDetails?.id || id;
+          middleText = <FontAwesomeIcon icon="bicycle" />;
           linkTo = routes.bikeStation(id, 'star');
         } else if (stationGuess || stationDetails) {
           title = (stationDetails && stationDetails.name) || name;
@@ -60,7 +60,7 @@ const Starred = ({ starred, removeStar }: Props) => {
               <span className="star-details">
                 <span className="star-name">{title}</span>
                 <span>{middleText}</span>
-                {!bikeGuess && <span className="small">{id}</span>}
+                <span className="small">{id}</span>
               </span>
             </Link>
             <div

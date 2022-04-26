@@ -9,7 +9,7 @@ import { RawDetail } from '../utils/uiContext';
 import DetailsView from './DetailsView';
 import 'styles/BikeStationView.scss';
 
-// const REFRESH_INTERVAL = 60000;
+const REFRESH_INTERVAL = 60000;
 
 type Props = {
   detail: RawDetail;
@@ -46,13 +46,18 @@ const BikeStationView: FC<Props> = ({ detail, buttons, withLink }) => {
     if (initialLoad.current) {
       initialLoad.current = false;
       setLoading(true);
+      let timeout: NodeJS.Timeout;
       fetchBikeStationData(id)
         .then((d) => {
           setBikeStationData(d);
           setLoading(false);
-          // TODO: start refresher
+          timeout = setTimeout(
+            () => fetchBikeStationData(id).then(setBikeStationData).catch(),
+            REFRESH_INTERVAL
+          );
         })
         .catch();
+      return () => clearInterval(timeout);
     }
   }, [id]);
 
