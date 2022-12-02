@@ -36,7 +36,7 @@ By default, only tests that have changed since the previous commit are run. Runn
 
 ## Deployment
 
-This project has setup for using travis-ci for building and deploying to github pages automatically from the master branch.
+This project has setup for using travis-ci for building and deploying to github pages automatically from the gh-pages branch.
 
 You can make a production build manually with
 
