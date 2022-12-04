@@ -2,10 +2,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { debounce, isEmpty } from 'lodash';
 import React, { FC, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import 'styles/Search.scss';
+import { routes } from 'routes';
 import { fetchBikeStationList, search } from 'utils/fetch';
 import { useUiContext } from 'utils/uiContext';
-import { routes } from '../routes';
+import { IconButton } from './IconButton';
+import styles from './Search.module.css';
 
 const Search: FC = () => {
   const { searchString, searchResults, bikeStations, dispatch } =
@@ -55,10 +56,14 @@ const Search: FC = () => {
   const stopResults = stops
     .filter((stop) => !!stop.id)
     .map((stop) => (
-      <Link key={stop.id} className="search-result" to={routes.stop(stop.id)}>
-        <span className="name">{stop.name}</span>
+      <Link
+        key={stop.id}
+        className={styles['search-result']}
+        to={routes.stop(stop.id)}
+      >
+        <span className={styles.name}>{stop.name}</span>
         <span>{stop.code}</span>
-        <span className="small">{stop.id}</span>
+        <small className={styles.light}>{stop.id}</small>
       </Link>
     ));
 
@@ -67,12 +72,12 @@ const Search: FC = () => {
     .map((station) => (
       <Link
         key={station.id}
-        className="search-result"
+        className={styles['search-result']}
         to={routes.station(station.id)}
       >
-        <span className="name">{station.name}</span>
+        <span className={styles.name}>{station.name}</span>
         <span>{station.stops.length}&nbsp;laituria</span>
-        <span className="small">{station.id}</span>
+        <small className={styles.light}>{station.id}</small>
       </Link>
     ));
 
@@ -88,19 +93,21 @@ const Search: FC = () => {
   const bikeStationResults = matchingBikeStations.map((bikeStation) => (
     <Link
       key={bikeStation.id}
-      className="search-result"
+      className={styles['search-result']}
       to={routes.bikeStation(bikeStation.id)}
     >
-      <span className="name">{bikeStation.name}</span>
+      <span className={styles.name}>{bikeStation.name}</span>
       <span>{bikeStation.id}</span>
     </Link>
   ));
 
   return (
-    <div className="search">
+    <div className={styles.search}>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="inputStop">Asema- ja pysäkkihaku</label>
-        <div className="search-input">
+        <label className={styles.label} htmlFor="inputStop">
+          Asema- ja pysäkkihaku
+        </label>
+        <div className={styles['search-input']}>
           <button type="submit">
             <FontAwesomeIcon icon="search" />
           </button>
@@ -115,37 +122,33 @@ const Search: FC = () => {
         </div>
       </form>
       {value && (
-        <div className="search-results">
-          <div className="results-header">
-            <h3>Tulokset</h3>
-            <div
-              className="icon-button close"
-              tabIndex={0}
+        <div className={styles['search-results']}>
+          <div className={styles['results-header']}>
+            <h3 className={styles.heading}>Tulokset</h3>
+            <IconButton
+              icon="times"
               aria-label="Sulje pysäkkihaku"
               title="Sulje pysäkkihaku"
               onClick={closeSearch}
-              onKeyPress={closeSearch}
-            >
-              <FontAwesomeIcon icon="times" />
-            </div>
+            />
           </div>
           {loading && <div>Ladataan...</div>}
           {!loading && !isEmpty(stationResults) && (
             <>
-              <h4 className="result-title">Asemat</h4>
-              <div className="list-group">{stationResults}</div>
+              <h4 className={styles['result-title']}>Asemat</h4>
+              <div className={styles['list-group']}>{stationResults}</div>
             </>
           )}
           {!loading && !isEmpty(stopResults) && (
             <>
-              <h4 className="result-title">Pysäkit</h4>
-              <div className="list-group">{stopResults}</div>
+              <h4 className={styles['result-title']}>Pysäkit</h4>
+              <div className={styles['list-group']}>{stopResults}</div>
             </>
           )}
           {!loading && !isEmpty(bikeStationResults) && (
             <>
-              <h4 className="result-title">Pyöräasemat</h4>
-              <div className="list-group">{bikeStationResults}</div>
+              <h4 className={styles['result-title']}>Pyöräasemat</h4>
+              <div className={styles['list-group']}>{bikeStationResults}</div>
             </>
           )}
           {!loading &&

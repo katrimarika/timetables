@@ -1,6 +1,7 @@
-import React, { FC, Fragment } from 'react';
+import { FC, Fragment } from 'react';
 import { HashRouter, Redirect, Route, Switch } from 'react-router-dom';
-import { routes } from '../routes';
+import { routes } from 'routes';
+import styles from './App.module.css';
 import Frontpage from './Frontpage';
 import TimetablePage from './TimetablePage';
 
@@ -62,7 +63,9 @@ const App: FC = () => (
           <Redirect to={routes.frontpage} />
         </Switch>
       </main>
-      <footer className="small">Data © HSL</footer>
+      <footer className={styles.footer}>
+        <small>Data © HSL</small>
+      </footer>
     </Fragment>
   </HashRouter>
 );

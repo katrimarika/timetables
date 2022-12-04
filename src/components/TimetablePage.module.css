@@ -1,0 +1,28 @@
+.back-button {
+  opacity: 0.5;
+  padding: 0.5rem 0;
+  display: inline-block;
+}
+
+.back-button span {
+  padding-left: 1rem;
+}
+
+.action {
+  color: var(--light-color);
+  min-width: 3.6rem;
+}
+
+.action.pin {
+  font-size: 105%;
+  text-align: center;
+}
+
+.action.active {
+  opacity: 1;
+  color: var(--realtime-color);
+}
+
+.action span {
+  padding-left: 1rem;
+}

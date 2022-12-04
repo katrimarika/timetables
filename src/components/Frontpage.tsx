@@ -1,23 +1,22 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isEmpty } from 'lodash';
-import React, { FC } from 'react';
-import { useUiContext } from '../utils/uiContext';
+import { FC } from 'react';
+import { useUiContext } from 'utils/uiContext';
 import BikeStationView from './BikeStationView';
+import { Divider } from './Divider';
+import styles from './Frontpage.module.css';
+import { IconButton } from './IconButton';
 import Search from './Search';
 import Starred from './Starred';
 import TimetableView from './TimetableView';
 
 const closeButton = (id: string, removePin: (id: string) => void) => (
-  <div
-    className="icon-button close"
+  <IconButton
+    icon="times"
     aria-label={`Poista kiinnitys ${id}`}
     title="Poista kiinnitys"
-    tabIndex={0}
     onClick={() => removePin(id)}
-    onKeyPress={() => removePin(id)}
-  >
-    <FontAwesomeIcon icon="times" />
-  </div>
+  />
 );
 
 const Frontpage: FC = () => {
@@ -28,15 +27,15 @@ const Frontpage: FC = () => {
     dispatch({ type: 'removeStar', stopId });
 
   return (
-    <div className="frontpage">
-      <h1 className="title">Aikataulut</h1>
+    <div className={styles.frontpage}>
+      <h1 className={styles.title}>Aikataulut</h1>
       <Search />
-      <div className="divider" />
+      <Divider />
       {!isEmpty(starred) && (
         <Starred starred={starred} removeStar={removeStar} />
       )}
-      {!isEmpty(starred) && <div className="divider" />}
-      <div className="timetables">
+      {!isEmpty(starred) && <Divider />}
+      <div className={styles.timetables}>
         {pinned.map((stop) =>
           stop.isBike ? (
             <BikeStationView
@@ -56,14 +55,14 @@ const Frontpage: FC = () => {
         )}
       </div>
       {isEmpty(pinned) && isEmpty(starred) && (
-        <div className="loading">
+        <div className={styles.loading}>
           Ei tallennettuja pysäkkejä tai asemia.
-          <div className="loading small">
+          <small className={styles.loading}>
             Suosikit <FontAwesomeIcon icon="star" /> näkyvät etusivulla
             linkkeinä aikataulusivuille. Kiinnitys{' '}
             <FontAwesomeIcon icon="thumbtack" /> tuo koko aikataulunäkymän
             etusivulle. Tiedot tallentuvat selaimeen (local storage).
-          </div>
+          </small>
         </div>
       )}
     </div>

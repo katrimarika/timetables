@@ -1,0 +1,86 @@
+.timetable {
+  margin-bottom: 0;
+  border-collapse: collapse;
+}
+
+@media screen and (max-width: 700px) {
+  .timetable {
+    margin: 0 -1rem;
+  }
+}
+
+.timetable th {
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: bottom;
+  color: black;
+  font-size: 85%;
+}
+
+.fit {
+  width: 1%;
+}
+
+.timetable tbody tr:nth-of-type(odd) {
+  background: var(--table-row-color);
+}
+
+.realtime {
+  color: var(--realtime-color);
+  vertical-align: text-top;
+}
+
+.gone,
+.gone .realtime {
+  color: var(--extra-light);
+}
+
+.timetable th,
+.timetable td {
+  padding: 0.8rem;
+}
+
+.timetable th:first-child,
+.timetable td:first-child {
+  padding-left: 1rem;
+}
+
+.timetable th:last-child,
+.timetable td:last-child {
+  padding-right: 1rem;
+}
+
+.timetable td {
+  vertical-align: top;
+}
+
+.min {
+  white-space: nowrap;
+}
+
+.line {
+  font-weight: bold;
+}
+
+.dest {
+  padding: 1rem 0.8rem;
+}
+
+.platform {
+  padding: 0.5rem 0;
+}
+
+.platform-link {
+  padding: 0.3rem 0.8rem;
+  display: inline-block;
+}
+
+.timetable .show-more td {
+  padding: 0;
+}
+.show-more-button {
+  text-align: center;
+  width: 100%;
+  border: none;
+  background: transparent;
+}

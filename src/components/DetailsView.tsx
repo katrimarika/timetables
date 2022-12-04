@@ -1,6 +1,8 @@
-import React, { FC, ReactNode } from 'react';
+import { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import 'styles/DetailsView.scss';
+import { cx } from 'utils/classNames';
+import styles from './DetailsView.module.css';
+import { Divider } from './Divider';
 
 type Props = {
   id: string;
@@ -22,22 +24,22 @@ const DetailsView: FC<Props> = ({
   children,
 }) => {
   const headerDetails = title && (
-    <div className="details-details">
-      <h2>{title} </h2>
-      <span className="small">{titleAddition}</span>
+    <div className={styles['details-details']}>
+      <h2 className={styles['details-heading']}>{title} </h2>
+      <small>{titleAddition}</small>
     </div>
   );
 
   let content;
   if (state === 'loading') {
     content = (
-      <div className="details-view loading">
+      <div className={cx(styles['details-view'], styles.loading)}>
         Ladataan tietoja (id: {id}) ...
       </div>
     );
   } else if (state === 'error') {
     content = (
-      <div className="details-view error-message">
+      <div className={cx(styles['details-view'], styles['error-message'])}>
         Tietoja ei saatu (id: {id}).
       </div>
     );
@@ -46,13 +48,13 @@ const DetailsView: FC<Props> = ({
   }
 
   return (
-    <div className="details-view">
-      <div className="details-header">
+    <div className={styles['details-view']}>
+      <div className={styles['details-header']}>
         {linkTo ? <Link to={linkTo}>{headerDetails}</Link> : headerDetails}
-        <div className="buttons">{buttons}</div>
+        <div className={styles.buttons}>{buttons}</div>
       </div>
       {content}
-      <div className="divider" />
+      <Divider />
     </div>
   );
 };

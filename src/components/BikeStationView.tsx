@@ -4,10 +4,11 @@ import {
 } from '@fortawesome/react-fontawesome';
 import { FC, useEffect, useRef, useState } from 'react';
 import { routes } from 'routes';
+import { cx } from 'utils/classNames';
 import { BikeStationData, fetchBikeStationData } from 'utils/fetch';
-import { RawDetail } from '../utils/uiContext';
+import { RawDetail } from 'utils/uiContext';
+import styles from './BikeStationView.module.css';
 import DetailsView from './DetailsView';
-import 'styles/BikeStationView.scss';
 
 const REFRESH_INTERVAL = 60000;
 
@@ -25,11 +26,16 @@ const BikeDetail: FC<{
 }> = ({ icon, label, noData, count }) => (
   <>
     <FontAwesomeIcon icon={icon} />
-    <span className="bike-detail-label">{label} </span>
+    <span className={styles['bike-detail-label']}>{label} </span>
     <span
-      className={`bike-detail-count ${
-        count < 3 ? 'count-few' : count === 0 ? 'count-zero' : ''
-      }`}
+      className={cx(
+        styles['bike-detail-count'],
+        count < 3
+          ? styles['count-few']
+          : count === 0
+          ? styles['count-zero']
+          : ''
+      )}
     >
       {noData ? '-' : count}
     </span>
@@ -73,7 +79,7 @@ const BikeStationView: FC<Props> = ({ detail, buttons, withLink }) => {
       })}
       linkTo={withLink ? routes.bikeStation(id, 'pin') : undefined}
     >
-      <div className="bike-details">
+      <div className={styles['bike-details']}>
         <BikeDetail
           icon="bicycle"
           label="Pyöriä asemalla"

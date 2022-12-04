@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import 'styles/index.scss';
+import './index.css';
 import { UiContextProvider } from 'utils/uiContext';
 import App from './components/App';
 import * as serviceWorker from './serviceWorker';

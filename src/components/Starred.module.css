@@ -1,0 +1,33 @@
+.starred {
+  margin: 1rem -0.5rem;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.starred-item {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0.5rem;
+}
+
+.name {
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.name > svg {
+  color: var(--realtime-color);
+}
+
+.star-details span,
+.star-details small {
+  padding-left: 1rem;
+  display: inline-block;
+}
+
+.star-name {
+  font-weight: bold;
+}

@@ -1,14 +1,9 @@
 import { includes, isEmpty, without } from 'lodash';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { routes } from '../routes';
-import {
-  fetchTimetableView,
-  Station,
-  Stop,
-  TimetableRow,
-} from '../utils/fetch';
-import { RawDetail } from '../utils/uiContext';
+import { routes } from 'routes';
+import { fetchTimetableView, Station, Stop, TimetableRow } from 'utils/fetch';
+import { RawDetail } from 'utils/uiContext';
 import DetailsView from './DetailsView';
 import LineSelect from './LineSelect';
 import Timetable from './Timetable';

@@ -1,6 +1,6 @@
-import React from 'react';
 import { includes } from 'lodash';
-import 'styles/LineSelect.scss';
+import { cx } from 'utils/classNames';
+import styles from './LineSelect.module.css';
 
 interface Props {
   lines: string[];
@@ -17,30 +17,28 @@ const LineSelect = ({
   toggleLine,
   toggleAllLines,
 }: Props) => (
-  <div className="line-buttons">
-    <div
+  <div className={styles['line-buttons']}>
+    <button
       key={`all-lines-${selectedLines.length}`}
-      tabIndex={0}
-      className={`button line-button${
-        selectedLines.length === 0 ? ' selected' : ''
-      }`}
+      className={cx(
+        styles['line-button'],
+        selectedLines.length === 0 && styles.selected
+      )}
       onClick={toggleAllLines}
-      onKeyPress={toggleAllLines}
     >
       {allText || 'Kaikki linjat'}
-    </div>
+    </button>
     {lines.map((line) => (
-      <div
+      <button
         key={`${line}-${includes(selectedLines, line)}`}
-        tabIndex={0}
-        className={`button line-button${
-          includes(selectedLines, line) ? ' selected' : ''
-        }`}
+        className={cx(
+          styles['line-button'],
+          includes(selectedLines, line) && styles.selected
+        )}
         onClick={() => toggleLine(line)}
-        onKeyPress={() => toggleLine(line)}
       >
         {line}
-      </div>
+      </button>
     ))}
   </div>
 );

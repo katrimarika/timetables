@@ -8,8 +8,8 @@ import React, {
   useReducer,
   ReactNode,
 } from 'react';
-import 'styles/Search.scss';
-import { BikeStation, Station, Stop } from '../utils/fetch';
+import styles from './Search.module.css';
+import { BikeStation, Station, Stop } from 'utils/fetch';
 
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';
