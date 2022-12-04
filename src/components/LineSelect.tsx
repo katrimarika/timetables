@@ -1,4 +1,3 @@
-import { includes } from 'lodash';
 import { cx } from 'utils/classNames';
 import styles from './LineSelect.module.css';
 
@@ -30,10 +29,10 @@ const LineSelect = ({
     </button>
     {lines.map((line) => (
       <button
-        key={`${line}-${includes(selectedLines, line)}`}
+        key={`${line}-${selectedLines.includes(line)}`}
         className={cx(
           styles['line-button'],
-          includes(selectedLines, line) && styles.selected
+          selectedLines.includes(line) && styles.selected
         )}
         onClick={() => toggleLine(line)}
       >

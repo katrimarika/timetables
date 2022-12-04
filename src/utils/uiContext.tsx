@@ -1,14 +1,13 @@
 import ls from 'local-storage';
-import { uniqBy } from 'lodash';
-import React, {
+import uniqBy from 'lodash/uniqBy';
+import {
   createContext,
   Dispatch,
   FC,
+  ReactNode,
   useContext,
   useReducer,
-  ReactNode,
 } from 'react';
-import styles from './Search.module.css';
 import { BikeStation, Station, Stop } from 'utils/fetch';
 
 const PINNED_STOPS = 'pinnedStops';

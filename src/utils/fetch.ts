@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { map, get, sortBy, uniq, reduce, startsWith, isEmpty } from 'lodash';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import map from 'lodash/map';
+import sortBy from 'lodash/sortBy';
+import uniq from 'lodash/uniq';
 
 const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
@@ -349,12 +353,11 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
     )}
   }`;
   return HSLFetch(query).then((data) =>
-    reduce(
-      data,
+    data.reduce(
       (obj: StopsStations, item: any, key: string) => {
         const id = get(item, 'id');
-        const isBike = startsWith(key, 'bike');
-        const isStation = startsWith(key, 'station');
+        const isBike = key.startsWith('bike');
+        const isStation = key.startsWith('station');
         if (id) {
           if (isBike) {
             obj.bikeStations[id] = parseBikeStation(item, id);

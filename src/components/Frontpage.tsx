@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { FC } from 'react';
 import { useUiContext } from 'utils/uiContext';
 import BikeStationView from './BikeStationView';

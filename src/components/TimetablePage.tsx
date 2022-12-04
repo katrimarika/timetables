@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { find } from 'lodash';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
@@ -20,8 +19,8 @@ interface Props {
 const TimetablePage = ({ stopId, isStation, isBike, saveType }: Props) => {
   const { starred, pinned, dispatch } = useUiContext();
 
-  const starDetail = find(starred, (s) => s.id === stopId);
-  const pinDetail = find(pinned, (s) => s.id === stopId);
+  const starDetail = starred.find((s) => s.id === stopId);
+  const pinDetail = pinned.find((s) => s.id === stopId);
 
   const savedDetail =
     saveType === 'star'

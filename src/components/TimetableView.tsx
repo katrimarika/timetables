@@ -1,4 +1,5 @@
-import { includes, isEmpty, without } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import without from 'lodash/without';
 import { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { routes } from 'routes';
@@ -76,9 +77,9 @@ class TimetableView extends Component<Props, State> {
     const selectedDirections = newDirections || oldDirections;
     const rows = timetable.filter(
       (item) =>
-        (isEmpty(selectedLines) || includes(selectedLines, item.line)) &&
+        (isEmpty(selectedLines) || selectedLines.includes(item.line)) &&
         (isEmpty(selectedDirections) ||
-          includes(selectedDirections, item.direction))
+          (item.direction && selectedDirections.includes(item.direction)))
     );
     const limit = Math.min(this.state.limit + addCount, ROW_LIMIT, rows.length);
     const visibleRows = rows.slice(0, limit);
@@ -129,7 +130,7 @@ class TimetableView extends Component<Props, State> {
 
   toggleLine(line: string) {
     const { selectedLines } = this.state;
-    const newSelection = includes(selectedLines, line)
+    const newSelection = selectedLines.includes(line)
       ? without(selectedLines, line)
       : [...selectedLines, line];
     this.setVisibleRows(0, newSelection);
@@ -143,7 +144,7 @@ class TimetableView extends Component<Props, State> {
 
   toggleDirection(direction: string) {
     const { selectedDirections } = this.state;
-    const newSelection = includes(selectedDirections, direction)
+    const newSelection = selectedDirections.includes(direction)
       ? without(selectedDirections, direction)
       : [...selectedDirections, direction];
     this.setVisibleRows(0, undefined, newSelection);
