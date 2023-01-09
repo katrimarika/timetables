@@ -18,6 +18,10 @@
   text-align: center;
 }
 
+.action.pin > svg {
+  margin-top: 0.25rem;
+}
+
 .action.active {
   opacity: 1;
   color: var(--realtime-color);

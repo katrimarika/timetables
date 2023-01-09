@@ -7,18 +7,23 @@
 .starred-item {
   flex-grow: 1;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   margin: 0 0.5rem;
 }
 
+.starred-item > button {
+  margin-top: 0.25rem;
+}
+
 .name {
-  padding: 1rem;
+  padding: 1rem 0;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .name > svg {
+  margin-top: 0.25rem;
   color: var(--realtime-color);
 }
 
