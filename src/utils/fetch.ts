@@ -1,5 +1,9 @@
 import axios from 'axios';
-import { map, get, sortBy, uniq, reduce, startsWith, isEmpty } from 'lodash';
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
+import map from 'lodash/map';
+import sortBy from 'lodash/sortBy';
+import uniq from 'lodash/uniq';
 
 const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
@@ -58,7 +62,7 @@ export interface TimetableRow {
   scheduledDeparture: number;
   destination: string;
   stop?: Stop;
-  direction?: string;
+  arriving?: boolean;
 }
 
 export interface StopData {
@@ -70,7 +74,6 @@ export interface StopData {
 export interface StationData {
   station: Station;
   lines: string[];
-  directions: string[];
   timetable: TimetableRow[];
 }
 
@@ -159,7 +162,6 @@ export const fetchTimetableView = (
           details:route {
             number:shortName
           }
-          direction:directionId
         }
       }
       timetable:stoptimesWithoutPatterns(startTime: ${start}, timeRange: ${timeRange}, numberOfDepartures: ${rowLimit}) {
@@ -178,7 +180,6 @@ export const fetchTimetableView = (
             details:route {
               number:shortName
             }
-            direction:directionId
             destination:headsign
           }
         }
@@ -222,38 +223,37 @@ export const fetchTimetableView = (
       };
     } else if (stationData) {
       const station = parseStation(stationData, id);
-      const allDirections: string[] = [];
       const allLines = (get(stationData, 'stops') || []).flatMap((stop: any) =>
-        map(get(stop, 'lines'), (lineres: any) => {
-          allDirections.push(`${get(lineres, 'direction')}`);
-          return get(lineres, 'details.number') || '';
-        })
+        map(
+          get(stop, 'lines'),
+          (lineres: any) => get(lineres, 'details.number') || ''
+        )
       );
       const lines: string[] = sortBy(uniq(allLines), [
         (line: string) => parseInt(line),
         (line: string) => line,
       ]);
-      const directions = uniq(allDirections)
-        .filter((d) => d !== 'null')
-        .sort();
       const timetable: TimetableRow[] = map(
         get(stationData, 'timetable'),
-        (timetableres: any): TimetableRow => ({
-          stop: parseStop(get(timetableres, 'stop')),
-          realtime: get(timetableres, 'realtime') || false,
-          scheduledDeparture: get(timetableres, 'scheduledDeparture'),
-          realtimeDeparture: get(timetableres, 'realtimeDeparture'),
-          destination:
+        (timetableres: any): TimetableRow => {
+          const stop = parseStop(get(timetableres, 'stop'));
+          const destination =
             get(timetableres, 'destination') ||
             get(timetableres, 'trip.line.destination') ||
-            '',
-          line: get(timetableres, 'trip.line.details.number') || '',
-          direction: `${get(timetableres, 'trip.line.direction')}`,
-        })
+            '';
+          return {
+            stop,
+            realtime: get(timetableres, 'realtime') || false,
+            scheduledDeparture: get(timetableres, 'scheduledDeparture'),
+            realtimeDeparture: get(timetableres, 'realtimeDeparture'),
+            destination,
+            line: get(timetableres, 'trip.line.details.number') || '',
+            arriving: destination === stop?.name,
+          };
+        }
       );
       return {
         station,
-        directions,
         lines,
         timetable,
       };
@@ -349,12 +349,11 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
     )}
   }`;
   return HSLFetch(query).then((data) =>
-    reduce(
-      data,
+    data.reduce(
       (obj: StopsStations, item: any, key: string) => {
         const id = get(item, 'id');
-        const isBike = startsWith(key, 'bike');
-        const isStation = startsWith(key, 'station');
+        const isBike = key.startsWith('bike');
+        const isStation = key.startsWith('station');
         if (id) {
           if (isBike) {
             obj.bikeStations[id] = parseBikeStation(item, id);

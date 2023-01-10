@@ -1,0 +1,13 @@
+.icon-button {
+  opacity: 0.5;
+  line-height: 1;
+  text-align: center;
+  padding: 1rem;
+
+  background: transparent;
+  border: none;
+}
+
+.close {
+  font-size: 2rem;
+}

@@ -1,15 +1,14 @@
 import ls from 'local-storage';
-import { uniqBy } from 'lodash';
-import React, {
+import uniqBy from 'lodash/uniqBy';
+import {
   createContext,
   Dispatch,
   FC,
+  ReactNode,
   useContext,
   useReducer,
-  ReactNode,
 } from 'react';
-import 'styles/Search.scss';
-import { BikeStation, Station, Stop } from '../utils/fetch';
+import { BikeStation, Station, Stop } from 'utils/fetch';
 
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';
@@ -21,7 +20,6 @@ export interface RawDetail {
   isStation?: boolean;
   platformCount?: number;
   lines?: string[];
-  directions?: string[];
   isBike?: boolean;
 }
 type SearchResults = { stops: Stop[]; stations: Station[] };

@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { find } from 'lodash';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import 'styles/TimetablePage.scss';
+import { routes } from 'routes';
+import { cx } from 'utils/classNames';
 import { RawDetail, useUiContext } from 'utils/uiContext';
-import { routes } from '../routes';
 import BikeStationView from './BikeStationView';
+import { IconButton } from './IconButton';
+import styles from './TimetablePage.module.css';
 import TimetableView from './TimetableView';
 
 interface Props {
@@ -18,8 +19,8 @@ interface Props {
 const TimetablePage = ({ stopId, isStation, isBike, saveType }: Props) => {
   const { starred, pinned, dispatch } = useUiContext();
 
-  const starDetail = find(starred, (s) => s.id === stopId);
-  const pinDetail = find(pinned, (s) => s.id === stopId);
+  const starDetail = starred.find((s) => s.id === stopId);
+  const pinDetail = pinned.find((s) => s.id === stopId);
 
   const savedDetail =
     saveType === 'star'
@@ -31,43 +32,36 @@ const TimetablePage = ({ stopId, isStation, isBike, saveType }: Props) => {
   const isStarred = !!starDetail;
   const isPinned = !!pinDetail;
 
-  const actionClass = (isActive: boolean) =>
-    `icon-button action${isActive ? ' active' : ''}`;
-
   const buttons = (detail: RawDetail) => (
     <Fragment>
-      <div
+      <IconButton
         key={`star-${isStarred}`}
-        tabIndex={0}
-        className={actionClass(isStarred)}
+        icon="star"
+        className={cx(styles.action, isStarred && styles.active)}
         onClick={
           isStarred
             ? () => dispatch({ type: 'removeStar', stopId })
             : () => dispatch({ type: 'saveStar', detail })
         }
         title={isStarred ? 'Poista tähti' : 'Lisää tähti'}
-      >
-        <FontAwesomeIcon icon="star" />
-      </div>
-      <div
+      />
+      <IconButton
         key={`pin-${isPinned}`}
-        tabIndex={0}
-        className={`pin ${actionClass(isPinned)}`}
+        icon="thumbtack"
+        className={cx(styles.pin, styles.action, isPinned && styles.active)}
         onClick={
           isPinned
             ? () => dispatch({ type: 'removePin', stopId })
             : () => dispatch({ type: 'savePin', detail })
         }
         title={isPinned ? 'Poista etusivulta' : 'Lisää etusivulle'}
-      >
-        <FontAwesomeIcon icon="thumbtack" />
-      </div>
+      />
     </Fragment>
   );
 
   return (
-    <div className="timetable-page">
-      <Link to={routes.frontpage} className="back-button">
+    <div className={styles['timetable-page']}>
+      <Link to={routes.frontpage} className={styles['back-button']}>
         <FontAwesomeIcon icon="arrow-left" />
         <span>Etusivulle</span>
       </Link>

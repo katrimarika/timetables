@@ -37,8 +37,8 @@ echo -e "\n\n\"Deployment\" done. Cleaning up..."
 # Remove staged and working directory changes
 git reset --hard
 
-# Switch back to master
-git switch master
+# Switch back to main
+git switch main
 
 # Remove untracked files
 git clean -f -d

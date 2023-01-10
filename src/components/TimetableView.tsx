@@ -1,14 +1,10 @@
-import { includes, isEmpty, without } from 'lodash';
-import React, { Component } from 'react';
+import isEmpty from 'lodash/isEmpty';
+import without from 'lodash/without';
+import { Component } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { routes } from '../routes';
-import {
-  fetchTimetableView,
-  Station,
-  Stop,
-  TimetableRow,
-} from '../utils/fetch';
-import { RawDetail } from '../utils/uiContext';
+import { routes } from 'routes';
+import { fetchTimetableView, Station, Stop, TimetableRow } from 'utils/fetch';
+import { RawDetail } from 'utils/uiContext';
 import DetailsView from './DetailsView';
 import LineSelect from './LineSelect';
 import Timetable from './Timetable';
@@ -34,8 +30,6 @@ interface State {
   hideShowMore: boolean;
   lines: string[];
   selectedLines: string[];
-  directions?: string[];
-  selectedDirections: string[];
   loading: boolean;
 }
 
@@ -49,13 +43,10 @@ class TimetableView extends Component<Props, State> {
       hideShowMore: true,
       lines: [],
       selectedLines: props.detail.lines || [],
-      selectedDirections: props.detail.directions || [],
       loading: true,
     };
     this.toggleLine = this.toggleLine.bind(this);
     this.toggleAllLines = this.toggleAllLines.bind(this);
-    this.toggleDirection = this.toggleDirection.bind(this);
-    this.toggleAllDirections = this.toggleAllDirections.bind(this);
     this.showMore = this.showMore.bind(this);
   }
 
@@ -71,19 +62,13 @@ class TimetableView extends Component<Props, State> {
     this.stopRefresher();
   }
 
-  setVisibleRows(addCount = 0, newLines?: string[], newDirections?: string[]) {
-    const {
-      timetable,
-      selectedLines: oldLines,
-      selectedDirections: oldDirections,
-    } = this.state;
+  setVisibleRows(addCount = 0, newLines?: string[]) {
+    const { timetable, selectedLines: oldLines } = this.state;
     const selectedLines = newLines || oldLines;
-    const selectedDirections = newDirections || oldDirections;
     const rows = timetable.filter(
       (item) =>
-        (isEmpty(selectedLines) || includes(selectedLines, item.line)) &&
-        (isEmpty(selectedDirections) ||
-          includes(selectedDirections, item.direction))
+        (isEmpty(selectedLines) || selectedLines.includes(item.line)) &&
+        !item.arriving
     );
     const limit = Math.min(this.state.limit + addCount, ROW_LIMIT, rows.length);
     const visibleRows = rows.slice(0, limit);
@@ -93,7 +78,6 @@ class TimetableView extends Component<Props, State> {
       limit: Math.max(limit, ROW_COUNT),
       hideShowMore,
       selectedLines,
-      selectedDirections,
     });
   }
 
@@ -134,7 +118,7 @@ class TimetableView extends Component<Props, State> {
 
   toggleLine(line: string) {
     const { selectedLines } = this.state;
-    const newSelection = includes(selectedLines, line)
+    const newSelection = selectedLines.includes(line)
       ? without(selectedLines, line)
       : [...selectedLines, line];
     this.setVisibleRows(0, newSelection);
@@ -144,23 +128,6 @@ class TimetableView extends Component<Props, State> {
     const { lines, selectedLines } = this.state;
     const newSelection = selectedLines.length === 0 ? lines : [];
     this.setVisibleRows(0, newSelection);
-  }
-
-  toggleDirection(direction: string) {
-    const { selectedDirections } = this.state;
-    const newSelection = includes(selectedDirections, direction)
-      ? without(selectedDirections, direction)
-      : [...selectedDirections, direction];
-    this.setVisibleRows(0, undefined, newSelection);
-  }
-
-  toggleAllDirections() {
-    const { directions, selectedDirections } = this.state;
-    if (!directions) {
-      return;
-    }
-    const newSelection = selectedDirections.length === 0 ? directions : [];
-    this.setVisibleRows(0, undefined, newSelection);
   }
 
   showMore() {
@@ -177,8 +144,6 @@ class TimetableView extends Component<Props, State> {
       hideShowMore,
       lines,
       selectedLines,
-      directions,
-      selectedDirections,
       loading,
     } = this.state;
     const { id, name, code, isStation, platformCount } = detail;
@@ -201,7 +166,6 @@ class TimetableView extends Component<Props, State> {
         isStation: true,
         lines: selectedLines,
         platformCount: station.stops.length || platformCount,
-        directions: selectedDirections,
       };
     } else {
       enhancedDetail = detail;
@@ -226,15 +190,6 @@ class TimetableView extends Component<Props, State> {
           toggleLine={this.toggleLine}
           toggleAllLines={this.toggleAllLines}
         />
-        {directions && (
-          <LineSelect
-            lines={directions}
-            selectedLines={selectedDirections}
-            allText="Kaikki suunnat"
-            toggleLine={this.toggleDirection}
-            toggleAllLines={this.toggleAllDirections}
-          />
-        )}
         <Timetable
           rows={visibleRows}
           withPlatform={isStation || !!station}

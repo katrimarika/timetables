@@ -14,15 +14,11 @@ This project uses Node and npm.
    ```
    npm install
    ```
-2. Fix sass environment bindings
-   ```
-   npm rebuild node-sass
-   ```
-3. Start the development server
+2. Start the development server
    ```
    npm start
    ```
-4. Open [http://localhost:3000](http://localhost:3000)
+3. Open [http://localhost:3000](http://localhost:3000)
 
 There is a pre-commit hook that runs [**prettier** code formatting](https://prettier.io/). Prettier can also be run manually using `npm run prettier`.
 
@@ -36,7 +32,7 @@ By default, only tests that have changed since the previous commit are run. Runn
 
 ## Deployment
 
-This project has setup for using travis-ci for building and deploying to github pages automatically from the master branch.
+This project has setup for using travis-ci for building and deploying to github pages automatically from the gh-pages branch.
 
 You can make a production build manually with
 
