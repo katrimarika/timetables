@@ -4,7 +4,7 @@ import { ComponentProps, FC } from 'react';
 import { cx } from 'utils/classNames';
 import styles from './IconButton.module.css';
 
-export const IconButton: FC<ComponentProps<'button'> & { icon: IconProp }> = ({
+const IconButton: FC<ComponentProps<'button'> & { icon: IconProp }> = ({
   icon,
   className,
   children,
@@ -22,3 +22,5 @@ export const IconButton: FC<ComponentProps<'button'> & { icon: IconProp }> = ({
     {children}
   </button>
 );
+
+export default IconButton;

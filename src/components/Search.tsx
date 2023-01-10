@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 import { routes } from 'routes';
 import { fetchBikeStationList, search } from 'utils/fetch';
 import { useUiContext } from 'utils/uiContext';
-import { IconButton } from './IconButton';
+import IconButton from './IconButton';
 import styles from './Search.module.css';
 
 const Search: FC = () => {

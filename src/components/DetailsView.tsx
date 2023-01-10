@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { cx } from 'utils/classNames';
 import styles from './DetailsView.module.css';
-import { Divider } from './Divider';
+import Divider from './Divider';
 
 type Props = {
   id: string;

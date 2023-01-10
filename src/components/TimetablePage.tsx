@@ -5,7 +5,7 @@ import { routes } from 'routes';
 import { cx } from 'utils/classNames';
 import { RawDetail, useUiContext } from 'utils/uiContext';
 import BikeStationView from './BikeStationView';
-import { IconButton } from './IconButton';
+import IconButton from './IconButton';
 import styles from './TimetablePage.module.css';
 import TimetableView from './TimetableView';
 

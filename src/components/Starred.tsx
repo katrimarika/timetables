@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { routes } from 'routes';
 import { fetchDetails, StopsStations } from 'utils/fetch';
 import { RawDetail } from 'utils/uiContext';
-import { IconButton } from './IconButton';
+import IconButton from './IconButton';
 import styles from './Starred.module.css';
 
 interface Props {
