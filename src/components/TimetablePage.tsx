@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Fragment } from 'react';
+import { FC, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
 import { cx } from 'utils/classNames';
@@ -9,14 +9,14 @@ import IconButton from './IconButton';
 import styles from './TimetablePage.module.css';
 import TimetableView from './TimetableView';
 
-interface Props {
+type Props = {
   stopId: string;
   isStation?: boolean;
   isBike?: boolean;
   saveType?: string;
-}
+};
 
-const TimetablePage = ({ stopId, isStation, isBike, saveType }: Props) => {
+const TimetablePage: FC<Props> = ({ stopId, isStation, isBike, saveType }) => {
   const { starred, pinned, dispatch } = useUiContext();
 
   const starDetail = starred.find((s) => s.id === stopId);

@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
 import { fetchDetails, StopsStations } from 'utils/fetch';
@@ -7,12 +7,12 @@ import { RawDetail } from 'utils/uiContext';
 import IconButton from './IconButton';
 import styles from './Starred.module.css';
 
-interface Props {
+type Props = {
   starred: RawDetail[];
   removeStar(id: string): void;
-}
+};
 
-const Starred = ({ starred, removeStar }: Props) => {
+const Starred: FC<Props> = ({ starred, removeStar }) => {
   const starredIds = starred.filter((s) => !s.name).map((s) => s.id);
   const [details, setDetails] = useState<StopsStations>({
     stops: {},

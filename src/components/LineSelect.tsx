@@ -1,21 +1,22 @@
+import { FC } from 'react';
 import { cx } from 'utils/classNames';
 import styles from './LineSelect.module.css';
 
-interface Props {
+type Props = {
   lines: string[];
   selectedLines: string[];
   allText?: string;
   toggleLine(line: string): void;
   toggleAllLines(): void;
-}
+};
 
-const LineSelect = ({
+const LineSelect: FC<Props> = ({
   lines,
   selectedLines,
   allText,
   toggleLine,
   toggleAllLines,
-}: Props) => (
+}) => (
   <div className={styles['line-buttons']}>
     <button
       key={`all-lines-${selectedLines.length}`}

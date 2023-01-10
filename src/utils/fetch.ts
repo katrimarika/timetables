@@ -20,30 +20,30 @@ const HSLFetch = (query: string) => {
     .catch((err) => console.error(err));
 };
 
-export interface Stop {
+export type Stop = {
   id: string;
   code: string;
   name: string;
   platform?: string;
-}
+};
 
-export interface Station {
+export type Station = {
   id: string;
   name: string;
   stops: Stop[];
-}
+};
 
-export interface BikeStation {
+export type BikeStation = {
   id: string;
   name: string;
-}
+};
 
-interface SearchResult {
+type SearchResult = {
   stops: Stop[];
   stations: Station[];
-}
+};
 
-export interface StopsStations {
+export type StopsStations = {
   stops: {
     [id: string]: Stop;
   };
@@ -53,9 +53,9 @@ export interface StopsStations {
   bikeStations: {
     [id: string]: BikeStation;
   };
-}
+};
 
-export interface TimetableRow {
+export type TimetableRow = {
   line: string;
   realtime: boolean;
   realtimeDeparture: number;
@@ -63,25 +63,25 @@ export interface TimetableRow {
   destination: string;
   stop?: Stop;
   arriving?: boolean;
-}
+};
 
-export interface StopData {
+export type StopData = {
   stop: Stop;
   lines: string[];
   timetable: TimetableRow[];
-}
+};
 
-export interface StationData {
+export type StationData = {
   station: Station;
   lines: string[];
   timetable: TimetableRow[];
-}
+};
 
-export interface BikeStationData {
+export type BikeStationData = {
   bikeStation: BikeStation;
   bikesAvailable?: number;
   spacesAvailable?: number;
-}
+};
 
 const parseStop = (stop: any, stopId?: string): Stop => {
   const id = get(stop, 'id') || stopId || '';

@@ -13,7 +13,7 @@ import { BikeStation, Station, Stop } from 'utils/fetch';
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';
 
-export interface RawDetail {
+export type RawDetail = {
   id: string;
   code?: string;
   name?: string;
@@ -21,7 +21,7 @@ export interface RawDetail {
   platformCount?: number;
   lines?: string[];
   isBike?: boolean;
-}
+};
 type SearchResults = { stops: Stop[]; stations: Station[] };
 const emptySearchResults: SearchResults = { stops: [], stations: [] };
 type Action =

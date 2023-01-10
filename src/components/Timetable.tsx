@@ -1,17 +1,18 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import isEmpty from 'lodash/isEmpty';
+import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
 import { cx } from 'utils/classNames';
 import { TimetableRow } from 'utils/fetch';
 import styles from './Timetable.module.css';
 
-interface Props {
+type Props = {
   rows: TimetableRow[];
   withPlatform: boolean;
   hideShowMore: boolean;
   showMore(): void;
-}
+};
 
 const refSecsToSecs = (refSecs: number) => {
   // The night buses use the start of the previous day as a reference
@@ -43,7 +44,12 @@ const timeDiff = (refSecs: number) => {
   return diff;
 };
 
-const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
+const Timetable: FC<Props> = ({
+  rows,
+  withPlatform,
+  hideShowMore,
+  showMore,
+}) => (
   <table className={styles.timetable}>
     <thead>
       <tr>
