@@ -20,7 +20,6 @@ export interface RawDetail {
   isStation?: boolean;
   platformCount?: number;
   lines?: string[];
-  directions?: string[];
   isBike?: boolean;
 }
 type SearchResults = { stops: Stop[]; stations: Station[] };

@@ -67,9 +67,7 @@ const Timetable = ({ rows, withPlatform, hideShowMore, showMore }: Props) => (
           const gone = mins < 0;
           return (
             <tr
-              key={`${row.line}-${row.scheduledDeparture}-${
-                row.direction || ''
-              }`}
+              key={`${row.line}-${row.scheduledDeparture}-${row.destination}`}
               className={cx(styles['data-row'], gone && styles.gone)}
             >
               <td className={styles.time}>
