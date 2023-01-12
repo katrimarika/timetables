@@ -107,8 +107,8 @@ const Search: FC = () => {
         <label className={styles.label} htmlFor="inputStop">
           Asema- ja pysäkkihaku
         </label>
-        <div className={styles['search-input']}>
-          <button type="submit">
+        <div className={styles['input-container']}>
+          <button type="submit" className={styles['search-button']}>
             <FontAwesomeIcon icon="search" />
           </button>
           <input
@@ -118,6 +118,7 @@ const Search: FC = () => {
             onChange={(e) => handleChange(e.target.value)}
             autoComplete="off"
             placeholder="Hae nimellä tai koodilla"
+            className={styles.input}
           />
         </div>
       </form>
