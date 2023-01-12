@@ -40,7 +40,7 @@ const DetailsView: FC<Props> = ({
   } else if (state === 'error') {
     content = (
       <div className={cx(styles['details-view'], styles['error-message'])}>
-        Tietoja ei saatu (id: {id}).
+        Tietoja ei saatu ladattua (id: {id}).
       </div>
     );
   } else {
