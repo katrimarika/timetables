@@ -1,6 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import debounce from 'lodash/debounce';
-import isEmpty from 'lodash/isEmpty';
 import React, { FC, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
@@ -134,28 +133,28 @@ const Search: FC = () => {
             />
           </div>
           {loading && <div>Ladataan...</div>}
-          {!loading && !isEmpty(stationResults) && (
+          {!loading && !!stationResults.length && (
             <>
               <h4 className={styles['result-title']}>Asemat</h4>
               <div className={styles['list-group']}>{stationResults}</div>
             </>
           )}
-          {!loading && !isEmpty(stopResults) && (
+          {!loading && !!stopResults.length && (
             <>
               <h4 className={styles['result-title']}>Pysäkit</h4>
               <div className={styles['list-group']}>{stopResults}</div>
             </>
           )}
-          {!loading && !isEmpty(bikeStationResults) && (
+          {!loading && !!bikeStationResults.length && (
             <>
               <h4 className={styles['result-title']}>Pyöräasemat</h4>
               <div className={styles['list-group']}>{bikeStationResults}</div>
             </>
           )}
           {!loading &&
-            isEmpty(stopResults) &&
-            isEmpty(stationResults) &&
-            isEmpty(bikeStationResults) && <div>Ei hakutuloksia</div>}
+            !stopResults.length &&
+            !stationResults.length &&
+            !bikeStationResults.length && <div>Ei hakutuloksia</div>}
         </div>
       )}
     </div>

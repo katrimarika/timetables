@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import isEmpty from 'lodash/isEmpty';
 import { FC } from 'react';
 import { useUiContext } from 'utils/uiContext';
 import BikeStationView from './BikeStationView';
@@ -31,10 +30,10 @@ const Frontpage: FC = () => {
       <h1 className={styles.title}>Aikataulut</h1>
       <Search />
       <Divider />
-      {!isEmpty(starred) && (
+      {!!starred.length && (
         <Starred starred={starred} removeStar={removeStar} />
       )}
-      {!isEmpty(starred) && <Divider />}
+      {!!starred.length && <Divider />}
       <div className={styles.timetables}>
         {pinned.map((stop) =>
           stop.isBike ? (
@@ -54,7 +53,7 @@ const Frontpage: FC = () => {
           )
         )}
       </div>
-      {isEmpty(pinned) && isEmpty(starred) && (
+      {!pinned.length && !starred.length && (
         <div className={styles.loading}>
           Ei tallennettuja pysäkkejä tai asemia.
           <small className={styles.loading}>

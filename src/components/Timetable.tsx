@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import isEmpty from 'lodash/isEmpty';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
@@ -67,7 +66,7 @@ const Timetable: FC<Props> = ({
       </tr>
     </thead>
     <tbody>
-      {!isEmpty(rows) ? (
+      {!!rows.length ? (
         rows.map((row) => {
           const mins = timeDiff(row.realtimeDeparture);
           const gone = mins < 0;

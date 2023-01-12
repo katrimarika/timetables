@@ -1,7 +1,5 @@
 import axios from 'axios';
 import get from 'lodash/get';
-import isEmpty from 'lodash/isEmpty';
-import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 import uniq from 'lodash/uniq';
 
@@ -83,22 +81,69 @@ export type BikeStationData = {
   spacesAvailable?: number;
 };
 
-const parseStop = (stop: any, stopId?: string): Stop => {
-  const id = get(stop, 'id') || stopId || '';
+const getStringValue = (data: unknown, path: string): string | undefined => {
+  const value: unknown = get(data, path);
+  if (value && typeof value === 'string') {
+    return value;
+  }
+  return undefined;
+};
+
+const getNumberValue = (data: unknown, path: string): number => {
+  const value: unknown = get(data, path);
+  if (typeof value === 'number') {
+    return value;
+  }
+  return NaN;
+};
+
+const getBooleanValue = (data: unknown, path: string): boolean | undefined => {
+  const value: unknown = get(data, path);
+  if (typeof value === 'boolean') {
+    return value;
+  }
+  return undefined;
+};
+
+const getArrayValue = (data: unknown, path: string): unknown[] => {
+  const value: unknown = get(data, path);
+  if (value && Array.isArray(value)) {
+    return value;
+  }
+  return [];
+};
+
+const getRecordValue = (
+  data: unknown,
+  path: string
+): Record<string, unknown> | undefined => {
+  const value: unknown = get(data, path);
+  if (
+    value &&
+    typeof value === 'object' &&
+    !Object.keys(value).some((key) => typeof key !== 'string')
+  ) {
+    return value as Record<string, unknown>;
+  }
+  return undefined;
+};
+
+const parseStop = (stop: unknown, stopId?: string): Stop => {
+  const id = getStringValue(stop, 'id') || stopId || '';
   return {
     id,
-    code: get(stop, 'code') || id,
-    name: get(stop, 'name') || 'Pysäkki',
-    platform: get(stop, 'platform'),
+    code: getStringValue(stop, 'code') || id,
+    name: getStringValue(stop, 'name') || 'Pysäkki',
+    platform: getStringValue(stop, 'platform'),
   };
 };
 
-const parseStation = (station: any, stationId?: string): Station => {
-  const id = get(station, 'id') || stationId || '';
+const parseStation = (station: unknown, stationId?: string): Station => {
+  const id = getStringValue(station, 'id') || stationId || '';
   return {
     id,
-    name: get(station, 'name') || 'Asema',
-    stops: map(get(station, 'stops'), (stop: any) => parseStop(stop)),
+    name: getStringValue(station, 'name') || 'Asema',
+    stops: getArrayValue(station, 'stops').map((stop) => parseStop(stop)),
   };
 };
 
@@ -106,10 +151,10 @@ const parseBikeStation = (
   bikeStation: unknown,
   bikeStationId?: string
 ): BikeStation => {
-  const id = get(bikeStation, 'stationId') || bikeStationId || '';
+  const id = getStringValue(bikeStation, 'stationId') || bikeStationId || '';
   return {
     id,
-    name: get(bikeStation, 'name') || 'Pyöräasema',
+    name: getStringValue(bikeStation, 'name') || 'Pyöräasema',
   };
 };
 
@@ -192,28 +237,33 @@ export const fetchTimetableView = (
     ${isStation !== false ? stationQuery : ''}
   }`;
   return HSLFetch(query).then((data) => {
-    const stopData = get(data, 'stop');
-    const stationData = get(data, 'station');
+    const stopData = getRecordValue(data, 'stop');
+    const stationData = getRecordValue(data, 'station');
     if (stopData) {
       const stop = parseStop(stopData, id);
-      const allLines = (get(stopData, 'lines') || []).map(
-        (lineres: any) => get(lineres, 'details.number') || ''
+      const allLines = getArrayValue(stopData, 'lines').map(
+        (lineres) => getStringValue(lineres, 'details.number') || ''
       );
       const lines: string[] = sortBy(uniq(allLines), [
         (line: string) => parseInt(line),
         (line: string) => line,
       ]);
-      const timetable: TimetableRow[] = map(
-        get(stopData, 'timetable'),
-        (timetableres: any): TimetableRow => ({
-          realtime: get(timetableres, 'realtime') || false,
-          scheduledDeparture: get(timetableres, 'scheduledDeparture'),
-          realtimeDeparture: get(timetableres, 'realtimeDeparture'),
+      const timetable: TimetableRow[] = getArrayValue(
+        stopData,
+        'timetable'
+      ).map(
+        (timetableres): TimetableRow => ({
+          realtime: getBooleanValue(timetableres, 'realtime') || false,
+          scheduledDeparture: getNumberValue(
+            timetableres,
+            'scheduledDeparture'
+          ),
+          realtimeDeparture: getNumberValue(timetableres, 'realtimeDeparture'),
           destination:
-            get(timetableres, 'destination') ||
-            get(timetableres, 'trip.line.destination') ||
+            getStringValue(timetableres, 'destination') ||
+            getStringValue(timetableres, 'trip.line.destination') ||
             '',
-          line: get(timetableres, 'trip.line.details.number') || '',
+          line: getStringValue(timetableres, 'trip.line.details.number') || '',
         })
       );
       return {
@@ -223,35 +273,37 @@ export const fetchTimetableView = (
       };
     } else if (stationData) {
       const station = parseStation(stationData, id);
-      const allLines = (get(stationData, 'stops') || []).flatMap((stop: any) =>
-        map(
-          get(stop, 'lines'),
-          (lineres: any) => get(lineres, 'details.number') || ''
+      const allLines = getArrayValue(stationData, 'stops').flatMap((stop) =>
+        getArrayValue(stop, 'lines').map(
+          (lineres) => getStringValue(lineres, 'details.number') || ''
         )
       );
       const lines: string[] = sortBy(uniq(allLines), [
         (line: string) => parseInt(line),
         (line: string) => line,
       ]);
-      const timetable: TimetableRow[] = map(
-        get(stationData, 'timetable'),
-        (timetableres: any): TimetableRow => {
-          const stop = parseStop(get(timetableres, 'stop'));
-          const destination =
-            get(timetableres, 'destination') ||
-            get(timetableres, 'trip.line.destination') ||
-            '';
-          return {
-            stop,
-            realtime: get(timetableres, 'realtime') || false,
-            scheduledDeparture: get(timetableres, 'scheduledDeparture'),
-            realtimeDeparture: get(timetableres, 'realtimeDeparture'),
-            destination,
-            line: get(timetableres, 'trip.line.details.number') || '',
-            arriving: destination === stop?.name,
-          };
-        }
-      );
+      const timetable: TimetableRow[] = getArrayValue(
+        stationData,
+        'timetable'
+      ).map((timetableres): TimetableRow => {
+        const stop = parseStop(getRecordValue(timetableres, 'stop'));
+        const destination =
+          getStringValue(timetableres, 'destination') ||
+          getStringValue(timetableres, 'trip.line.destination') ||
+          '';
+        return {
+          stop,
+          realtime: getBooleanValue(timetableres, 'realtime') || false,
+          scheduledDeparture: getNumberValue(
+            timetableres,
+            'scheduledDeparture'
+          ),
+          realtimeDeparture: getNumberValue(timetableres, 'realtimeDeparture'),
+          destination,
+          line: getStringValue(timetableres, 'trip.line.details.number') || '',
+          arriving: destination === stop?.name,
+        };
+      });
       return {
         station,
         lines,
@@ -281,8 +333,8 @@ export const search = (name: string): Promise<SearchResult> => {
     }
   }`;
   return HSLFetch(query).then((data) => ({
-    stops: map(get(data, 'stops'), (stop: any) => parseStop(stop)),
-    stations: map(get(data, 'stations'), (station: any) =>
+    stops: getArrayValue(data, 'stops').map((stop) => parseStop(stop)),
+    stations: getArrayValue(data, 'stations').map((station) =>
       parseStation(station)
     ),
   }));
@@ -296,7 +348,9 @@ export const fetchBikeStationList = (): Promise<BikeStation[]> => {
     }
   }`;
   return HSLFetch(query).then((data) =>
-    map(get(data, 'bikeRentalStations'), parseBikeStation)
+    getArrayValue(data, 'bikeRentalStations').map((bike) =>
+      parseBikeStation(bike)
+    )
   );
 };
 
@@ -310,19 +364,19 @@ export const fetchBikeStationData = (id: string): Promise<BikeStationData> => {
     }
   }`;
   return HSLFetch(query).then((data) => {
-    const details = get(data, 'bikeRentalStation');
+    const details = getRecordValue(data, 'bikeRentalStation');
     const bikeStation = parseBikeStation(details);
 
     return {
       bikeStation,
-      bikesAvailable: get(details, 'bikesAvailable'),
-      spacesAvailable: get(details, 'spacesAvailable'),
+      bikesAvailable: getNumberValue(details, 'bikesAvailable'),
+      spacesAvailable: getNumberValue(details, 'spacesAvailable'),
     };
   });
 };
 
 export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
-  if (isEmpty(ids)) {
+  if (!ids.length) {
     return new Promise(() => ({ stops: {}, stations: {}, bikeStations: {} }));
   }
   const query = `{
@@ -350,8 +404,8 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
   }`;
   return HSLFetch(query).then((data) =>
     data.reduce(
-      (obj: StopsStations, item: any, key: string) => {
-        const id = get(item, 'id');
+      (obj: StopsStations, item: unknown, key: string) => {
+        const id = getStringValue(item, 'id');
         const isBike = key.startsWith('bike');
         const isStation = key.startsWith('station');
         if (id) {
