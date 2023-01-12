@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import debounce from 'lodash/debounce';
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
 import { fetchBikeStationList, search } from 'utils/fetch';
@@ -14,20 +14,32 @@ const Search: FC = () => {
   const [value, setValue] = useState(searchString);
   const [loading, setLoading] = useState(false);
 
-  const debouncedSearch = useRef(
-    debounce(async (v: string) => {
-      dispatch({ type: 'startSearch', value: v });
-      if (!!v) {
-        const results = await search(v);
-        dispatch({ type: 'setSearchResults', results });
-
-        if (!bikeStations.length) {
-          const bikeStationList = await fetchBikeStationList();
-          dispatch({ type: 'setBikeStations', bikeStations: bikeStationList });
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((v: string) => {
+        dispatch({ type: 'startSearch', value: v });
+        if (!!v) {
+          search(v)
+            .then((results) => {
+              dispatch({ type: 'setSearchResults', results });
+              if (bikeStations.length) {
+                setLoading(false);
+              } else {
+                fetchBikeStationList()
+                  .then((bikeStationList) => {
+                    dispatch({
+                      type: 'setBikeStations',
+                      bikeStations: bikeStationList,
+                    });
+                    setLoading(false);
+                  })
+                  .catch();
+              }
+            })
+            .catch();
         }
-        setLoading(false);
-      }
-    }, 1000)
+      }, 1000),
+    [bikeStations, dispatch]
   );
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -42,7 +54,7 @@ const Search: FC = () => {
   function handleChange(v: string) {
     setValue(v);
     setLoading(true);
-    debouncedSearch.current(v);
+    debouncedSearch(v);
   }
 
   function closeSearch() {
@@ -85,11 +97,11 @@ const Search: FC = () => {
     ? bikeStations.filter(
         (b) =>
           !!b.id &&
-          (!searchString ||
-            b.id.includes(searchString) ||
-            b.name.toLowerCase().includes(searchString))
+          (b.id.toLowerCase().includes(searchString.toLowerCase()) ||
+            b.name.toLowerCase().includes(searchString.toLowerCase()))
       )
     : bikeStations;
+
   const bikeStationResults = matchingBikeStations.map((bikeStation) => (
     <Link
       key={bikeStation.id}
