@@ -1,29 +1,35 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
-  faTimes,
-  faBus,
-  faStar,
-  faChevronDown,
-  faThumbtack,
-  faTrashAlt,
   faArrowLeft,
+  faBicycle,
+  faBus,
+  faChevronDown,
+  faParking,
   faSearch,
   faSign,
-  faBicycle,
-  faParking,
+  faStar,
+  faThumbtack,
+  faTimes,
+  faTrain,
+  faTrainSubway,
+  faTrainTram,
+  faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 export const iconSetup = () =>
   library.add(
-    faTimes,
-    faBus,
-    faStar,
-    faChevronDown,
-    faThumbtack,
-    faTrashAlt,
     faArrowLeft,
+    faBicycle,
+    faBus,
+    faChevronDown,
+    faParking,
     faSearch,
     faSign,
-    faBicycle,
-    faParking
+    faStar,
+    faThumbtack,
+    faTimes,
+    faTrain,
+    faTrainSubway,
+    faTrainTram,
+    faTrashAlt
   );

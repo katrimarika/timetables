@@ -50,6 +50,11 @@
   padding-right: 1rem;
 }
 
+.timetable th:not(:last-child),
+.timetable td:not(:last-child) {
+  text-align: center;
+}
+
 .timetable td {
   vertical-align: top;
 }

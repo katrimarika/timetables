@@ -18,10 +18,13 @@ const HSLFetch = (query: string) => {
     .catch((err) => console.error(err));
 };
 
+export type StopType = 'bus' | 'tram' | 'train' | 'subway' | undefined;
+
 export type Stop = {
   id: string;
   code: string;
   name: string;
+  stopType: StopType;
   platform?: string;
 };
 
@@ -128,12 +131,25 @@ const getRecordValue = (
   return undefined;
 };
 
+const parseStopType = (raw: string): StopType => {
+  const cleaned = raw.toLowerCase();
+
+  if (cleaned === 'bus' || cleaned === 'subway' || cleaned === 'tram') {
+    return cleaned;
+  }
+  if (cleaned === 'rail') {
+    return 'train';
+  }
+  return undefined;
+};
+
 const parseStop = (stop: unknown, stopId?: string): Stop => {
   const id = getStringValue(stop, 'id') || stopId || '';
   return {
     id,
     code: getStringValue(stop, 'code') || id,
     name: getStringValue(stop, 'name') || 'Pysäkki',
+    stopType: parseStopType(getStringValue(stop, 'vehicleMode') || ''),
     platform: getStringValue(stop, 'platform'),
   };
 };
@@ -173,6 +189,7 @@ export const fetchTimetableView = (
       name
       code
       platform:platformCode
+      vehicleMode
       lines:patterns {
         details:route {
           number:shortName
@@ -202,6 +219,7 @@ export const fetchTimetableView = (
         id:gtfsId
         name
         code
+        vehicleMode
         platform:platformCode
         lines:patterns {
           details:route {
@@ -273,11 +291,9 @@ export const fetchTimetableView = (
       };
     } else if (stationData) {
       const station = parseStation(stationData, id);
-      const allLines = getArrayValue(stationData, 'stops').flatMap((stop) =>
-        getArrayValue(stop, 'lines').map(
-          (lineres) => getStringValue(lineres, 'details.number') || ''
-        )
-      );
+      const allLines = getArrayValue(stationData, 'stops')
+        .flatMap((stop) => getArrayValue(stop, 'lines'))
+        .map((lineres) => getStringValue(lineres, 'details.number') || '');
       const lines: string[] = sortBy(uniq(allLines), [
         (line: string) => parseInt(line),
         (line: string) => line,
@@ -320,6 +336,7 @@ export const search = (name: string): Promise<SearchResult> => {
       name
       code
       platform:platformCode
+      vehicleMode
     }
     stations(name: "${name}") {
       id:gtfsId
@@ -329,6 +346,7 @@ export const search = (name: string): Promise<SearchResult> => {
         name
         code
         platformCode
+        vehicleMode
       }
     }
   }`;

@@ -94,6 +94,31 @@
   display: inline-block;
 }
 
+.icon {
+  width: 2.6rem;
+  text-align: center;
+}
+
+.bus {
+  color: #007ac9;
+}
+
+.train {
+  color: #8c4799;
+}
+
+.subway {
+  color: #ca3f00;
+}
+
+.tram {
+  color: #028151;
+}
+
+.bicycle {
+  color: #fcbc19;
+}
+
 .name {
   font-size: 1.8rem;
   font-weight: bold;

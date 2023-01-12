@@ -3,11 +3,13 @@ import { FC } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
 import { cx } from 'utils/classNames';
-import { TimetableRow } from 'utils/fetch';
+import { StopType, TimetableRow } from 'utils/fetch';
+import { stopTypeToIcon } from 'utils/misc';
 import styles from './Timetable.module.css';
 
 type Props = {
   rows: TimetableRow[];
+  stopType: StopType;
   withPlatform: boolean;
   hideShowMore: boolean;
   showMore(): void;
@@ -45,6 +47,7 @@ const timeDiff = (refSecs: number) => {
 
 const Timetable: FC<Props> = ({
   rows,
+  stopType,
   withPlatform,
   hideShowMore,
   showMore,
@@ -55,7 +58,7 @@ const Timetable: FC<Props> = ({
         <th className={styles.fit}>Lähtee</th>
         <th className={styles.fit}>Min</th>
         <th className={styles.fit} aria-label="Linja" title="Linja">
-          <FontAwesomeIcon icon="bus" />
+          <FontAwesomeIcon icon={stopTypeToIcon(stopType)} />
         </th>
         {withPlatform && (
           <th className={styles.fit} aria-label="Laituri" title="Laituri">

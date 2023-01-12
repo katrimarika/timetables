@@ -59,6 +59,7 @@ const TimetableView: FC<Props> = ({ detail, withLink, buttons }) => {
           ...detail,
           id: data.station.id || id,
           name: data.station.name || name,
+          stopType: data.station.stops.find((st) => !!st.stopType)?.stopType,
           isStation: true,
           lines: selectedLines,
           platformCount: data.station.stops.length || platformCount,
@@ -68,10 +69,11 @@ const TimetableView: FC<Props> = ({ detail, withLink, buttons }) => {
           id: data.stop.id || id,
           code: data.stop.code || code,
           name: data.stop.name || name,
+          stopType: data.stop.stopType,
           isStation: false,
           lines: selectedLines,
         }
-    : detail;
+    : { ...detail, stopType: undefined };
 
   const lines = data?.lines || [];
   const timetable = data?.timetable || [];
@@ -118,6 +120,7 @@ const TimetableView: FC<Props> = ({ detail, withLink, buttons }) => {
       />
       <Timetable
         rows={visibleRows}
+        stopType={enhancedDetail?.stopType}
         withPlatform={isStation || (!!data && 'station' in data)}
         hideShowMore={visibleRows.length === rows.length}
         showMore={() => setRowCount(rowCount + ROW_COUNT)}

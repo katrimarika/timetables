@@ -3,7 +3,9 @@ import debounce from 'lodash/debounce';
 import React, { FC, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { routes } from 'routes';
+import { cx } from 'utils/classNames';
 import { fetchBikeStationList, search } from 'utils/fetch';
+import { stopTypeToIcon } from 'utils/misc';
 import { useUiContext } from 'utils/uiContext';
 import IconButton from './IconButton';
 import styles from './Search.module.css';
@@ -73,6 +75,11 @@ const Search: FC = () => {
         className={styles['search-result']}
         to={routes.stop(stop.id)}
       >
+        <span
+          className={cx(styles.icon, stop.stopType && styles[stop.stopType])}
+        >
+          <FontAwesomeIcon icon={stopTypeToIcon(stop.stopType)} />
+        </span>
         <span className={styles.name}>{stop.name}</span>
         <span>{stop.code}</span>
         <small className={styles.light}>{stop.id}</small>
@@ -81,17 +88,23 @@ const Search: FC = () => {
 
   const stationResults = stations
     .filter((station) => !!station.id)
-    .map((station) => (
-      <Link
-        key={station.id}
-        className={styles['search-result']}
-        to={routes.station(station.id)}
-      >
-        <span className={styles.name}>{station.name}</span>
-        <span>{station.stops.length}&nbsp;laituria</span>
-        <small className={styles.light}>{station.id}</small>
-      </Link>
-    ));
+    .map((station) => {
+      const stopType = station.stops.find((st) => !!st.stopType)?.stopType;
+      return (
+        <Link
+          key={station.id}
+          className={styles['search-result']}
+          to={routes.station(station.id)}
+        >
+          <span className={cx(styles.icon, stopType && styles[stopType])}>
+            <FontAwesomeIcon icon={stopTypeToIcon(stopType)} />
+          </span>
+          <span className={styles.name}>{station.name}</span>
+          <span>{station.stops.length}&nbsp;laituria</span>
+          <small className={styles.light}>{station.id}</small>
+        </Link>
+      );
+    });
 
   const matchingBikeStations = !!searchString
     ? bikeStations.filter(
@@ -108,6 +121,9 @@ const Search: FC = () => {
       className={styles['search-result']}
       to={routes.bikeStation(bikeStation.id)}
     >
+      <span className={cx(styles.icon, styles.bicycle)}>
+        <FontAwesomeIcon icon={'bicycle'} />
+      </span>
       <span className={styles.name}>{bikeStation.name}</span>
       <span>{bikeStation.id}</span>
     </Link>
