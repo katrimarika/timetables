@@ -2,11 +2,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import debounce from 'lodash/debounce';
 import React, { FC, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { routes } from 'routes';
-import { cx } from 'utils/classNames';
-import { fetchBikeStationList, search } from 'utils/fetch';
-import { stopTypeToIcon } from 'utils/misc';
-import { useUiContext } from 'utils/uiContext';
+import { routes } from '../routes';
+import { cx } from '../utils/classNames';
+import { fetchBikeStationList, search } from '../utils/fetch';
+import { stopTypeToIcon } from '../utils/misc';
+import { useUiContext } from '../utils/uiContext';
 import IconButton from './IconButton';
 import styles from './Search.module.css';
 

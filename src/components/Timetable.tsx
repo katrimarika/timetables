@@ -1,10 +1,10 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC } from 'react';
 import { Link } from 'react-router-dom';
-import { routes } from 'routes';
-import { cx } from 'utils/classNames';
-import { StopType, TimetableRow } from 'utils/fetch';
-import { stopTypeToIcon } from 'utils/misc';
+import { routes } from '../routes';
+import { cx } from '../utils/classNames';
+import { StopType, TimetableRow } from '../utils/fetch';
+import { stopTypeToIcon } from '../utils/misc';
 import styles from './Timetable.module.css';
 
 type Props = {

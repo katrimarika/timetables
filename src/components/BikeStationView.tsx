@@ -3,10 +3,10 @@ import {
   FontAwesomeIconProps,
 } from '@fortawesome/react-fontawesome';
 import { FC, useEffect, useRef, useState } from 'react';
-import { routes } from 'routes';
-import { cx } from 'utils/classNames';
-import { BikeStationData, fetchBikeStationData } from 'utils/fetch';
-import { RawDetail } from 'utils/uiContext';
+import { routes } from '../routes';
+import { cx } from '../utils/classNames';
+import { BikeStationData, fetchBikeStationData } from '../utils/fetch';
+import { RawDetail } from '../utils/uiContext';
 import styles from './BikeStationView.module.css';
 import DetailsView from './DetailsView';
 

@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react';
-import { routes } from 'routes';
-import { fetchTimetableView, StationData, StopData } from 'utils/fetch';
-import { RawDetail } from 'utils/uiContext';
+import { routes } from '../routes';
+import { fetchTimetableView, StationData, StopData } from '../utils/fetch';
+import { RawDetail } from '../utils/uiContext';
 import DetailsView from './DetailsView';
 import LineSelect from './LineSelect';
 import Timetable from './Timetable';

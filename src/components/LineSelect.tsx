@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { cx } from 'utils/classNames';
+import { cx } from '../utils/classNames';
 import styles from './LineSelect.module.css';
 
 type Props = {

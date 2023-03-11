@@ -1,7 +1,7 @@
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { ComponentProps, FC } from 'react';
-import { cx } from 'utils/classNames';
+import { cx } from '../utils/classNames';
 import styles from './IconButton.module.css';
 
 const IconButton: FC<ComponentProps<'button'> & { icon: IconProp }> = ({

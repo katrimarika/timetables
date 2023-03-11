@@ -8,7 +8,7 @@ import {
   useContext,
   useReducer,
 } from 'react';
-import { BikeStation, Station, Stop } from 'utils/fetch';
+import { BikeStation, Station, Stop } from '../utils/fetch';
 
 const PINNED_STOPS = 'pinnedStops';
 const STARRED_STOPS = 'starredStops';

@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC } from 'react';
-import { useUiContext } from 'utils/uiContext';
+import { useUiContext } from '../utils/uiContext';
 import BikeStationView from './BikeStationView';
 import Divider from './Divider';
 import styles from './Frontpage.module.css';
