@@ -26,7 +26,7 @@ cp -R ./build/. ./
 
 echo -e "\n\nCommiting and pushing changes to $deploy_branch..."
 
-git add images/ assets/ index.html favicon.ico 404.html manifest.json asset-manifest.json CNAME
+git add images/ assets/ index.html favicon.ico 404.html manifest.json CNAME
 
 git commit -m "Deploy to $deploy_branch"
 
