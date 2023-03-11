@@ -30,12 +30,4 @@ By default, only tests that have changed since the previous commit are run. Runn
 
 ## Deployment
 
-This project has setup for using travis-ci for building and deploying to github pages automatically from the gh-pages branch.
-
-You can make a production build manually with
-
-```
-npm run build
-```
-
-It will print out instructions on how to serve your builded files.
+Deployment can currently be done only locally to GitHub pages with the `./deploy.sh` script.
