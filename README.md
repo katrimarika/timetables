@@ -1,10 +1,8 @@
 # React HSL Timetables
 
-A web application for showing HSL stop timetables. Select your stop and view the next public transport scheduled to pass that stop.
+A web application for showing HSL timetables. Select your stop and view the next public transport scheduled to pass that stop.
 
-Built with React, TypeScript, and Sass.
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Built with React and TypeScript. Runs with Vite.
 
 ## Getting started
 

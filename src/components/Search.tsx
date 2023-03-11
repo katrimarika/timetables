@@ -151,7 +151,7 @@ const Search: FC = () => {
         </div>
       </form>
       {value && (
-        <div className={styles['search-results']}>
+        <div>
           <div className={styles['results-header']}>
             <h3 className={styles.heading}>Tulokset</h3>
             <IconButton

@@ -1,4 +1,3 @@
-import ls from 'local-storage';
 import uniqBy from 'lodash/uniqBy';
 import {
   createContext,
@@ -56,11 +55,28 @@ const initialState: UiContextType = {
 
 const UiContext = createContext(initialState);
 
+const getListFromStorage = (key: string) => {
+  const strItem = localStorage.getItem(key);
+  try {
+    const parsed = JSON.parse(strItem || '');
+    if (Array.isArray(parsed)) {
+      return parsed;
+    } else {
+      return [];
+    }
+  } catch {
+    return [];
+  }
+};
+const saveListToStorage = (key: string, list: RawDetail[]) => {
+  localStorage.setItem(key, JSON.stringify(list));
+};
+
 function getInitialSaves() {
-  const pinned: RawDetail[] = (ls.get(PINNED_STOPS) || []).map(
+  const pinned: RawDetail[] = getListFromStorage(PINNED_STOPS).map(
     (s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s)
   );
-  const starred: RawDetail[] = (ls.get(STARRED_STOPS) || []).map(
+  const starred: RawDetail[] = getListFromStorage(STARRED_STOPS).map(
     (s: string | RawDetail) => (typeof s === 'string' ? { id: s } : s)
   );
   return { starred, pinned };
@@ -89,23 +105,23 @@ export const UiContextProvider: FC<{ children: ReactNode }> = ({
           };
         case 'saveStar':
           const newStarred = uniqBy([...state.starred, action.detail], 'id');
-          ls.set(STARRED_STOPS, newStarred);
+          saveListToStorage(STARRED_STOPS, newStarred);
           return { ...state, starred: newStarred };
         case 'removeStar':
           const remainingStarred = state.starred.filter(
             (s) => s.id !== action.stopId
           );
-          ls.set(STARRED_STOPS, remainingStarred);
+          saveListToStorage(STARRED_STOPS, remainingStarred);
           return { ...state, starred: remainingStarred };
         case 'savePin':
           const newPinned = uniqBy([...state.pinned, action.detail], 'id');
-          ls.set(PINNED_STOPS, newPinned);
+          saveListToStorage(PINNED_STOPS, newPinned);
           return { ...state, pinned: newPinned };
         case 'removePin':
           const remainingPinned = state.pinned.filter(
             (s) => s.id !== action.stopId
           );
-          ls.set(PINNED_STOPS, remainingPinned);
+          saveListToStorage(PINNED_STOPS, remainingPinned);
           return { ...state, pinned: remainingPinned };
         case 'setStarsState':
           return { ...state, starred: action.values };

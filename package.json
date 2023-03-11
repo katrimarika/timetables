@@ -12,30 +12,32 @@
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
     "axios": "^0.27.1",
-    "local-storage": "^1.4.2",
     "lodash": "^4.17.21",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^5.2.0"
   },
   "devDependencies": {
-    "@types/jest": "^27.4.1",
     "@types/local-storage": "^1.4.0",
     "@types/lodash": "^4.14.182",
     "@types/react": "^18.0.7",
     "@types/react-dom": "^18.0.0",
     "@types/react-router-dom": "^5.1.5",
+    "@vitejs/plugin-react": "^3.1.0",
     "husky": "^1.3.1",
+    "jsdom": "^21.1.0",
     "lint-staged": "^13.0.4",
     "prettier": "^2.1.2",
-    "react-scripts": "5.0.1",
-    "typescript": "^4.6.3"
+    "typescript": "^4.6.3",
+    "vite": "^4.1.4",
+    "vitest": "^0.29.2"
   },
   "scripts": {
-    "start": "BROWSER=none react-scripts start",
-    "prettier": "prettier --write \"{src/**/*.{ts,tsx,scss},*.md}\"",
-    "build": "react-scripts build",
-    "test": "react-scripts test"
+    "start": "vite dev --port 3000",
+    "build": "vite build --outDir build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "prettier": "prettier --write \"{src/**/*.{ts,tsx,scss},*.md}\""
   },
   "eslintConfig": {
     "extends": "react-app"

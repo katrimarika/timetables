@@ -1,14 +1,13 @@
-import ReactDOM from 'react-dom';
-import { UiContextProvider } from './utils/uiContext';
+import { createRoot } from 'react-dom/client';
 import App from './components/App';
 import './index.css';
 import { iconSetup } from './utils/iconSetup';
+import { UiContextProvider } from './utils/uiContext';
 
 iconSetup();
 
-ReactDOM.render(
+createRoot(document.getElementById('root') as HTMLElement).render(
   <UiContextProvider>
     <App />
-  </UiContextProvider>,
-  document.getElementById('root')
+  </UiContextProvider>
 );
