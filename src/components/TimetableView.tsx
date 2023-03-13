@@ -12,11 +12,10 @@ const ROW_COUNT = 7;
 
 type Props = {
   detail: RawDetail;
-  buttons(detail: RawDetail): JSX.Element;
   withLink?: boolean;
 };
 
-const TimetableView: FC<Props> = ({ detail, withLink, buttons }) => {
+const TimetableView: FC<Props> = ({ detail, withLink }) => {
   const [fetchedData, setFetchedData] = useState<
     | { status: 'success'; data: StopData | StationData }
     | { status: 'loading' }
@@ -95,7 +94,7 @@ const TimetableView: FC<Props> = ({ detail, withLink, buttons }) => {
           : enhancedDetail.code
       }
       state={fetchedData.status}
-      buttons={buttons(enhancedDetail)}
+      detailForSaving={enhancedDetail}
       linkTo={
         withLink
           ? data && 'station' in data

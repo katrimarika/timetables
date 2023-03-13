@@ -1,0 +1,22 @@
+.action {
+  color: var(--light-color);
+  min-width: 3.6rem;
+}
+
+.action.pin {
+  font-size: 105%;
+  text-align: center;
+}
+
+.action.pin > svg {
+  margin-top: 0.25rem;
+}
+
+.action.active {
+  opacity: 1;
+  color: var(--realtime-color);
+}
+
+.action span {
+  padding-left: 1rem;
+}

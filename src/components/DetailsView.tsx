@@ -1,15 +1,17 @@
 import { FC, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { cx } from '../utils/classNames';
+import { RawDetail } from '../utils/uiContext';
 import styles from './DetailsView.module.css';
 import Divider from './Divider';
+import SaveButtons from './SaveButtons';
 
 type Props = {
   id: string;
   title?: string;
   titleAddition?: string;
   state: 'loading' | 'error' | 'success';
-  buttons: JSX.Element;
+  detailForSaving: RawDetail;
   linkTo?: string;
   children: ReactNode;
 };
@@ -19,7 +21,7 @@ const DetailsView: FC<Props> = ({
   title,
   titleAddition,
   state,
-  buttons,
+  detailForSaving,
   linkTo,
   children,
 }) => {
@@ -51,7 +53,9 @@ const DetailsView: FC<Props> = ({
     <div className={styles['details-view']}>
       <div className={styles['details-header']}>
         {linkTo ? <Link to={linkTo}>{headerDetails}</Link> : headerDetails}
-        <div className={styles.buttons}>{buttons}</div>
+        <div className={styles.buttons}>
+          <SaveButtons detail={detailForSaving} />
+        </div>
       </div>
       {content}
       <Divider />

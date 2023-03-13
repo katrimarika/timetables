@@ -14,7 +14,6 @@ const REFRESH_INTERVAL = 60000;
 
 type Props = {
   detail: RawDetail;
-  buttons: (detail: RawDetail) => JSX.Element;
   withLink?: boolean;
 };
 
@@ -42,7 +41,7 @@ const BikeDetail: FC<{
   </>
 );
 
-const BikeStationView: FC<Props> = ({ detail, buttons, withLink }) => {
+const BikeStationView: FC<Props> = ({ detail, withLink }) => {
   const { id, name } = detail;
   const [bikeStationData, setBikeStationData] = useState<BikeStationData>();
   const [loading, setLoading] = useState(false);
@@ -73,10 +72,10 @@ const BikeStationView: FC<Props> = ({ detail, buttons, withLink }) => {
       title={bikeStationData?.bikeStation.name || name}
       titleAddition={bikeStationData?.bikeStation.id || id}
       state={loading ? 'loading' : !bikeStationData ? 'error' : 'success'}
-      buttons={buttons({
+      detailForSaving={{
         ...detail,
         name: bikeStationData?.bikeStation.name || name,
-      })}
+      }}
       linkTo={withLink ? routes.bikeStation(id, 'pin') : undefined}
     >
       <div className={styles['bike-details']}>
