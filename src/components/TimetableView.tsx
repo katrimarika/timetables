@@ -22,7 +22,7 @@ const TimetableView: FC<Props> = ({ detail, withLink, buttons }) => {
     | { status: 'loading' }
     | { status: 'error' }
   >({ status: 'loading' });
-  const [selectedLines, setSelectedLines] = useState<string[]>([]);
+  const [selectedLines, setSelectedLines] = useState(detail.lines || []);
   const [rowCount, setRowCount] = useState(ROW_COUNT);
 
   const { id, code, name, isStation, platformCount } = detail;
