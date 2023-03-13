@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC, Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { routes } from '../routes';
 import { cx } from '../utils/classNames';
 import { RawDetail, useUiContext } from '../utils/uiContext';
@@ -10,14 +10,17 @@ import styles from './TimetablePage.module.css';
 import TimetableView from './TimetableView';
 
 type Props = {
-  stopId: string;
-  isStation?: boolean;
-  isBike?: boolean;
-  saveType?: string;
+  stopType: 'stop' | 'station' | 'bike';
 };
 
-const TimetablePage: FC<Props> = ({ stopId, isStation, isBike, saveType }) => {
+const TimetablePage: FC<Props> = ({ stopType }) => {
+  const { stopId, saveType } = useParams();
   const { starred, pinned, dispatch } = useUiContext();
+
+  // This should not happen due to routing rules
+  if (!stopId) {
+    return null;
+  }
 
   const starDetail = starred.find((s) => s.id === stopId);
   const pinDetail = pinned.find((s) => s.id === stopId);
@@ -33,7 +36,7 @@ const TimetablePage: FC<Props> = ({ stopId, isStation, isBike, saveType }) => {
   const isPinned = !!pinDetail;
 
   const buttons = (detail: RawDetail) => (
-    <Fragment>
+    <>
       <IconButton
         key={`star-${isStarred}`}
         icon="star"
@@ -56,7 +59,7 @@ const TimetablePage: FC<Props> = ({ stopId, isStation, isBike, saveType }) => {
         }
         title={isPinned ? 'Poista etusivulta' : 'Lisää etusivulle'}
       />
-    </Fragment>
+    </>
   );
 
   return (
@@ -65,14 +68,17 @@ const TimetablePage: FC<Props> = ({ stopId, isStation, isBike, saveType }) => {
         <FontAwesomeIcon icon="arrow-left" />
         <span>Etusivulle</span>
       </Link>
-      {isBike ? (
+      {stopType === 'bike' ? (
         <BikeStationView
           detail={{ ...(savedDetail || { id: stopId }), isBike: true }}
           buttons={buttons}
         />
       ) : (
         <TimetableView
-          detail={{ ...(savedDetail || { id: stopId }), isStation }}
+          detail={{
+            ...(savedDetail || { id: stopId }),
+            isStation: stopType === 'station',
+          }}
           buttons={buttons}
         />
       )}
