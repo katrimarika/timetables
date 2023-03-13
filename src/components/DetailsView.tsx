@@ -16,6 +16,11 @@ type Props = {
   children: ReactNode;
 };
 
+const HeaderWrapper: FC<Pick<Props, 'linkTo' | 'children'>> = ({
+  linkTo,
+  children,
+}) => (linkTo ? <Link to={linkTo}>{children}</Link> : <>{children}</>);
+
 const DetailsView: FC<Props> = ({
   id,
   title,
@@ -24,43 +29,32 @@ const DetailsView: FC<Props> = ({
   detailForSaving,
   linkTo,
   children,
-}) => {
-  const headerDetails = title && (
-    <div className={styles['details-details']}>
-      <h2 className={styles['details-heading']}>{title} </h2>
-      <small>{titleAddition}</small>
+}) => (
+  <div className={styles['details-view']}>
+    <div className={styles['details-header']}>
+      <HeaderWrapper linkTo={linkTo}>
+        <div className={styles['details-details']}>
+          <h2 className={styles['details-heading']}>{title} </h2>
+          <small>{titleAddition}</small>
+        </div>
+      </HeaderWrapper>
+      <div className={styles.buttons}>
+        <SaveButtons detail={detailForSaving} />
+      </div>
     </div>
-  );
-
-  let content;
-  if (state === 'loading') {
-    content = (
+    {state === 'loading' ? (
       <div className={cx(styles['details-view'], styles.loading)}>
         Ladataan tietoja (id: {id}) ...
       </div>
-    );
-  } else if (state === 'error') {
-    content = (
+    ) : state === 'error' ? (
       <div className={cx(styles['details-view'], styles['error-message'])}>
         Tietoja ei saatu ladattua (id: {id}).
       </div>
-    );
-  } else {
-    content = children;
-  }
-
-  return (
-    <div className={styles['details-view']}>
-      <div className={styles['details-header']}>
-        {linkTo ? <Link to={linkTo}>{headerDetails}</Link> : headerDetails}
-        <div className={styles.buttons}>
-          <SaveButtons detail={detailForSaving} />
-        </div>
-      </div>
-      {content}
-      <Divider />
-    </div>
-  );
-};
+    ) : (
+      children
+    )}
+    <Divider />
+  </div>
+);
 
 export default DetailsView;
