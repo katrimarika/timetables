@@ -30,7 +30,7 @@ const App: FC = () => (
         </Routes>
       </main>
       <footer className={styles.footer}>
-        <small>Data © HSL</small>
+        <small>Data by Digitransit</small>
       </footer>
     </>
   </HashRouter>
