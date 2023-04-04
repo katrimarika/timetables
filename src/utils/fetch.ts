@@ -7,12 +7,21 @@ const API_URL =
   'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
 
 const HSLFetch = (query: string) => {
+  const apiKey = import.meta.env.VITE_API_KEY;
+  if (!apiKey) {
+    return Promise.reject('Api authentication missing').catch((err) =>
+      console.error(err)
+    );
+  }
   return axios
     .request({
       url: API_URL,
       method: 'POST',
       data: { query },
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'digitransit-subscription-key': apiKey,
+      },
     })
     .then((res) => res.data.data || {})
     .catch((err) => console.error(err));

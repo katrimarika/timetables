@@ -8,15 +8,16 @@ Built with React and TypeScript. Runs with Vite.
 
 This project uses Node and npm.
 
+1. Set the `VITE_API_KEY` environment variable, for example in an `.env.local` file, see [api registration](https://digitransit.fi/en/developers/api-registration/) to get a key.
 1. Install dependencies
    ```
    npm install
    ```
-2. Start the development server
+1. Start the development server
    ```
    npm start
    ```
-3. Open [http://localhost:3000](http://localhost:3000)
+1. Open [http://localhost:3000](http://localhost:3000)
 
 There is a pre-commit hook that runs [**prettier** code formatting](https://prettier.io/). Prettier can also be run manually using `npm run prettier`.
 
