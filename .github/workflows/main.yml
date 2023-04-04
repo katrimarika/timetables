@@ -30,7 +30,7 @@ jobs:
           path: build
 
   deploy:
-    needs: build
+    needs: test-and-build
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
