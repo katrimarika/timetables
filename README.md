@@ -31,4 +31,4 @@ By default, only tests that have changed since the previous commit are run. Runn
 
 ## Deployment
 
-Deployment can currently be done only locally to GitHub pages with the `./deploy.sh` script.
+There is automatic deployment set up on pushes/merges to the `main` branch. It uses GitHub Actions to deploy to GitHub Pages.
