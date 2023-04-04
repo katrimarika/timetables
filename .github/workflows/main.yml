@@ -20,7 +20,7 @@ jobs:
         run: npm test
       - name: Build
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_KEY: ${{ secrets.API_KEY }}
         run: npm run build
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v1
