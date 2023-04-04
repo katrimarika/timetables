@@ -8,8 +8,6 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
-    env:
-      VITE_API_URL: ${{ secrets.VITE_API_URL }}
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js 18
@@ -21,6 +19,8 @@ jobs:
       - name: Test
         run: npm test
       - name: Build
+        env:
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
         run: npm run build
       - name: Upload build artifacts
         uses: actions/upload-pages-artifact@v1
