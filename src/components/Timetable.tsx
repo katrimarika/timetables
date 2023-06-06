@@ -15,18 +15,15 @@ type Props = {
   showMore(): void;
 };
 
-const refSecsToSecs = (refSecs: number) => {
-  // The night buses use the start of the previous day as a reference
-  const oneDay = 60 * 60 * 24;
-  const secs = refSecs > oneDay ? refSecs - oneDay : refSecs;
-  return secs;
-};
+const ONE_DAY_IN_SECONDS = 60 * 60 * 24;
 
 const parseTime = (refSecs: number) => {
   if (!refSecs) {
     return '';
   }
-  const secs = refSecsToSecs(refSecs);
+  // The night buses use the start of the previous day as a reference
+  const secs =
+    refSecs > ONE_DAY_IN_SECONDS ? refSecs - ONE_DAY_IN_SECONDS : refSecs;
   let hours = Math.floor(secs / (60 * 60));
   let minutes = Math.floor((secs - hours * 60 * 60) / 60);
   const twoDigit = (n: number) => `${n < 10 ? '0' : ''}${n}`;
@@ -40,8 +37,7 @@ const timeDiff = (refSecs: number) => {
   const dt = new Date();
   const nowSecs =
     dt.getSeconds() + 60 * dt.getMinutes() + 60 * 60 * dt.getHours();
-  const secs = refSecsToSecs(refSecs);
-  const diff = Math.floor((secs - nowSecs) / 60);
+  const diff = Math.floor((refSecs - nowSecs) / 60);
   return diff;
 };
 
