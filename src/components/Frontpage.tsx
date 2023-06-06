@@ -4,29 +4,18 @@ import { useUiContext } from '../utils/uiContext';
 import BikeStationView from './BikeStationView';
 import Divider from './Divider';
 import styles from './Frontpage.module.css';
-import IconButton from './IconButton';
 import Search from './Search';
 import Starred from './Starred';
 import TimetableView from './TimetableView';
 
-const closeButton = (id: string, removePin: (id: string) => void) => (
-  <IconButton
-    icon="times"
-    aria-label={`Poista kiinnitys ${id}`}
-    title="Poista kiinnitys"
-    onClick={() => removePin(id)}
-  />
-);
-
 const Frontpage: FC = () => {
   const { pinned, starred, dispatch } = useUiContext();
 
-  const removePin = (stopId: string) => dispatch({ type: 'removePin', stopId });
   const removeStar = (stopId: string) =>
     dispatch({ type: 'removeStar', stopId });
 
   return (
-    <div className={styles.frontpage}>
+    <div>
       <h1 className={styles.title}>Aikataulut</h1>
       <Search />
       <Divider />
@@ -34,29 +23,19 @@ const Frontpage: FC = () => {
         <Starred starred={starred} removeStar={removeStar} />
       )}
       {!!starred.length && <Divider />}
-      <div className={styles.timetables}>
+      <div>
         {pinned.map((stop) =>
           stop.isBike ? (
-            <BikeStationView
-              key={stop.id}
-              detail={stop}
-              withLink
-              buttons={() => closeButton(stop.id, removePin)}
-            />
+            <BikeStationView key={stop.id} detail={stop} withLink />
           ) : (
-            <TimetableView
-              key={stop.id}
-              detail={stop}
-              withLink={true}
-              buttons={() => closeButton(stop.id, removePin)}
-            />
+            <TimetableView key={stop.id} detail={stop} withLink={true} />
           )
         )}
       </div>
       {!pinned.length && !starred.length && (
-        <div className={styles.loading}>
+        <div className={styles.padding}>
           Ei tallennettuja pysäkkejä tai asemia.
-          <small className={styles.loading}>
+          <small className={styles.padding}>
             Suosikit <FontAwesomeIcon icon="star" /> näkyvät etusivulla
             linkkeinä aikataulusivuille. Kiinnitys{' '}
             <FontAwesomeIcon icon="thumbtack" /> tuo koko aikataulunäkymän
