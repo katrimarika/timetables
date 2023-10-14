@@ -21,7 +21,7 @@ const parseTime = (refSecs: number) => {
   if (!refSecs) {
     return '';
   }
-  // The night buses use the start of the previous day as a reference
+  // The night lines use the start of the previous day as a reference
   const secs =
     refSecs > ONE_DAY_IN_SECONDS ? refSecs - ONE_DAY_IN_SECONDS : refSecs;
   let hours = Math.floor(secs / (60 * 60));
@@ -37,7 +37,15 @@ const timeDiff = (refSecs: number) => {
   const dt = new Date();
   const nowSecs =
     dt.getSeconds() + 60 * dt.getMinutes() + 60 * 60 * dt.getHours();
-  const diff = Math.floor((refSecs - nowSecs) / 60);
+
+  // The night lines use the start of the previous day as a reference
+  // Special case: current time is before midnight, timetable time is after midnight
+  const secs =
+    refSecs > ONE_DAY_IN_SECONDS && nowSecs < ONE_DAY_IN_SECONDS / 2
+      ? refSecs - ONE_DAY_IN_SECONDS
+      : refSecs;
+
+  const diff = Math.floor((secs - nowSecs) / 60);
   return diff;
 };
 
