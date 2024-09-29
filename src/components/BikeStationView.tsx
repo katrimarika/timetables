@@ -32,8 +32,8 @@ const BikeDetail: FC<{
         count < 3
           ? styles['count-few']
           : count === 0
-          ? styles['count-zero']
-          : ''
+            ? styles['count-zero']
+            : ''
       )}
     >
       {noData ? '-' : count}

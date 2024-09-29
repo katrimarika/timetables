@@ -24,8 +24,8 @@ const TimetablePage: FC<Props> = ({ stopType }) => {
     saveType === 'star'
       ? starred.find((s) => s.id === stopId)
       : saveType === 'pin'
-      ? pinned.find((s) => s.id === stopId)
-      : undefined;
+        ? pinned.find((s) => s.id === stopId)
+        : undefined;
 
   return (
     <div className={styles['timetable-page']}>
