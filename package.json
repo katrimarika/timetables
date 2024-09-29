@@ -37,7 +37,8 @@
     "build": "vite build --outDir build",
     "preview": "vite preview",
     "test": "vitest",
-    "prettier": "prettier --write \"{src/**/*.{ts,tsx,scss},*.md}\""
+    "prettier": "prettier --write \"{src/**/*.{ts,tsx,scss},*.md}\"",
+    "prepare": "husky"
   },
   "eslintConfig": {
     "extends": "react-app"
