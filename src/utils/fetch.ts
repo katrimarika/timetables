@@ -3,8 +3,7 @@ import get from 'lodash/get';
 import sortBy from 'lodash/sortBy';
 import uniq from 'lodash/uniq';
 
-const API_URL =
-  'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql';
+const API_URL = 'https://api.digitransit.fi/routing/v2/hsl/gtfs/v1';
 
 const HSLFetch = (query: string) => {
   const apiKey = import.meta.env.VITE_API_KEY;
@@ -17,9 +16,9 @@ const HSLFetch = (query: string) => {
     .request({
       url: API_URL,
       method: 'POST',
-      data: { query },
+      data: query,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/graphql',
         'digitransit-subscription-key': apiKey,
       },
     })
