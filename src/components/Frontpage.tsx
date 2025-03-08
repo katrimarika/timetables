@@ -7,6 +7,7 @@ import styles from './Frontpage.module.css';
 import Search from './Search';
 import Starred from './Starred';
 import TimetableView from './TimetableView';
+import IconButton from './IconButton';
 
 const Frontpage: FC = () => {
   const { pinned, starred, dispatch } = useUiContext();
@@ -16,7 +17,15 @@ const Frontpage: FC = () => {
 
   return (
     <div>
-      <h1 className={styles.title}>Aikataulut</h1>
+      <header className={styles.header}>
+        <h1 className={styles.title}>Aikataulut</h1>
+        <IconButton
+          className={styles.refresh}
+          icon="refresh"
+          onClick={() => window.location.reload()}
+          title="Päivitä"
+        />
+      </header>
       <Search />
       <Divider />
       {!!starred.length && (

@@ -1,6 +1,17 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin: 0 0 0.33em;
+}
+
 .title {
   font-size: 3rem;
-  margin: 0 0 0.33em;
+  margin: 0;
+}
+
+.refresh {
+  flex-shrink: 0;
 }
 
 .padding {
