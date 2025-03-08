@@ -19,6 +19,11 @@
   color: var(--warning-color);
 }
 
-.count-zero {
+.closed {
   color: var(--error-color);
+  margin-bottom: 1rem;
+}
+
+.not-allowed {
+  opacity: 0.5;
 }

@@ -90,6 +90,9 @@ export type BikeStationData = {
   bikeStation: BikeStation;
   bikesAvailable?: number;
   spacesAvailable?: number;
+  operative?: boolean;
+  allowPickup?: boolean;
+  allowDropoff?: boolean;
 };
 
 const getStringValue = (data: unknown, path: string): string | undefined => {
@@ -171,7 +174,7 @@ const parseStation = (station: unknown, stationId?: string): Station => {
   };
 };
 
-const parseBikeStation = (
+const parseVehicleStation = (
   bikeStation: unknown,
   bikeStationId?: string
 ): BikeStation => {
@@ -180,6 +183,18 @@ const parseBikeStation = (
     id,
     name: getStringValue(bikeStation, 'name') || 'Pyöräasema',
   };
+};
+
+const parseAvailable = (data: unknown): number => {
+  const byType = getArrayValue(data, 'byType');
+
+  const availableBikeType = byType.find((type) => {
+    const vehicleType = getRecordValue(type, 'vehicleType');
+    const formFactor = getStringValue(vehicleType, 'formFactor');
+    return formFactor === 'BICYCLE';
+  });
+
+  return getNumberValue(availableBikeType, 'count');
 };
 
 export const fetchTimetableView = (
@@ -368,35 +383,63 @@ export const search = (name: string): Promise<SearchResult> => {
 
 export const fetchBikeStationList = (): Promise<BikeStation[]> => {
   const query = `{
-    bikeRentalStations {
+    vehicleRentalStations {
       name
       stationId
     }
   }`;
   return HSLFetch(query).then((data) =>
-    getArrayValue(data, 'bikeRentalStations').map((bike) =>
-      parseBikeStation(bike)
+    getArrayValue(data, 'vehicleRentalStations').map((bike) =>
+      parseVehicleStation(bike)
     )
   );
 };
 
 export const fetchBikeStationData = (id: string): Promise<BikeStationData> => {
+  // Migrate bike station id to support stored ids better
+  const queryId = id.length === 3 ? `smoove:${id}` : id;
   const query = `{
-    bikeRentalStation(id: "${id}") {
+    vehicleRentalStation(id: "${queryId}") {
       name
       stationId
-      bikesAvailable
-      spacesAvailable
+      operative
+      allowPickup
+      allowDropoff
+      availableVehicles {
+        byType {
+          count
+          vehicleType {
+            formFactor
+          }
+        }
+      }
+      availableSpaces {
+        byType {
+          count
+          vehicleType {
+            formFactor
+          }
+        }
+      }
     }
   }`;
   return HSLFetch(query).then((data) => {
-    const details = getRecordValue(data, 'bikeRentalStation');
-    const bikeStation = parseBikeStation(details);
+    const details = getRecordValue(data, 'vehicleRentalStation');
+    const bikeStation = parseVehicleStation(details);
+    const bikesAvailable = parseAvailable(
+      getRecordValue(details, 'availableVehicles')
+    );
+    const spacesAvailable = parseAvailable(
+      getRecordValue(details, 'availableSpaces')
+    );
 
     return {
       bikeStation,
-      bikesAvailable: getNumberValue(details, 'bikesAvailable'),
-      spacesAvailable: getNumberValue(details, 'spacesAvailable'),
+      operative: getBooleanValue(details, 'operative'),
+      allowPickup: getBooleanValue(details, 'allowPickup'),
+      allowDropoff: getBooleanValue(details, 'allowDropoff'),
+      bikesAvailable,
+      spacesAvailable,
     };
   });
 };
@@ -422,7 +465,7 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
           id:gtfsId
         }
       }
-      bikeRentalStation${index}: bikeRentalStation(id: "${id}") {
+      vehicleRentalStation${index}: vehicleRentalStation(id: "${id}") {
         name
         stationId
       }`
@@ -436,7 +479,7 @@ export const fetchDetails = (ids: string[]): Promise<StopsStations> => {
         const isStation = key.startsWith('station');
         if (id) {
           if (isBike) {
-            obj.bikeStations[id] = parseBikeStation(item, id);
+            obj.bikeStations[id] = parseVehicleStation(item, id);
           } else if (isStation) {
             obj.stations[id] = parseStation(item, id);
           } else {

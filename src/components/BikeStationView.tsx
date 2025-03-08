@@ -22,18 +22,25 @@ const BikeDetail: FC<{
   label: string;
   noData: boolean;
   count: number;
-}> = ({ icon, label, noData, count }) => (
+  allowed?: boolean;
+}> = ({ icon, label, noData, count, allowed }) => (
   <>
-    <FontAwesomeIcon icon={icon} />
-    <span className={styles['bike-detail-label']}>{label} </span>
+    <FontAwesomeIcon
+      icon={icon}
+      className={cx(!allowed && styles['not-allowed'])}
+    />
+    <span
+      className={cx(
+        styles['bike-detail-label'],
+        !allowed && styles['not-allowed']
+      )}
+    >
+      {label}{' '}
+    </span>
     <span
       className={cx(
         styles['bike-detail-count'],
-        count < 3
-          ? styles['count-few']
-          : count === 0
-            ? styles['count-zero']
-            : ''
+        !allowed ? styles['not-allowed'] : count < 3 && styles['count-few']
       )}
     >
       {noData ? '-' : count}
@@ -78,18 +85,23 @@ const BikeStationView: FC<Props> = ({ detail, withLink }) => {
       }}
       linkTo={withLink ? routes.bikeStation(id, 'pin') : undefined}
     >
+      {bikeStationData && !bikeStationData?.operative && (
+        <div className={styles['closed']}>Ei käytössä</div>
+      )}
       <div className={styles['bike-details']}>
         <BikeDetail
           icon="bicycle"
           label="Pyöriä asemalla"
           noData={bikeStationData?.bikesAvailable === undefined}
           count={bikeStationData?.bikesAvailable || 0}
+          allowed={bikeStationData?.allowPickup}
         />
         <BikeDetail
           icon="parking"
           label="Vapaita paikkoja"
           noData={bikeStationData?.spacesAvailable === undefined}
           count={bikeStationData?.spacesAvailable || 0}
+          allowed={bikeStationData?.allowDropoff}
         />
       </div>
     </DetailsView>
