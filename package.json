@@ -28,8 +28,8 @@
     "lint-staged": "^15.2.10",
     "prettier": "^3.3.3",
     "typescript": "^5.6.2",
-    "vite": "^5.4.8",
-    "vitest": "^2.1.1"
+    "vite": "^6.2.1",
+    "vitest": "^3.0.8"
   },
   "scripts": {
     "start": "vite dev --port 3000",
